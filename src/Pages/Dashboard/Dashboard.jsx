@@ -1,9 +1,8 @@
 // src/pages/Dashboard.js
 import React from 'react';
-import './Dashboard.css';
-import KPIs from '../components/KPIs/KPIs';
-import Graphs from '../components/Graphs/Graphs';
-import Notifications from '../components/Notifications/Notifications';
+import KPIs from './components/KPIs/KPIs';
+import Graphs from './components/Graphs/Graphs';
+import Notifications from './components/Notifications/Notifications';
 
 const Dashboard = () => {
   return (
