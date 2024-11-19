@@ -1,11 +1,22 @@
 import React from 'react';
-import './DoctorDashboard.css';
+import './styles.css';
 
 const DoctorDashboard = () => {
   return (
     <div className="doctor-dashboard">
-      <h2>Doctor Dashboard</h2>
-      <p>Welcome to your dashboard. Here you can manage your appointments, view patient records, and more.</p>
+      <header>
+        <h1>Doctor Dashboard</h1>
+      </header>
+      <section className="dashboard-content">
+        <div className="card">
+          <h2>Appointments</h2>
+          <p>View and manage your scheduled appointments.</p>
+        </div>
+        <div className="card">
+          <h2>Patient Records</h2>
+          <p>Access detailed patient records and history.</p>
+        </div>
+      </section>
     </div>
   );
 };
