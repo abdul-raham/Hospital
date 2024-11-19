@@ -1,7 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login/Loginpage";
-import DoctorDashboard from "./pages/Doctor/DoctorDashboard";
+import DoctorDashboard from "<div className="" />
+<pages />
+<d></d>octor/DoctorDashboard";
 import NurseDashboard from "./pages/Nurse/NurseDashboard";
 import PatientDashboard from "./pages/Patient/PatientDashboard";
 
