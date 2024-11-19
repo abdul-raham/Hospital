@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../../firebaseConfig'; // Firebase Firestore configuration
 import { collection, getDocs } from 'firebase/firestore'; // Firestore methods
 import '../doctor/DoctorDashboard.css'; // Dashboard styling
 

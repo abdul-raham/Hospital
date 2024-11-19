@@ -1,47 +1,49 @@
-doctor-dashboard {
+.doctor-dashboard {
   padding: 20px;
+  font-family: Arial, sans-serif;
 }
 
-header h1 {
+h1 {
   font-size: 2rem;
-  color: #4facfe;
-  text-align: center;
   margin-bottom: 20px;
 }
 
-.dashboard-content {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  flex-wrap: wrap;
+.appointments-section,
+.patients-section {
+  margin-bottom: 30px;
 }
 
-.card {
-  background: #fff;
-  border-radius: 10px;
-  padding: 20px;
-  width: 300px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+.appointments-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.appointments-table th,
+.appointments-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: left;
+}
+
+.appointments-table th {
+  background-color: #f4f4f4;
+}
+
+.patient-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.patient-list li {
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.loading {
   text-align: center;
-}
-
-.card h2 {
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.card p {
-  color: #666;
-}
-
-@media (max-width: 768px) {
-  .dashboard-content {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .card {
-    width: 100%;
-    max-width: 400px;
-  }
+  font-size: 1.5rem;
+  margin-top: 50px;
 }
