@@ -3,9 +3,9 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login/LoginPage"; // Assuming this is the login page component
 import DoctorDashboard from "./Roles/doctor/DoctorDashboard";
-import NurseDashboard from "./Roles/nurse/NurseDashboard";
-import PatientDashboard from "./Roles/patient/PatientDashboard";
-import { AuthProvider } from './context/AuthContext'; // AuthContext to wrap the entire app
+import NurseDashboard from "./Roles/Nurse/NurseDashboard";
+import PatientDashboard from "./Roles/Patient/PatientDashboard";
+import { AuthProvider } from "./context/AuthContext"; // AuthContext to wrap the entire app
 
 const App = () => {
   return (
