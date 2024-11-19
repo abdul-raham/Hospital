@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import './components/LoginForm/LoginForm.css';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth, db } from '../../firebaseConfig';
+import { doc, getDoc } from 'firebase/firestore'; // Use Firestore to fetch user role
+import './LoginForm.css';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
@@ -11,15 +13,23 @@ const LoginForm = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault();
-    setErrorMessage(''); // Clear any previous error message
+    setErrorMessage('');
 
     try {
-        const { data } = await axios.post('http://localhost:5000/api/login', { email, password });
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('role', data.role);
-        navigate(`/${data.role}`);  // Correct the string interpolation
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const userId = userCredential.user.uid;
+      
+        // Fetch user role from Firestore
+        const userDoc = await getDoc(doc(db, 'users', userId));
+        if (userDoc.exists()) {
+          const userRole = userDoc.data().role;
+          localStorage.setItem('role', userRole);
+          navigate(`/${userRole}`); // Correct string interpolation with backticks
+        } else {
+          throw new Error('User role not found.');
+        }
       } catch (error) {
-        setErrorMessage('Invalid email or password');
+        setErrorMessage(error.message || 'Failed to login');
       }
       
   };
