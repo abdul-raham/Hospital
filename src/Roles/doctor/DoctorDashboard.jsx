@@ -1,6 +1,6 @@
 import React from 'react';
-import Sidebar from '../../components/Common/Sidebar';  // Import Sidebar
-import TopBar from '../../components/Common/TopBar';    // Import TopBar
+import Sidebar from '../';  // Import Sidebar
+import TopBar from '../components/Common/TopBar';    // Import TopBar
 import { Box, Grid, Card, CardContent, Typography } from '@mui/material';
 import './styles.css';  // Import styles
 
