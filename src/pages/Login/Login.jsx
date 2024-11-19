@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth, db } from '../Firebase'; // Firebase config file
+import { auth, db } from '../../Firebase'; // Firebase config file
 import { doc, getDoc } from 'firebase/firestore';
 import './Login.css'; // Import component-specific styles
 
