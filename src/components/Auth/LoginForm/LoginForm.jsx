@@ -14,13 +14,14 @@ const LoginForm = () => {
     setErrorMessage(''); // Clear any previous error message
 
     try {
-      const { data } = await axios.post('http://localhost:5000/api/login', { email, password });
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('role', data.role);
-      navigate(/${data.role});
-    } catch (error) {
-      setErrorMessage('Invalid email or password');
-    }
+        const { data } = await axios.post('http://localhost:5000/api/login', { email, password });
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('role', data.role);
+        navigate(`/${data.role}`);  // Correct the string interpolation
+      } catch (error) {
+        setErrorMessage('Invalid email or password');
+      }
+      
   };
 
   return (
