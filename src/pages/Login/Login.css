@@ -30,6 +30,7 @@
     margin-bottom: 5px;
     border: 1px solid #ddd;
     border-radius: 4px;
+    background: #ff0000;
   }
   
   button.login-btn {
