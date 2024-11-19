@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore'; // Firestore methods
+import { db } from '../../firebaseConfig'; // Ensure the path is correct
 import '../doctor/DoctorDashboard.css'; // Dashboard styling
 
 const DoctorDashboard = () => {
