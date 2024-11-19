@@ -17,7 +17,7 @@ const LoginForm = () => {
       const { data } = await axios.post('http://localhost:5000/api/login', { email, password });
       localStorage.setItem('token', data.token);
       localStorage.setItem('role', data.role);
-      navigate(/${data.role}); // Redirect to the dashboard based on the role
+      navigate(/${data.role});
     } catch (error) {
       setErrorMessage('Invalid email or password');
     }
