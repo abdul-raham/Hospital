@@ -1,4 +1,4 @@
-import React f/project/workspace/src/pages/Nurse/Nurse.jsxrom 'react';
+import React from 'react';
 import './PatientDashboard.css';
 
 const PatientDashboard = () => {
