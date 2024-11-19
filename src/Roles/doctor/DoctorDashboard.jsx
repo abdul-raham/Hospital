@@ -1,8 +1,7 @@
 import React from 'react';
-import Sidebar from '../../components/Common/Sidebar/Sidebar';
-import TopBar from '../../components/Navbar/Topbar.jsx';
+import Sidebar from '../../components/Common/Sidebar/Sidebar.jsx';
+import TopBar from '../../components/Common/Navbar/TopBar.jsx';  {/* Corrected import name */}
 import { Box, Grid, Card, CardContent, Typography } from '@mui/material';
-
 
 const DoctorDashboard = () => {
   return (
@@ -13,7 +12,7 @@ const DoctorDashboard = () => {
       {/* Main Dashboard Content */}
       <Box sx={{ flexGrow: 1, padding: 3 }}>
         {/* TopBar */}
-        <TopBar />
+        <TopBar />  {/* Corrected component name */}
 
         <Typography variant="h3" component="h1" sx={{ textAlign: 'center', marginBottom: '30px' }}>
           Doctor Dashboard
@@ -22,7 +21,7 @@ const DoctorDashboard = () => {
         {/* Main Content */}
         <Grid container spacing={3}>
           {/* Appointments Card */}
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={4} key="appointments">  {/* Added key */}
             <Card elevation={3}>
               <CardContent>
                 <Typography variant="h5" gutterBottom>
@@ -36,7 +35,7 @@ const DoctorDashboard = () => {
           </Grid>
 
           {/* Patient Records Card */}
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item xs={12} sm={6} md={4} key="patient-records">  {/* Added key */}
             <Card elevation={3}>
               <CardContent>
                 <Typography variant="h5" gutterBottom>
