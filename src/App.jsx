@@ -4,9 +4,11 @@ import Login from "./pages/Login/Loginpage";
 import DoctorDashboard from "./Roles/doctor/DoctorDashboard";
 import NurseDashboard from "./Roles/Nurse/NurseDashboard";
 import PatientDashboard from "./Roles/Patient/PatientDashboard";
+import { AuthProvider } from './context/AuthContext';
 
 const App = () => {
   return (
+    <AuthProvider>
     <Router>
       <Routes>
         {/* Public Routes */}
@@ -31,8 +33,12 @@ const App = () => {
             </div>
           }
         />
+           
+ 
+
       </Routes>
     </Router>
+    </AuthProvider>
   );
 };
 

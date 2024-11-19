@@ -1,5 +1,5 @@
 import React from 'react';
-import './Roles/doctor/DocotrDasboard.css';
+import './DoctorAppointments';
 
 const DoctorDashboard = () => {
   return (
