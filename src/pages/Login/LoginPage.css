@@ -2,25 +2,30 @@
 
 
 .login-page{
-
+display: flex;
   max-width: 100%;
+  background: linear-gradient( rgba(0, 0, 0, 0.5) , rgba(0, 0, 0, 0.5), url(https://images.pexels.com/photos/785080/pexels-photo-785080.jpeg?auto=compress&cs=tinysrgb&w=600));
 }
 .login-container1{
-  background: linear-gradient(to bottom, #87CEEB, #ffffff);
+
 width: 50%;
   height: 100%;
   align-items: center;
   justify-content: center;
+  padding: 5%;
 }
 .login-container2{
   background-image: url(https://images.pexels.com/photos/4167541/pexels-photo-4167541.jpeg?auto=compress&cs=tinysrgb&w=600);
 width: 50%;
 height: 100%;
+
 }
 .login-form{
   align-items: center;
   justify-content: center;
-  padding: 10% ; 
+  padding: 10% 10% 20% 10% ; 
+  background: linear-gradient(to top, #87CEEB, #ffffff);
+  border-radius: 12px;
 }
 h1{
   text-align: center;
