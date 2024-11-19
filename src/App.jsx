@@ -1,9 +1,8 @@
-// src/App.jsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import DoctorDashboard from './roles/doctor/DoctorDashboard';
-import { AuthProvider } from './context/AuthContext';
-import LoginPage from './pages/Login/LoginPage';
+import DoctorDashboard from './Roles/doctor/DoctorDashboard.jsx';
+import { AuthProvider } from './context/AuthContext.jsx';
+import LoginPage from './pages/Login/LoginPage.jsx';
 import './index.css';  // Import global styles
 
 const App = () => {
