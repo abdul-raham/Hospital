@@ -1,7 +1,8 @@
 // src/pages/Login/LoginPage.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuthContext } from '../../context/AuthContext'; // Access Auth context
+import { useAuthContext } from '../../context/AuthContext';
+import "../Login/LoginPage.css" // Access Auth context
 
 const LoginPage = () => {
   const { handleLogin, loading } = useAuthContext(); // Get login functionality from context
@@ -24,11 +25,10 @@ const LoginPage = () => {
     <div className="login-page">
       
       <div className="login-container1">
-      <h1>Login</h1>
       {errorMessage && <p className="error-message">{errorMessage}</p>}
       <form className="login-form" onSubmit={onSubmit}>
         <div>
-
+        <h1>Sign In</h1>
           <input
             type="email"
             value={email}
