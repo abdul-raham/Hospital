@@ -2,7 +2,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../context/AuthContext';
-import "../Login/LoginPage.css" // Access Auth context
+import "../Login/LoginPage.css";
+import Image from "../../components/Assets/pexels-shvetsa-4167541-removebg-preview.png";
+ // Access Auth context
 
 const LoginPage = () => {
   const { handleLogin, loading } = useAuthContext(); // Get login functionality from context
@@ -26,6 +28,7 @@ const LoginPage = () => {
       
       <div className="login-container1">
       {errorMessage && <p className="error-message">{errorMessage}</p>}
+      <h2>WELCOME</h2>
       <form className="login-form" onSubmit={onSubmit}>
         <div>
         <h1>Sign In</h1>
@@ -51,12 +54,17 @@ const LoginPage = () => {
           {loading ? "Logging in..." : "Login"}
           
         </button>
-        <div className="login-footer">
-            <a href="#">Forgot Password?</a>
-          </div>
+       
       </form>
       </div>
-      <div className="login-container2">
+      <div className="login-container2"  style={{
+    backgroundImage: `url(${Image})`,
+    backgroundSize: 'contain', // Ensures the image covers the entire section
+    backgroundRepeat:'no-repeat',
+    backgroundPosition: 'center', // Centers the image
+    height: '100vh', // Full viewport height
+    width: '100%', // Full width
+  }}>
 
       </div>
 
