@@ -1,0 +1,9 @@
+.patient-dashboard {
+  padding: 2rem;
+  background-color: #fefefe;
+  min-height: 100vh;
+}
+
+.patient-dashboard h2 {
+  color: #555;
+}
