@@ -1,9 +1,9 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login/Loginpage";
-import DoctorDashboard from "./pages/doctor/DoctorDashboard";
-import NurseDashboard from "./pages/Nurse/NurseDashboard";
-import PatientDashboard from "./pages/Patient/PatientDashboard";
+import DoctorDashboard from "./Roles/doctor/DoctorDashboard";
+import NurseDashboard from "./Roles/Nurse/NurseDashboard";
+import PatientDashboard from "./Roles/Patient/PatientDashboard";
 
 const App = () => {
   return (
