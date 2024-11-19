@@ -1,6 +1,6 @@
 import React from 'react';
 import './DoctorAppointments';
-
+import '../doctor/DoctorDashboard.css';
 const DoctorDashboard = () => {
   return (
     <div className="doctor-dashboard">
