@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthContext } from '../../context/AuthContext'; // Access Auth context
+import '../Login/LoginPage.css'; // Import component-specific styles
 
 const LoginPage = () => {
   const { handleLogin, loading } = useAuthContext(); // Get login functionality from context
@@ -21,10 +22,14 @@ const LoginPage = () => {
   };
 
   return (
+    <div className="login-page">
     <div className="login-container">
-      <h1>Login</h1>
+    <div className="login-header">
+          
+          <h2>Welcome to [Hospital Name]</h2>
+        </div>
       {errorMessage && <p className="error-message">{errorMessage}</p>}
-      <form onSubmit={onSubmit}>
+      <form onSubmit={onSubmit} className="login-form">
         <div>
           <label>Email:</label>
           <input
@@ -48,6 +53,9 @@ const LoginPage = () => {
         <button type="submit" disabled={loading}>
           {loading ? "Logging in..." : "Login"}
         </button>
+        <div className="login-footer">
+          <a href="#">Forgot Password?</a> 
+        </div>
       </form>
     </div>
   );
