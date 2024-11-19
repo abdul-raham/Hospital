@@ -1,39 +1,17 @@
-import React, { useState } from 'react';
-import './LoginPage.css';
+import React from 'react';
+import Login from './Login';
+import './LoginPage.css'; // Page-level styles
 
-
-const Login = () => {
-  const { handleLogin, loading } = useAuthContext();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    await handleLogin(email, password);
-  };
-
+const LoginPage = () => {
   return (
-    <div>
-      <h1>Login</h1>
-      <form onSubmit={onSubmit}>
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Email"
-          required
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password"
-          required
-        />
-        <button type="submit" disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
-        </button>
-      </form>
+    <div className="login-page">
+      <header className="login-header">
+        <h1>Welcome to Hospital Management System</h1>
+        <p>Please login to continue</p>
+      </header>
+      <main className="login-main">
+        <Login />
+      </main>
     </div>
   );
 };
