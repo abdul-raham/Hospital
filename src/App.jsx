@@ -3,6 +3,10 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider } from './context/AuthContext'; // Context for authentication
 import LoginPage from './pages/Login/LoginPage'; // Login Page
 import DoctorDashboard from './Roles/doctor/DoctorDashboard'; // Doctor's Dashboard
+import NurseDashboard from './Roles/Nurse/NurseDashboard'; // Nurse's Dashboard
+import PatientDashboard from './Roles/Patient/PatientDashboard'; // Patient's Dashboard
+import AdminDashboard from './Roles/Admin/AdminDashboard'; // Admin's Dashboard
+import LabDashboard from './Roles/Lab/LabDashboard'; // Lab's Dashboard
 import PrivateRoute from './components/Auth/PrivateRoute'; // PrivateRoute for authentication protection
 import './index.css'; // Global styles
 
@@ -14,45 +18,25 @@ const App = () => {
           {/* Public Route */}
           <Route path="/login" element={<LoginPage />} />
 
-          {/* Protected Doctor Routes */}
-          <Route
-            path="/doctor"
-            element={
-              <PrivateRoute>
-                <DoctorDashboard />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/doctor/appointments"
-            element={
-              <PrivateRoute>
-                <div>Appointments Page</div>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/doctor/patients"
-            element={
-              <PrivateRoute>
-                <div>Patients Page</div>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/doctor/settings"
-            element={
-              <PrivateRoute>
-                <div>Settings Page</div>
-              </PrivateRoute>
-            }
-          />
+          {/* Protected Routes */}
+          <Route path="/DoctorDashboard" element={
+            <PrivateRoute><DoctorDashboard /></PrivateRoute>
+          } />
+          <Route path="/NurseDashboard" element={
+            <PrivateRoute><NurseDashboard /></PrivateRoute>
+          } />
+          <Route path="/PatientDashboard" element={
+            <PrivateRoute><PatientDashboard /></PrivateRoute>
+          } />
+          <Route path="/AdminDashboard" element={
+            <PrivateRoute><AdminDashboard /></PrivateRoute>
+          } />
+          <Route path="/LabDashboard" element={
+            <PrivateRoute><LabDashboard /></PrivateRoute>
+          } />
 
-          {/* Default Route Redirect to Login */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
-
-          {/* Catch-All for 404 */}
-          <Route path="*" element={<div>404 - Page Not Found</div>} />
+          {/* Fallback Route (for undefined paths) */}
+          <Route path="*" element={<Navigate to="/login" />} />
         </Routes>
       </AuthProvider>
     </Router>
