@@ -98,8 +98,8 @@ const NurseDashboard = () => {
         </Grid>
         <Routes>
           <Route path="/" element={<Typography variant="h5">Welcome to your dashboard!</Typography>} />
-          <Route path="appointments" element={<Appointments />} />
-          <Route path="patients" element={<Patients />} />
+          <Route path="NurseAppointments" element={<NurseAppointments />} />
+          <Route path="CarePlans" element={<CarePlans />} />
         </Routes>
       </Box>
     </Box>
