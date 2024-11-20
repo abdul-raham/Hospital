@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { auth } from '../Firebase'; // Assuming Firebase authentication is set up
 import { signInWithEmailAndPassword } from 'firebase/auth';
 
@@ -12,7 +11,6 @@ export const useAuthContext = () => {
 export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState(null);
-  const navigate = useNavigate();
 
   // Login function
   const handleLogin = async (email, password) => {
@@ -20,7 +18,6 @@ export const AuthProvider = ({ children }) => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       setUser(auth.currentUser); // Save the user to state
-      navigate('/doctor'); // Redirect on successful login
     } catch (error) {
       throw new Error(error.message);
     } finally {

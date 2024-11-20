@@ -1,6 +1,20 @@
 import { getAuth, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';  // Make sure to import getFirestore
+import { doc, setDoc } from "firebase/firestore";
+
+export async function registerUser(email, password, role) {
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const userId = userCredential.user.uid;
+
+        // Save the role in Firestore
+        await setDoc(doc(db, "users", userId), { role });
+        console.log("User registered and role saved!");
+    } catch (error) {
+        console.error("Error registering user:", error);
+    }
+};
 
 const firebaseConfig = {
   apiKey: "AIzaSyCdmHvjKgjmPPqJgmlIk2vYMXjdwcpf7hA",
