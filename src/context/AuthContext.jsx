@@ -1,51 +1,36 @@
 import React, { createContext, useContext, useState } from 'react';
-import { login, signUp, logout } from '../auth';  // Import Firebase authentication methods
+import { useNavigate } from 'react-router-dom';
+import { auth } from '../Firebase'; // Assuming Firebase authentication is set up
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 const AuthContext = createContext();
 
+export const useAuthContext = () => {
+  return useContext(AuthContext);
+};
+
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   // Login function
   const handleLogin = async (email, password) => {
     setLoading(true);
     try {
-      const userCredential = await login(email, password);
-      setUser(userCredential); // Store the authenticated user
+      await signInWithEmailAndPassword(auth, email, password);
+      setUser(auth.currentUser); // Save the user to state
+      navigate('/doctor'); // Redirect on successful login
     } catch (error) {
-      console.error("Login error: ", error);
-    }
-    setLoading(false);
-  };
-
-  // Sign up function
-  const handleSignUp = async (email, password) => {
-    setLoading(true);
-    try {
-      const userCredential = await signUp(email, password);
-      setUser(userCredential);  // Set authenticated user
-    } catch (error) {
-      console.error("Sign up error: ", error);
-    }
-    setLoading(false);
-  };
-
-  // Logout function
-  const handleLogout = async () => {
-    try {
-      await logout();
-      setUser(null);  // Reset user state
-    } catch (error) {
-      console.error("Logout error: ", error);
+      throw new Error(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, handleLogin, handleSignUp, handleLogout }}>
+    <AuthContext.Provider value={{ handleLogin, loading, user }}>
       {children}
     </AuthContext.Provider>
   );
 };
-
-export const useAuthContext = () => useContext(AuthContext);

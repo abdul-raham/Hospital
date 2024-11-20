@@ -1,24 +1,14 @@
 import React from 'react';
-import './DoctorDashboard.css';
+import { Typography, Box } from '@mui/material';
 
-const DoctorDashboard = () => {
+const Appointments = () => {
   return (
-    <div className="doctor-dashboard">
-      <header>
-        <h1>Doctor Dashboard</h1>
-      </header>
-      <section className="dashboard-content">
-        <div className="card">
-          <h2>Appointments</h2>
-          <p>View and manage your scheduled appointments.</p>
-        </div>
-        <div className="card">
-          <h2>Patient Records</h2>
-          <p>Access detailed patient records and history.</p>
-        </div>
-      </section>
-    </div>
+    <Box>
+      <Typography variant="h4">Appointments</Typography>
+      <Typography variant="body1">Here is the list of your appointments...</Typography>
+      {/* Add actual appointments data and functionality here */}
+    </Box>
   );
 };
 
-export default DoctorDashboard;
+export default Appointments;
