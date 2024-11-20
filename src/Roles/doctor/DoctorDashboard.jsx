@@ -84,11 +84,7 @@ const DoctorDashboard = () => {
         </Grid>
 
         {/* Routes for dynamic content rendering */}
-        <Routes>
-          <Route path="/" element={<Typography variant="h5">Welcome to your dashboard!</Typography>} />
-          <Route path="appointments" element={<Appointments />} />
-          <Route path="patients" element={<Patients />} />
-        </Routes>
+       
       </Box>
     </Box>
   );

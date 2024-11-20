@@ -1,45 +1,37 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext'; // Context for authentication
-import LoginPage from './pages/Login/LoginPage'; // Login Page
-import DoctorDashboard from './Roles/doctor/DoctorDashboard'; // Doctor's Dashboard
-import NurseDashboard from './Roles/Nurse/NurseDashboard'; // Nurse's Dashboard
-import PatientDashboard from './Roles/Patient/PatientDashboard'; // Patient's Dashboard
-import AdminDashboard from './Roles/Admin/AdminDashboard'; // Admin's Dashboard
-import LabDashboard from './Roles/Lab/LabDashboard'; // Lab's Dashboard
-import PrivateRoute from './components/Auth/PrivateRoute'; // PrivateRoute for authentication protection
-import './index.css'; // Global styles
-
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Container } from '@mui/material';
+import { AuthProvider } from './context/AuthContext';
+import LoginPage from './pages/Login/LoginPage'; // Adjust path if necessary
+import PrivateRoute from './components/Auth/PrivateRoute'; // PrivateRoute component to protect routes
+import DoctorDashboard from './Roles/doctor/DoctorDashboard'; // You can adjust paths for other role dashboards if necessary
+import AdminDashboard from './Roles/Admin/AdminDashboard';
+import LabDashboard from './Roles/Lab/LabDashboard';
+import PatientDashboard from './Roles/Patient/PatientDashboard';
+import NurseDashboard from './Roles/Nurse/NurseDashboard';
+import { ToastContainer } from 'react-toastify';
 const App = () => {
   return (
-    <Router>
-      <AuthProvider>
-        <Routes>
-          {/* Public Route */}
-          <Route path="/login" element={<LoginPage />} />
+    <AuthProvider>
+      <Router>
+        <Container>
+          <Routes>
+            {/* Public routes */}
+            <Route path="/" element={<LoginPage />} /> {/* Set Login as the home page */}
 
-          {/* Protected Routes */}
-          <Route path="/DoctorDashboard" element={
-            <PrivateRoute><DoctorDashboard /></PrivateRoute>
-          } />
-          <Route path="/NurseDashboard" element={
-            <PrivateRoute><NurseDashboard /></PrivateRoute>
-          } />
-          <Route path="/PatientDashboard" element={
-            <PrivateRoute><PatientDashboard /></PrivateRoute>
-          } />
-          <Route path="/AdminDashboard" element={
-            <PrivateRoute><AdminDashboard /></PrivateRoute>
-          } />
-          <Route path="/LabDashboard" element={
-            <PrivateRoute><LabDashboard /></PrivateRoute>
-          } />
-
-          {/* Fallback Route (for undefined paths) */}
-          <Route path="*" element={<Navigate to="/login" />} />
-        </Routes>
-      </AuthProvider>
-    </Router>
+            {/* Private routes (only accessible after login) */}
+            <Route element={<PrivateRoute />}> {/* Wrap the private routes here */}
+              <Route path="/Doctor" element={<DoctorDashboard />} />
+              <Route path="/Admin" element={<AdminDashboard />} />
+              <Route path="/Patient" element={<PatientDashboard />} />
+              <Route path="/Lab" element={<LabDashboard />} />
+              <Route path="/Nurse" element={<NurseDashboard />} />
+            </Route>
+          </Routes>
+        </Container>
+        <ToastContainer /> {/* Add ToastContainer here to show toast messages */}
+      </Router>
+    </AuthProvider>
   );
 };
 
