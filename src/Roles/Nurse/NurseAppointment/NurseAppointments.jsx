@@ -13,7 +13,7 @@ import {
   TablePagination,
 } from '@mui/material';
 import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
-import { app } from '../../Firebase'; // Ensure Firebase is initialized
+import { app } from '../../../Firebase'; // Ensure Firebase is initialized
 import './NurseAppointments.css';
 
 const NurseAppointments = () => {
