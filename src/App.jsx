@@ -5,11 +5,11 @@ import { AuthProvider } from "./context/AuthContext";
 import LoginPage from "./pages/Login/LoginPage"; // Adjust path if necessary
 import PrivateRoute from "./components/Auth/PrivateRoute.jsx"; // PrivateRoute component to protect routes
 import DoctorDashboard from "./Roles/doctor/DoctorDashboard.jsx"; // You can adjust paths for other role dashboards if necessary
-import AdminDashboard from "./Roles/Admin/AdminDashboard.jsx";
+import AdminDashboard from "./Roles/Admin/AdminDashboard";  // Correct import path
 import LabDashboard from "./Roles/Lab/LabDashboard.jsx";
 import PatientDashboard from "./Roles/Patient/PatientDashboard.jsx";
 import NurseDashboard from "./Roles/Nurse/NurseDashboard.jsx";
-import NurseAppointments from "./Roles/Nurse/NurseAppointments.jsx";
+import NurseAppointments from "./Roles/Nurse/NurseAppointment/NurseAppointments.jsx";
 import CarePlans from "./Roles/Nurse/CarePlans.jsx";
 import Calendar from "./Roles/Admin/Calendar/Calendar.jsx";
 import Tables from "./Roles/Admin/Tables/Table.jsx";

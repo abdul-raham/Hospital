@@ -1,118 +1,100 @@
-/* General styling for the nurse dashboard */
 .nurse-dashboard {
   display: flex;
-  flex-direction: column;
   height: 100vh;
-  background-color: #f4f6f8;
-  font-family: "Roboto", sans-serif;
+  background-color: #f4f7f9;
 }
 
-/* Sidebar */
+/* Sidebar styling */
 .sidebar {
   width: 240px;
-  background-color: #2c3e50;
-}
-
-/* Main content styling */
-.main-content {
-  margin-top: 5%;
-  flex-grow: 2;
-  padding: 50px;
-  background-color: #f4f7fa;
-  border-radius: 8px;
-  margin-left: 240px; /* Ensure there’s space for the sidebar */
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-}
-
-/* Top bar */
-.top-bar {
-  background-color: #3498db;
+  background-color: #2c3e50; /* Matches NurseSidebar */
   color: white;
-  padding: 10px 20px;
-  border-radius: 5px;
-  margin-bottom: 20px;
+  overflow: auto;
 }
 
-/* Styling for the dashboard overview tiles */
+.sidebar .MuiListItem-root {
+  padding: 10px 20px;
+}
+
+.sidebar .MuiListItem-root:hover {
+  background-color: #34495e;
+}
+
+.sidebar .MuiListItem-root.active {
+  background-color: #2980b9; /* Active item color */
+}
+
+/* Main Content Styling */
+.main-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+/* Dashboard Tiles */
 .dashboard-tiles {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  margin-bottom: 30px;
 }
 
 .tile {
-  background-color: #ffffff;
-  border-radius: 8px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-  height: 100%;
-  cursor: pointer;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .tile:hover {
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  transform: scale(1.05);
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
-/* Responsive styling */
-@media (max-width: 768px) {
-  .tile {
-    margin-bottom: 20px;
-  }
-
-  .main-content {
-    padding: 15px;
-    margin-left: 0;
-  }
+.tile h5 {
+  color: #333;
+  font-family: "Roboto", sans-serif;
+  font-weight: bold;
 }
 
-@media (max-width: 480px) {
-  .tile {
-    margin-bottom: 20px;
-  }
-
-  .main-content {
-    padding: 10px;
-  }
-}
-
-/* Styling for appointments section */
+/* Appointments Table */
 .nurse-appointments {
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
   padding: 20px;
-  background-color: #f9f9f9;
 }
 
-table {
+.nurse-appointments h1 {
+  font-family: "Roboto", sans-serif;
+  font-weight: bold;
+  color: #333;
+}
+
+.nurse-appointments table {
   width: 100%;
+  margin-top: 20px;
+  border-collapse: collapse;
 }
 
-th,
-td {
-  text-align: center;
+.nurse-appointments th,
+.nurse-appointments td {
   padding: 10px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
 }
 
-th {
-  background-color: #3498db;
-  color: white;
+.nurse-appointments th {
+  font-weight: bold;
+  background-color: #f8f9fa;
 }
 
-tbody tr:nth-child(even) {
-  background-color: #ecf0f1;
+.nurse-appointments tr:hover {
+  background-color: #f1f1f1;
 }
 
-tbody tr:hover {
-  background-color: #dfe6e9;
-  cursor: pointer;
-}
-
-/* Circular progress */
-.circular-progress {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+/* TopBar styling */
+.top-bar {
+  margin-bottom: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 15px;
 }
