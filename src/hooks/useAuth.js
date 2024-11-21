@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { auth } from '../firebaseConfig';  // Firebase config
+import { auth } from '../firebaseConfig';  // Make sure the path to firebaseConfig is correct
 import { onAuthStateChanged } from 'firebase/auth';
 
 const useAuth = () => {
@@ -7,17 +7,17 @@ const useAuth = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Listen for auth state changes
+    // Listen for authentication state changes
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);  // Set user state based on authentication
-      setLoading(false);     // Set loading to false after checking auth state
+      setUser(currentUser);  // Set the user if authenticated or null if not
+      setLoading(false);     // Set loading to false after auth state is checked
     });
 
-    // Cleanup listener on unmount
-    return unsubscribe;
+    // Clean up the listener when the component unmounts
+    return () => unsubscribe();
   }, []);
 
-  return { user, loading };
+  return { user, loading };  // Return the user and loading states
 };
 
 export default useAuth;
