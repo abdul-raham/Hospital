@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
-import { useAuthContext } from '../../context/AuthContext';  // Use the context hook for authentication
+import React from "react";
+import { Navigate, Outlet } from "react-router-dom";
+import { useAuthContext } from "../../context/AuthContext"; // Use your authentication context
 
 const PrivateRoute = () => {
-  const { user, loading } = useAuthContext();  // Use `user` and `loading` from context
+  const { user, loading } = useAuthContext(); // Use `user` and `loading` from context
 
-  // If loading, display a loading spinner or message
+  // If loading, display a spinner or loading message
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>; // You can replace this with a loader component
   }
 
-  // If the user is not authenticated, redirect to login page
+  // If no user is authenticated, redirect to the login page
   if (!user) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/" />;
   }
 
-  // If user is authenticated, allow access to the route
+  // If the user is authenticated, allow access to child routes
   return <Outlet />;
 };
 

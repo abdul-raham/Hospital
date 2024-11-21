@@ -5,6 +5,7 @@ import { Box, Grid, Typography, Card, CardContent, CardActionArea } from "@mui/m
 import { Routes, Route, Link, useLocation } from "react-router-dom";
 import Appointments from "../doctor/DoctorAppointments.jsx";
 import Patients from "../Patient/PatientDashboard.jsx";
+import CarePlans from "./CarePlans.jsx";
 import "./NurseDashboard.css";
 
 const NurseDashboard = () => {
@@ -97,6 +98,7 @@ const NurseDashboard = () => {
           <Route path="/" element={<Typography variant="h5">Welcome to your dashboard!</Typography>} />
           <Route path="appointments" element={<Appointments />} />
           <Route path="patients" element={<Patients />} />
+          <Route path="careplans" element={<CarePlans />} />
         </Routes>
       </Box>
     </Box>

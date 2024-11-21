@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"; // Make sure React is imported only once
 import Sidebar from "../../Roles/doctor/Sidebar/Sidebar.jsx";
 import TopBar from "../../components/Common/Navbar/Toolbar.jsx";
 import {
@@ -11,17 +11,14 @@ import {
 } from "@mui/material";
 import { Routes, Route, Link, useLocation } from "react-router-dom";
 
-// Components for each section
 import Appointments from "../doctor/DoctorAppointments.jsx";
 import Patients from "../Patient/PatientDashboard.jsx";
 
-// Importing CSS
 import "./DoctorDashboard.css";
 
 const DoctorDashboard = () => {
   const location = useLocation(); // Get the current route using useLocation
 
-  // Helper function to return the correct title based on the path
   const getTitle = (path) => {
     switch (path) {
       case "/doctor/appointments":
@@ -44,7 +41,7 @@ const DoctorDashboard = () => {
 
       {/* Main Dashboard Content */}
       <Box sx={{ flexGrow: 1, padding: 3 }} className="main-content">
-        {/* TopBar - It will automatically update the title based on the page */}
+        {/* TopBar */}
         <TopBar title={title} className="top-bar" />
 
         {/* Dashboard Overview Tiles */}
