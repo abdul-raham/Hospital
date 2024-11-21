@@ -1,23 +1,43 @@
 import React, { useState } from "react";
-import { TextField, Button, Box, Typography } from "@mui/material";
-import { createUser } from "../../../Firebase";  // Correct import
+import { TextField, Button, Box, Typography, MenuItem } from "@mui/material";
+import { auth, db } from "../../../Firebase"; // Firebase auth and firestore imports
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 
 const AdminCreateUser = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("");
-  const [error, setError] = useState("");  // Add state for error handling
+  const [error, setError] = useState(""); // Error handling state
+  const [success, setSuccess] = useState(false); // Success feedback state
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setSuccess(false);
+
     try {
-      await createUser(email, password, role);
+      // Create user with email and password in Firebase Auth
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+      // Get the user ID from the created user
+      const userId = userCredential.user.uid;
+
+      // Save user information to Firestore with the role
+      await setDoc(doc(db, "users", userId), {
+        email: email,
+        role: role,
+        createdAt: new Date().toISOString(), // Optional: Timestamp for record
+      });
+
+      // Reset the form and display success message
       setEmail("");
       setPassword("");
       setRole("");
-      setError("");  // Reset error if successful
+      setSuccess(true);
     } catch (err) {
-      setError(err.message);  // Display error message
+      // Display error message
+      setError(err.message);
     }
   };
 
@@ -25,6 +45,7 @@ const AdminCreateUser = () => {
     <Box sx={{ padding: 3, boxShadow: 2, borderRadius: 2 }}>
       <Typography variant="h6" gutterBottom>Create New User</Typography>
       <form onSubmit={handleSubmit}>
+        {/* Email Field */}
         <TextField
           label="Email"
           variant="outlined"
@@ -34,6 +55,8 @@ const AdminCreateUser = () => {
           required
           margin="normal"
         />
+
+        {/* Password Field */}
         <TextField
           label="Password"
           type="password"
@@ -44,6 +67,8 @@ const AdminCreateUser = () => {
           required
           margin="normal"
         />
+
+        {/* Role Dropdown */}
         <TextField
           label="Role"
           variant="outlined"
@@ -52,12 +77,22 @@ const AdminCreateUser = () => {
           onChange={(e) => setRole(e.target.value)}
           required
           margin="normal"
-        />
+          select
+        >
+          <MenuItem value="doctor">Doctor</MenuItem>
+          <MenuItem value="nurse">Nurse</MenuItem>
+          <MenuItem value="admin">Admin</MenuItem>
+        </TextField>
+
+        {/* Submit Button */}
         <Button type="submit" variant="contained" sx={{ marginTop: 2 }}>
           Create User
         </Button>
       </form>
-      {error && <Typography color="error">{error}</Typography>}  {/* Display error if any */}
+
+      {/* Display Success or Error Messages */}
+      {success && <Typography color="success" sx={{ marginTop: 2 }}>User created successfully!</Typography>}
+      {error && <Typography color="error" sx={{ marginTop: 2 }}>{error}</Typography>}
     </Box>
   );
 };

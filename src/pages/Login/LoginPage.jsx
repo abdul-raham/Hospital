@@ -1,42 +1,71 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuthContext } from '../../context/AuthContext';  // Importing the context hook
+import { useAuthContext } from '../../context/AuthContext'; // Context for login and user management
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { getDoc, doc } from 'firebase/firestore'; // Import Firestore functions
+import { db } from '../../Firebase'; // Firebase configuration
 import "../Login/LoginPage.css";
-import Image from "../../components/Assets/pexels-shvetsa-4167541-removebg-preview.png"; // Adjust path to your image
-import { toast } from 'react-toastify'; // Importing the toast function
-import 'react-toastify/dist/ReactToastify.css'; // Importing the necessary CSS for toast notifications
+import Image from "../../components/Assets/pexels-shvetsa-4167541-removebg-preview.png";
 
 const LoginPage = () => {
-  const { login, loading, user } = useAuthContext();  // Destructure the `login` function and `loading` from context
+  const { login, loading, user } = useAuthContext(); // Destructure login and user from context
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
-    // If user is already logged in, redirect to their dashboard (or role-based dashboard)
-    if (user) {
-      navigate('/Doctor');  // Redirect to the Doctor dashboard (or role-based navigation)
-    }
+    const fetchUserRole = async () => {
+      if (user) {
+        try {
+          // Fetch the user document from Firestore
+          const userDoc = await getDoc(doc(db, 'users', user.uid));
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            const userRole = userData.role;
+
+            // Redirect based on role
+            switch (userRole) {
+              case 'doctor':
+                navigate('/Doctor');
+                break;
+              case 'nurse':
+                navigate('/Nurse');
+                break;
+              case 'admin':
+                navigate('/Admin');
+                break;
+              default:
+                toast.error('Role not recognized.');
+                navigate('/');
+            }
+          } else {
+            toast.error('User role not found.');
+            navigate('/');
+          }
+        } catch (error) {
+          toast.error('Failed to fetch user role.');
+        }
+      }
+    };
+
+    fetchUserRole();
   }, [user, navigate]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage('');  // Clear any previous error messages
+    setErrorMessage('');
     try {
-      // Call the login function from context
+      // Login with Firebase Authentication
       await login(email, password);
-      // Show success toast after successful login
       toast.success('Login Successful! Redirecting...');
-      // After successful login, user will be redirected based on the above `useEffect`
     } catch (error) {
-      // Handle login errors
       setErrorMessage(error.message || 'Login failed.');
       toast.error(error.message || 'Login failed.');
     }
   };
 
-  // Disable the login button if email or password is empty, or if loading
   const isFormValid = email && password && !loading;
 
   return (
@@ -64,17 +93,17 @@ const LoginPage = () => {
               required
             />
           </div>
-          <button 
-            className="login-button" 
-            type="submit" 
-            disabled={loading || !isFormValid}  // Disable if loading or form is invalid
+          <button
+            className="login-button"
+            type="submit"
+            disabled={loading || !isFormValid}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
       </div>
-      <div 
-        className="login-container2"  
+      <div
+        className="login-container2"
         style={{
           backgroundImage: `url(${Image})`,
           backgroundSize: 'contain',

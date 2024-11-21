@@ -1,47 +1,28 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, createUserWithEmailAndPassword } from 'firebase/auth';
-import { app } from '../Firebase'; // Correct the path to your firebase.js
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { onAuthStateChanged, signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../Firebase';
 
-// Create a context
-export const AuthContext = createContext();
+const AuthContext = createContext();
 
-// Custom hook to use the AuthContext
-export const useAuthContext = () => {
-  return useContext(AuthContext);
-};
+export const useAuthContext = () => useContext(AuthContext);
 
-// AuthProvider component that will wrap around your app
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-  const auth = getAuth(app);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
       setLoading(false);
     });
 
-    return () => unsubscribe();  // Cleanup listener when component is unmounted
-  }, [auth]);
+    return unsubscribe;
+  }, []);
 
-  // Login function
-  const login = async (email, password) => {
-    await signInWithEmailAndPassword(auth, email, password);
-  };
-
-  // Signup function
-  const signup = (email, password) => {
-    return createUserWithEmailAndPassword(auth, email, password);
-  };
-
-  // Logout function
-  const logout = () => {
-    return signOut(auth);
-  };
+  const login = (email, password) => signInWithEmailAndPassword(auth, email, password);
 
   return (
-    <AuthContext.Provider value={{ user, login, signup, logout, loading }}>
+    <AuthContext.Provider value={{ user, loading, login }}>
       {children}
     </AuthContext.Provider>
   );
