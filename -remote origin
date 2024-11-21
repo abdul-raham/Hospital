@@ -1,0 +1,91 @@
+[33m02ad177[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/draft/inspiring-dew[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mdraft/inspiring-dew[m[33m)[m Merge branch 'main' of https://github.com/abdul-raham/Hospital into draft/inspiring-dew
+[33m719dda3[m update Sidebar.jsx update Sidebar.jsx update Sidebar.jsx co
+[33mf410b71[m "Updated NurseDashboard and DoctorDashboard components with new CSS, added dynamic title to TopBar, and modified Sidebar to highlight active routes."
+[33mcbd7111[m "Updated NurseDashboard routes to point to NurseAppointments and CarePlans components instead of Appointments and Patients"
+[33m5834451[m sac
+[33mf13b706[m "Updated authentication logic, refactored code organization, and modified login page functionality."
+[33mc634010[m update 12 files and delete 3 files
+[33m4430cd4[m gc
+[33me1d1c6d[m Merge branch 'main' of https://github.com/abdul-raham/Hospital
+[33m9859266[m d
+[33m18d0406[m Merge branch 'main' of https://github.com/abdul-raham/Hospital
+[33m23a169d[m added chngs
+[33ma145671[m Merge branch 'main' of https://github.com/abdul-raham/Hospital
+[33mefd670e[m yfjy
+[33m879da10[m update DoctorDashboard.jsx
+[33m8573f49[m Merge branch 'main' of https://github.com/abdul-raham/Hospital
+[33m0f7fed5[m update LoginPage.css and LoginPage.jsx
+[33m3bf6176[m update 4 files and delete 2 files
+[33m07b4045[m update DoctorDashboard.css
+[33m1fe9bbd[m build(deps): update package-lock.json, package.json and DoctorDashboard.jsx
+[33m5ec6332[m update DoctorDashboard.jsx
+[33m4af7b69[m Merge branch 'main' of https://github.com/abdul-raham/Hospital
+[33m80adc43[m update App.jsx, DoctorDashboard.jsx and main.jsx
+[33m351a366[m update 5 files
+[33m95b85ad[m update DoctorDashboard.jsx
+[33mc0d53c4[m update DoctorDashboard.jsx
+[33m7c4e2c7[m Merge branch 'main' of https://github.com/abdul-raham/Hospital
+[33m2866d8d[m update DoctorDashboard.css and DoctorDashboard.jsx
+[33mbd354f8[m update DoctorDashboard.jsx
+[33m0486a3b[m Login
+[33m9b34219[m Add styles changes to index.css
+[33m19cb182[m Canged index.html code
+[33m7e0eaf4[m made few
+[33m6ecfade[m Merge branch 'main' of https://github.com/abdul-raham/Hospital
+[33m723e1fd[m Chnges made
+[33m860f0a4[m few
+[33m26b184c[m indexc
+[33me6ad168[m main
+[33ma3a80c8[m Merge branch 'main' of https://github.com/abdul-raham/Hospital
+[33m54d3f1f[m fytfty
+[33m5891982[m Chnged the quth.js code
+[33mf118f27[m Removed comment
+[33m59c4b65[m edited firebase
+[33m62bda04[m EXPORT DB
+[33mbf409ee[m done
+[33mfdd32d3[m db
+[33m688e796[m Merge branch 'main' of https://github.com/abdul-raham/Hospital
+[33m924d8d2[m changing
+[33m279af39[m login auth
+[33mad1804a[m Made login corrections
+[33m1fe98a0[m Chnged path fro auth.js
+[33m16867a4[m renaming auth file ext
+[33m4863540[m dd
+[33m1742a46[m Firebaswe
+[33m9702a3f[m Merge branch 'main' of https://github.com/abdul-raham/Hospital
+[33m7ed4f47[m ggg
+[33m72c36c2[m Added firebase cos
+[33m165142e[m Changed Login and dashboard code and installed firebase
+[33mdd74cbc[m removed erro and installed packages Added packges npm install express bcryptjs jsonwebtoken cors dotenv
+[33mbff93e0[m Added loginform codeand style
+[33mc5cb97f[m Merge branch 'main' of https://github.com/abdul-raham/Hospital
+[33m2fd010e[m home
+[33m9b88ab9[m Added navbar code and style
+[33m8982142[m Merge branch 'main' of https://github.com/abdul-raham/Hospital
+[33m10d5ff8[m Login new location
+[33m85d070e[m Merge branch 'main' of https://github.com/abdul-raham/Hospital
+[33m9021be9[m fixed error in doctor dashbaoerd
+[33m7f88dcb[m Pages added
+[33m29c4bce[m Added doctor appointment and dasboard code
+[33mf3946da[m Merge branch 'main' of https://github.com/abdul-raham/Hospital
+[33mb7f6509[m Common
+[33m83fd761[m Added loginpage styel and code
+[33m5eb692e[m New files
+[33m55e5def[m New location
+[33ma29c303[m ADDED NEW FOLDERS TO BE DELETED
+[33m632c57e[m App
+[33m4081df6[m changed
+[33m3363c64[m App
+[33m4830417[m dajcba
+[33m4ad1648[m doctor
+[33mf6f802a[m Merge branches 'main' and 'main' of https://github.com/abdul-raham/Hospital
+[33m0fcf6f1[m tg
+[33m139fd09[m f
+[33me593dff[m Added app.jsx
+[33m8109a6e[m Added root doc
+[33mb662698[m Chnaged te title
+[33m80e5e9c[m tftu
+[33mf0afee7[m yttub
+[33m3f7fbcb[m Addedgit push origin main
+[33mc754c56[m New feature added
+[33m3085948[m Initial commit
