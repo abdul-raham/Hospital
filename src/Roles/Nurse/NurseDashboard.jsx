@@ -1,22 +1,23 @@
-import React from "react";
-import Sidebar from "../../Roles/Nurse/NurseSidebar/NurseSidebar.jsx";
-import TopBar from "../../components/Common/Navbar/Toolbar.jsx";
-import {
-  Box,
-  Grid,
-  Typography,
-  Card,
-  CardContent,
-  CardActionArea,
-} from "@mui/material";
-import { Routes, Route, Link, useLocation } from "react-router-dom";
+import React from 'react';
+<<<<<<< HEAD
+import { Box, Typography, Grid, Card, CardContent, CardActionArea } from '@mui/material';
+import { Link } from 'react-router-dom';
+import Sidebar from '../../components/Common/Sidebar/Sidebar.jsx';
+import TopBar from '../../components/Common/Navbar/Toolbar.jsx';
+import './NurseDashboard.css';
+=======
+import Sidebar from '../../components/Common/Sidebar/Sidebar.jsx';
+import TopBar from '../../components/Common/Navbar/Toolbar.jsx'; 
+import { Box, Grid, Typography, Card, CardContent, CardActionArea } from '@mui/material';
+import { Routes, Route, Link, useLocation } from 'react-router-dom'; 
 
 // Components for each section
 import Appointments from "../doctor/DoctorAppointments.jsx";
 import Patients from "../Patient/PatientDashboard.jsx";
 
 // Importing CSS
-import "./NurseDashboard.css"; // This will hold the copied styles from DoctorDashboard
+import './NurseDashboard.css'; // This will hold the copied styles from DoctorDashboard
+>>>>>>> 02ad1770a5923cdd6e0de5698854fb8ba5f22619
 
 const NurseDashboard = () => {
   const location = useLocation(); // Get the current route using useLocation
@@ -48,12 +49,8 @@ const NurseDashboard = () => {
         <TopBar title={title} className="top-bar" />
 
         {/* Dashboard Overview Tiles */}
-        <Grid
-          container
-          spacing={3}
-          sx={{ marginBottom: "30px" }}
-          className="dashboard-tiles"
-        >
+>>>>>>> 02ad1770a5923cdd6e0de5698854fb8ba5f22619
+        <Grid container spacing={3} sx={{ marginBottom: '30px' }} className="dashboard-tiles">
           <Grid item xs={12} sm={6} md={4}>
             <Card sx={{ height: "100%" }} className="tile">
               <CardActionArea component={Link} to="/nurse/appointments">
@@ -65,11 +62,13 @@ const NurseDashboard = () => {
                   >
                     Appointments
                   </Typography>
-                  <Typography
-                    variant="h6"
-                    color="primary"
-                    sx={{ fontWeight: "bold" }}
-                  >
+                  <Typography variant="h6" color="primary" sx={{ fontWeight: 'bold' }}>
+<<<<<<< HEAD
+                    25 Upcoming
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    View and manage assigned appointments.
+=======
                     35 Upcoming
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
@@ -91,11 +90,13 @@ const NurseDashboard = () => {
                   >
                     Patients
                   </Typography>
-                  <Typography
-                    variant="h6"
-                    color="primary"
-                    sx={{ fontWeight: "bold" }}
-                  >
+                  <Typography variant="h6" color="primary" sx={{ fontWeight: 'bold' }}>
+<<<<<<< HEAD
+                    80 Active Patients
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Access patient records and assist in patient care.
+=======
                     120 Active Patients
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
