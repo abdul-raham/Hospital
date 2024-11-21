@@ -1,8 +1,13 @@
 import React from 'react';
 import { Drawer, List, ListItem, ListItemText, Divider } from '@mui/material';
-import { Link } from 'react-router-dom'; // Use react-router for navigation
+import { Link, useLocation } from 'react-router-dom'; // Import useLocation for detecting the active route
 
 const Sidebar = () => {
+  const location = useLocation(); // Get the current location (route)
+
+  // Helper function to check if the link is active
+  const isActive = (path) => location.pathname === path;
+
   return (
     <Drawer
       sx={{
@@ -25,23 +30,59 @@ const Sidebar = () => {
     >
       <List sx={{ paddingTop: '20px' }}>
         {/* Dashboard Link */}
-        <ListItem button component={Link} to="/doctor" sx={{ padding: '10px 20px', '&:hover': { backgroundColor: '#2980b9' } }}>
+        <ListItem
+          button
+          component={Link}
+          to="/doctor"
+          sx={{
+            padding: '10px 20px',
+            backgroundColor: isActive('/doctor') ? '#2980b9' : 'transparent', // Active link background color
+            '&:hover': { backgroundColor: '#2980b9' },
+          }}
+        >
           <ListItemText primary="Dashboard" sx={{ color: 'white' }} />
         </ListItem>
         <Divider sx={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }} />
 
         {/* Appointments Link */}
-        <ListItem button component={Link} to="/doctor/appointments" sx={{ padding: '10px 20px', '&:hover': { backgroundColor: '#2980b9' } }}>
+        <ListItem
+          button
+          component={Link}
+          to="/doctor/appointments"
+          sx={{
+            padding: '10px 20px',
+            backgroundColor: isActive('/doctor/appointments') ? '#2980b9' : 'transparent',
+            '&:hover': { backgroundColor: '#2980b9' },
+          }}
+        >
           <ListItemText primary="Appointments" sx={{ color: 'white' }} />
         </ListItem>
 
         {/* Patients Link */}
-        <ListItem button component={Link} to="/doctor/patients" sx={{ padding: '10px 20px', '&:hover': { backgroundColor: '#2980b9' } }}>
+        <ListItem
+          button
+          component={Link}
+          to="/doctor/patients"
+          sx={{
+            padding: '10px 20px',
+            backgroundColor: isActive('/doctor/patients') ? '#2980b9' : 'transparent',
+            '&:hover': { backgroundColor: '#2980b9' },
+          }}
+        >
           <ListItemText primary="Patients" sx={{ color: 'white' }} />
         </ListItem>
 
         {/* Settings Link */}
-        <ListItem button component={Link} to="/doctor/settings" sx={{ padding: '10px 20px', '&:hover': { backgroundColor: '#2980b9' } }}>
+        <ListItem
+          button
+          component={Link}
+          to="/doctor/settings"
+          sx={{
+            padding: '10px 20px',
+            backgroundColor: isActive('/doctor/settings') ? '#2980b9' : 'transparent',
+            '&:hover': { backgroundColor: '#2980b9' },
+          }}
+        >
           <ListItemText primary="Settings" sx={{ color: 'white' }} />
         </ListItem>
 

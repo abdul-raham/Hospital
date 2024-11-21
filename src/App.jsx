@@ -9,7 +9,10 @@ import AdminDashboard from './Roles/Admin/AdminDashboard';
 import LabDashboard from './Roles/Lab/LabDashboard';
 import PatientDashboard from './Roles/Patient/PatientDashboard';
 import NurseDashboard from './Roles/Nurse/NurseDashboard';
+import NurseAppointments from './Roles/Nurse/NurseAppointments.jsx';
+import CarePlans from './Roles/Nurse/CarePlans.jsx'; 
 import { ToastContainer } from 'react-toastify';
+
 const App = () => {
   return (
     <AuthProvider>
@@ -27,6 +30,10 @@ const App = () => {
               <Route path="/Lab" element={<LabDashboard />} />
               <Route path="/Nurse" element={<NurseDashboard />} />
             </Route>
+
+            {/* Specific routes for Nurse */}
+            <Route path="/nurse/appointments" element={<NurseAppointments />} />
+            <Route path="/nurse/careplans" element={<CarePlans />} />
           </Routes>
         </Container>
         <ToastContainer /> {/* Add ToastContainer here to show toast messages */}
