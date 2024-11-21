@@ -3,14 +3,17 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Container } from "@mui/material";
 import { AuthProvider } from "./context/AuthContext";
 import LoginPage from "./pages/Login/LoginPage"; // Adjust path if necessary
-import PrivateRoute from "./components/Auth/PrivateRoute"; // PrivateRoute component to protect routes
-import DoctorDashboard from "./Roles/doctor/DoctorDashboard"; // You can adjust paths for other role dashboards if necessary
-import AdminDashboard from "./Roles/Admin/AdminDashboard";
-import LabDashboard from "./Roles/Lab/LabDashboard";
-import PatientDashboard from "./Roles/Patient/PatientDashboard";
-import NurseDashboard from "./Roles/Nurse/NurseDashboard";
+import PrivateRoute from "./components/Auth/PrivateRoute.jsx"; // PrivateRoute component to protect routes
+import DoctorDashboard from "./Roles/doctor/DoctorDashboard.jsx"; // You can adjust paths for other role dashboards if necessary
+import AdminDashboard from "./Roles/Admin/AdminDashboard.jsx";
+import LabDashboard from "./Roles/Lab/LabDashboard.jsx";
+import PatientDashboard from "./Roles/Patient/PatientDashboard.jsx";
+import NurseDashboard from "./Roles/Nurse/NurseDashboard.jsx";
 import NurseAppointments from "./Roles/Nurse/NurseAppointments.jsx";
 import CarePlans from "./Roles/Nurse/CarePlans.jsx";
+import Calendar from "./Roles/Admin/Calendar/Calendar.jsx";
+import Tables from "./Roles/Admin/Tables/Table.jsx";
+import Cards from "./Roles/Admin/Cards/Cards.jsx";
 import { ToastContainer } from "react-toastify";
 
 const App = () => {
@@ -35,6 +38,11 @@ const App = () => {
             {/* Specific routes for Nurse */}
             <Route path="/nurse/appointments" element={<NurseAppointments />} />
             <Route path="/nurse/careplans" element={<CarePlans />} />
+
+            {/* Specific routes for Admin */}
+            <Route path="/admin/calendar" element={<Calendar />} />
+            <Route path="/admin/tables" element={<Tables />} />
+            <Route path="/admin/cards" element={<Cards />} />
           </Routes>
         </Container>
         <ToastContainer />{" "}
