@@ -1,37 +1,66 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Container } from '@mui/material';
-import { AuthProvider } from './context/AuthContext';
-import LoginPage from './pages/Login/LoginPage'; // Adjust path if necessary
-import PrivateRoute from './components/Auth/PrivateRoute'; // PrivateRoute component to protect routes
-import DoctorDashboard from './Roles/doctor/DoctorDashboard'; // You can adjust paths for other role dashboards if necessary
-import AdminDashboard from './Roles/Admin/AdminDashboard';
-import LabDashboard from './Roles/Lab/LabDashboard';
-import PatientDashboard from './Roles/Patient/PatientDashboard';
-import NurseDashboard from './Roles/Nurse/NurseDashboard';
-import { ToastContainer } from 'react-toastify';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext"; // Context for authentication
+import LoginPage from "./pages/Login/LoginPage"; // Login Page
+import DoctorDashboard from "./Roles/doctor/DoctorDashboard"; // Doctor's Dashboard
+import PrivateRoute from "./components/Auth/PrivateRoute"; // PrivateRoute for authentication protection
+import "./index.css"; // Global styles
+
 const App = () => {
   return (
-    <AuthProvider>
-      <Router>
-        <Container>
-          <Routes>
-            {/* Public routes */}
-            <Route path="/" element={<LoginPage />} /> {/* Set Login as the home page */}
+    <Router>
+      <AuthProvider>
+        <Routes>
+          {/* Public Route */}
+          <Route path="/login" element={<LoginPage />} />
 
-            {/* Private routes (only accessible after login) */}
-            <Route element={<PrivateRoute />}> {/* Wrap the private routes here */}
-              <Route path="/Doctor" element={<DoctorDashboard />} />
-              <Route path="/Admin" element={<AdminDashboard />} />
-              <Route path="/Patient" element={<PatientDashboard />} />
-              <Route path="/Lab" element={<LabDashboard />} />
-              <Route path="/Nurse" element={<NurseDashboard />} />
-            </Route>
-          </Routes>
-        </Container>
-        <ToastContainer /> {/* Add ToastContainer here to show toast messages */}
-      </Router>
-    </AuthProvider>
+          {/* Protected Doctor Routes */}
+          <Route
+            path="/doctor"
+            element={
+              <PrivateRoute>
+                <DoctorDashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/doctor/appointments"
+            element={
+              <PrivateRoute>
+                <div>Appointments Page</div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/doctor/patients"
+            element={
+              <PrivateRoute>
+                <div>Patients Page</div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/doctor/settings"
+            element={
+              <PrivateRoute>
+                <div>Settings Page</div>
+              </PrivateRoute>
+            }
+          />
+
+          {/* Default Route Redirect to Login */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
+
+          {/* Catch-All for 404 */}
+          <Route path="*" element={<div>404 - Page Not Found</div>} />
+        </Routes>
+      </AuthProvider>
+    </Router>
   );
 };
 

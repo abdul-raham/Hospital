@@ -2,16 +2,34 @@ import React from 'react';
 import Sidebar from '../../components/Common/Sidebar/Sidebar.jsx';
 import TopBar from '../../components/Common/Navbar/Toolbar.jsx'; 
 import { Box, Grid, Typography, Card, CardContent, CardActionArea } from '@mui/material';
-import { Routes, Route, Link } from 'react-router-dom'; 
+import { Routes, Route, Link, useLocation } from 'react-router-dom'; 
 
 // Components for each section
 import Appointments from '../doctor/DoctorAppointments.jsx';
 import Patients from '../Patient/PatientDashboard.jsx';
 
 // Importing CSS
-import './DoctorDashboard.css'; // Add your CSS here
+import "./DoctorDashboard.css"; 
 
 const DoctorDashboard = () => {
+  const location = useLocation(); // Get the current route using useLocation
+  
+  // Helper function to return the correct title based on the path
+  const getTitle = (path) => {
+    switch (path) {
+      case '/doctor/appointments':
+        return 'Appointments';
+      case '/doctor/patients':
+        return 'Patients';
+      case '/doctor/settings':
+        return 'Settings';
+      default:
+        return 'Doctor Dashboard'; // Default title for the dashboard
+    }
+  };
+
+  const title = getTitle(location.pathname); // Get the title based on the current route
+
   return (
     <Box sx={{ display: 'flex' }} className="doctor-dashboard">
       {/* Sidebar */}
@@ -19,12 +37,8 @@ const DoctorDashboard = () => {
 
       {/* Main Dashboard Content */}
       <Box sx={{ flexGrow: 1, padding: 3 }} className="main-content">
-        {/* TopBar */}
-        <TopBar className="top-bar" />
-
-        <Typography variant="h3" component="h1" sx={{ textAlign: 'center', marginBottom: '30px' }}>
-          Doctor Dashboard
-        </Typography>
+        {/* TopBar - It will automatically update the title based on the page */}
+        <TopBar title={title} className="top-bar" />
 
         {/* Dashboard Overview Tiles */}
         <Grid container spacing={3} sx={{ marginBottom: '30px' }} className="dashboard-tiles">
