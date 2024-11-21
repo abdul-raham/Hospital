@@ -1,42 +1,50 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuthContext } from '../../context/AuthContext';  // Importing the context hook
+import { useAuthContext } from '../../context/AuthContext';
 import "../Login/LoginPage.css";
-import Image from "../../components/Assets/pexels-shvetsa-4167541-removebg-preview.png"; // Adjust path to your image
-import { toast } from 'react-toastify'; // Importing the toast function
-import 'react-toastify/dist/ReactToastify.css'; // Importing the necessary CSS for toast notifications
+import Image from "../../components/Assets/pexels-shvetsa-4167541-removebg-preview.png";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const LoginPage = () => {
-  const { login, loading, user } = useAuthContext();  // Destructure the `login` function and `loading` from context
+  const { login, loading, user, role } = useAuthContext(); // Get role from context
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
-    // If user is already logged in, redirect to their dashboard (or role-based dashboard)
-    if (user) {
-      navigate('/Doctor');  // Redirect to the Doctor dashboard (or role-based navigation)
+    if (user && role) {
+      // Redirect based on role
+      switch (role) {
+        case 'doctor':
+          navigate('/Doctor');
+          break;
+        case 'nurse':
+          navigate('/Nurse');
+          break;
+        case 'admin':
+          navigate('/Admin');
+          break;
+        default:
+          toast.error('Role not recognized. Please contact admin.');
+          navigate('/'); // Default route
+      }
     }
-  }, [user, navigate]);
+  }, [user, role, navigate]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage('');  // Clear any previous error messages
+    setErrorMessage('');
     try {
-      // Call the login function from context
-      await login(email, password);
-      // Show success toast after successful login
-      toast.success('Login Successful! Redirecting...');
-      // After successful login, user will be redirected based on the above `useEffect`
+      await login(email, password); // Login function
+      toast.success('Login successful! Redirecting...');
     } catch (error) {
-      // Handle login errors
       setErrorMessage(error.message || 'Login failed.');
       toast.error(error.message || 'Login failed.');
     }
   };
 
-  // Disable the login button if email or password is empty, or if loading
   const isFormValid = email && password && !loading;
 
   return (
@@ -64,17 +72,17 @@ const LoginPage = () => {
               required
             />
           </div>
-          <button 
-            className="login-button" 
-            type="submit" 
-            disabled={loading || !isFormValid}  // Disable if loading or form is invalid
+          <button
+            className="login-button"
+            type="submit"
+            disabled={loading || !isFormValid}
           >
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
       </div>
-      <div 
-        className="login-container2"  
+      <div
+        className="login-container2"
         style={{
           backgroundImage: `url(${Image})`,
           backgroundSize: 'contain',
