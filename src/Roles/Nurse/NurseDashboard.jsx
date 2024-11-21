@@ -1,5 +1,5 @@
 import React from 'react';
-import Sidebar from '../../components/Common/Sidebar/Sidebar.jsx';
+import Sidebar from '../.../Roles/Nurse/NurseSidebar/NurseSidebar.jsx';
 import TopBar from '../../components/Common/Navbar/Toolbar.jsx'; 
 import { Box, Grid, Typography, Card, CardContent, CardActionArea } from '@mui/material';
 import { Routes, Route, Link, useLocation } from 'react-router-dom'; 
