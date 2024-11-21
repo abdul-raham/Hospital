@@ -1,6 +1,7 @@
 import React from "react";
-import Sidebar from "../../Roles/Nurse/NurseSidebar/NurseSidebar.jsx";
 import TopBar from "../../components/Common/Navbar/Toolbar.jsx";
+import Sidebar from "../../Roles/Nurse/NurseSidebar/NurseSidebar.jsx"; // Default import
+
 import {
   Box,
   Grid,
