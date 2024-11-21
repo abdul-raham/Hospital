@@ -1,21 +1,8 @@
-import { getAuth, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';  // Make sure to import getFirestore
-import { doc, setDoc } from "firebase/firestore";
+import { getAuth } from 'firebase/auth'; // Import getAuth for authentication
+import { getFirestore } from 'firebase/firestore'; // Import Firestore if you're using it
 
-export async function registerUser(email, password, role) {
-    try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        const userId = userCredential.user.uid;
-
-        // Save the role in Firestore
-        await setDoc(doc(db, "users", userId), { role });
-        console.log("User registered and role saved!");
-    } catch (error) {
-        console.error("Error registering user:", error);
-    }
-};
-
+// Firebase configuration object
 const firebaseConfig = {
   apiKey: "AIzaSyCdmHvjKgjmPPqJgmlIk2vYMXjdwcpf7hA",
   authDomain: "hosp-429ad.firebaseapp.com",
@@ -26,9 +13,16 @@ const firebaseConfig = {
   measurementId: "G-6Y7Q7W5MWR"
 };
 
-// Initialize Firebase
+// Initialize Firebase app
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);  // Initialize Firebase Auth instance
-const db = getFirestore(app);  // Initialize Firestore
 
-export { auth, createUserWithEmailAndPassword, signOut, db };  // Export all at once
+// Export initialized Firebase app
+export { app };
+
+// Initialize Firebase Auth
+const auth = getAuth(app);
+
+// Initialize Firestore (if you use it)
+const db = getFirestore(app);
+
+export { auth, db }; // Export auth and db if needed in other files

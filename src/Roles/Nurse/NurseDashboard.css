@@ -1,9 +1,128 @@
-.doctor-dashboard {
-    padding: 2rem;
-    background-color: #eaf4f4;
-    min-height: 100vh;
-  }
-  
-  .doctor-dashboard h2 {
-    color: #333;
-  }
+.nurse-dashboard {
+  background-color: #f9f9f9;
+  font-family: 'Roboto', sans-serif;
+}
+
+.sidebar {
+  width: 240px;
+  background-color: #2c3e50;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 20px;
+  background-color: #ffffff;
+}
+
+.top-bar {
+  background-color: #3498db;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.dashboard-header {
+  color: #2c3e50;
+  font-weight: bold;
+}
+
+.dashboard-tiles {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tile {
+  background-color: #ecf0f1;
+  border-radius: 10px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  cursor: pointer;
+}
+
+.tile:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.tile-title {
+  color: #2c3e50;
+  font-weight: bold;
+}
+
+.tile-data {
+  color: #16a085;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.tile-description {
+  color: #7f8c8d;
+}
+.nurse-appointments {
+  padding: 20px;
+  background-color: #f9f9f9;
+  font-family: 'Roboto', sans-serif;
+}
+
+table {
+  width: 100%;
+}
+
+th, td {
+  text-align: center;
+}
+
+th {
+  background-color: #3498db;
+  color: white;
+  padding: 10px;
+}
+
+td {
+  padding: 10px;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #ecf0f1;
+}
+
+tbody tr:hover {
+  background-color: #dfe6e9;
+  cursor: pointer;
+}
+
+.circular-progress {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.nurse-dashboard {
+  background-color: #f4f6f8;
+  min-height: 100vh;
+}
+
+.sidebar {
+  background-color: #ffffff;
+}
+
+.top-bar {
+  background-color: #1976d2;
+  color: #ffffff;
+}
+
+.dashboard-tiles {
+  display: flex;
+  justify-content: space-between;
+}
+
+.tile {
+  transition: transform 0.3s ease;
+}
+
+.tile:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
