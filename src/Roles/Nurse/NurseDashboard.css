@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 .nurse-dashboard {
   background-color: #f9f9f9;
   font-family: 'Roboto', sans-serif;
@@ -28,12 +29,43 @@
 }
 
 .dashboard-tiles {
+=======
+/* General styling for the nurse dashboard */
+.nurse-dashboard {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Main content styling */
+.main-content {
+  margin-top: 5%;
+  flex-grow: 2;
+  padding: 50px;
+  background-color: #f4f7fa;
+  border-radius: 8px;
+  margin-left: 240px; /* Ensure there’s space for the sidebar */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+/* Top bar */
+.top-bar {
+  margin-bottom: 30px;
+}
+
+/* Styling for the dashboard overview tiles */
+.dashboard-tiles {
+  margin-top: 30px;
+>>>>>>> 02ad1770a5923cdd6e0de5698854fb8ba5f22619
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .tile {
+<<<<<<< HEAD
   background-color: #ecf0f1;
   border-radius: 10px;
   transition: transform 0.3s, box-shadow 0.3s;
@@ -126,3 +158,54 @@ tbody tr:hover {
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
 }
 
+=======
+  background-color: #ffffff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.tile:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+}
+
+.tile .MuiCardActionArea-root {
+  height: 100%;
+}
+
+.tile .MuiCardContent-root {
+  padding: 16px;
+}
+
+.tile .MuiTypography-root {
+  margin-bottom: 8px;
+}
+
+.tile .MuiTypography-body2 {
+  color: #7f8c8d;
+}
+
+/* Responsive styling for different screen sizes */
+@media (max-width: 768px) {
+  .tile {
+    margin-bottom: 20px;
+  }
+
+  .main-content {
+    padding: 15px;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .tile {
+    margin-bottom: 20px;
+  }
+  .main-content {
+    padding: 10px;
+  }
+}
+>>>>>>> 02ad1770a5923cdd6e0de5698854fb8ba5f22619
