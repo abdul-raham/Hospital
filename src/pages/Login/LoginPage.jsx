@@ -79,7 +79,7 @@ const LoginPage = () => {
     <div className="login-page">
       <div className="login-container1">
         {errorMessage && <p className="error-message">{errorMessage}</p>}
-        <h2>WELCOME</h2>
+        <h2>Welcome Back</h2>
         <form className="login-form" onSubmit={onSubmit}>
           <div>
             <h1>Sign In</h1>

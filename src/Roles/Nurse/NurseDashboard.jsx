@@ -37,7 +37,7 @@ const NurseDashboard = () => {
         <TopBar title={title} className="top-bar" />
 
         {/* Dashboard Overview Tiles */}
-        <Grid container spacing={3} className="dashboard-tiles">
+        <Grid container spacing={3} className="dashboard-tiles"  sx={{ marginTop: "5%" }}>
           <Grid item xs={12} sm={6} md={4}>
             <Card className="tile">
               <CardActionArea component={Link} to="/nurse/appointments">
