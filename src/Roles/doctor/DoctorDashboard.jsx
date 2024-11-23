@@ -59,7 +59,7 @@ const DoctorDashboard = () => {
 
 
         {/* Dashboard Overview Tiles */}
-        <Grid container spacing={3} sx={{ mb: 3 }}  sx={{ marginTop: "5%" }}>
+        <Grid container spacing={3} sx={{ mb: 3,  marginTop: "5%"  }} >
           {/* Appointments */}
           <Grid item xs={12} sm={6} md={4}>
             <Card
