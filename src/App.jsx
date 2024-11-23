@@ -2,7 +2,6 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Container } from "@mui/material";
 import { AuthProvider } from "./context/AuthContext";
-import Homepage from "./pages/HomePage/HomePage.jsx";
 import LoginPage from "./pages/Login/LoginPage";
 import PrivateRoute from "./components/Auth/PrivateRoute";
 import DoctorDashboard from "./Roles/doctor/DoctorDashboard";
@@ -24,9 +23,8 @@ const App = () => {
         <Container>
           <Routes>
             {/* Public routes */}
-            <Route path="/" element={<Homepage />} />
-            <Route path="/login" element={<LoginPage />} />
-
+            <Route path="/" element={<LoginPage />} />
+            
             {/* Private routes */}
             <Route element={<PrivateRoute />}>
               <Route path="/Doctor" element={<DoctorDashboard />} />

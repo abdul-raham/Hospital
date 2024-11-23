@@ -16,7 +16,7 @@ const Sidebar = () => {
         '& .MuiDrawer-paper': {
           width: 240,
           boxSizing: 'border-box',
-          backgroundColor: '#2c3e50', // Dark background for sidebar
+          backgroundColor: '#3f51b5', // Dark background for sidebar
           color: 'white',
           borderRight: '1px solid rgba(255, 255, 255, 0.1)', // Border to give separation from content
           transition: 'background-color 0.3s ease', // Smooth background transition
@@ -36,8 +36,8 @@ const Sidebar = () => {
           to="/doctor"
           sx={{
             padding: '10px 20px',
-            backgroundColor: isActive('/doctor') ? '#2980b9' : 'transparent', // Active link background color
-            '&:hover': { backgroundColor: '#2980b9' },
+            backgroundColor: isActive('/doctor') ? '#3f51b5' : 'transparent', // Active link background color
+            '&:hover': { backgroundColor: '#3f51b5' },
           }}
         >
           <ListItemText primary="Dashboard" sx={{ color: 'white' }} />
@@ -51,8 +51,8 @@ const Sidebar = () => {
           to="/doctor/appointments"
           sx={{
             padding: '10px 20px',
-            backgroundColor: isActive('/doctor/appointments') ? '#2980b9' : 'transparent',
-            '&:hover': { backgroundColor: '#2980b9' },
+            backgroundColor: isActive('/doctor/appointments') ? '#3f51b5' : 'transparent',
+            '&:hover': { backgroundColor: '#3f51b5' },
           }}
         >
           <ListItemText primary="Appointments" sx={{ color: 'white' }} />
