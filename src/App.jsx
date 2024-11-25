@@ -15,6 +15,7 @@ import CarePlans from "./Roles/Nurse/CarePlans";
 import Calendar from "./Roles/Admin/Calendar/Calendar";
 import Tables from "./Roles/Admin/Tables/Table";
 import Cards from "./Roles/Admin/Cards/Cards";
+import ReceptionistAppointments from "./Roles/Receptionist/Receptionist";
 import { ToastContainer } from "react-toastify";
 
 const App = () => {
@@ -25,14 +26,17 @@ const App = () => {
           <Routes>
             {/* Public routes */}
             <Route path="/" element={<LoginPage />} />
+            <Route path="/login" element={<LoginPage />} />
             
             {/* Private routes */}
             <Route element={<PrivateRoute />}>
-              <Route path="/Doctor" element={<DoctorDashboard />} />
-              <Route path="/Admin" element={<AdminDashboard />} />
-              <Route path="/Patient" element={<PatientDashboard />} />
+            <Route>
+              <Route path="/doctor/*" element={<DoctorDashboard />} /></Route>  
+              <Route path="/Admin/*" element={<AdminDashboard />} />
+              <Route path="/Patient/*" element={<PatientDashboard />} />
               <Route path="/Lab" element={<LabDashboard />} />
               <Route path="/Nurse" element={<NurseDashboard />} />
+              <Route path="/Receptionist" element={<ReceptionistAppointments />} /> 
             </Route>
 
             {/* Specific routes for Nurse */}
