@@ -13,7 +13,7 @@ import {
   TablePagination,
 } from '@mui/material';
 import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
-import { app } from '../../../Firebase'; // Ensure Firebase is initialized
+import { app } from '../../../Firebase'; // Import Firebase setup
 import './NurseAppointments.css';
 
 const NurseAppointments = () => {
@@ -22,7 +22,6 @@ const NurseAppointments = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  // Initialize Firestore
   const db = getFirestore(app);
 
   useEffect(() => {
@@ -30,7 +29,10 @@ const NurseAppointments = () => {
       try {
         const q = query(collection(db, 'appointments'), where('assignedTo', '==', 'nurse'));
         const querySnapshot = await getDocs(q);
-        const fetchedAppointments = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const fetchedAppointments = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
         setAppointments(fetchedAppointments);
         setLoading(false);
       } catch (error) {
@@ -60,17 +62,12 @@ const NurseAppointments = () => {
   }
 
   return (
-    <Box className="nurse-appointments" sx={{ padding: '20px' }}>
-      <Typography
-        variant="h4"
-        component="h1"
-        sx={{ marginBottom: '20px', textAlign: 'center', fontWeight: 'bold' }}
-      >
+    <Box sx={{ padding: '20px' }}>
+      <Typography variant="h4" sx={{ textAlign: 'center', marginBottom: '20px', fontWeight: 'bold' }}>
         Nurse Appointments
       </Typography>
-
       {appointments.length > 0 ? (
-        <TableContainer component={Paper} sx={{ marginTop: '20px' }}>
+        <TableContainer component={Paper}>
           <Table>
             <TableHead>
               <TableRow>
@@ -81,16 +78,14 @@ const NurseAppointments = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {appointments
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((appointment) => (
-                  <TableRow key={appointment.id}>
-                    <TableCell>{appointment.patientName}</TableCell>
-                    <TableCell>{appointment.date}</TableCell>
-                    <TableCell>{appointment.time}</TableCell>
-                    <TableCell>{appointment.status}</TableCell>
-                  </TableRow>
-                ))}
+              {appointments.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((appointment) => (
+                <TableRow key={appointment.id}>
+                  <TableCell>{appointment.patientName}</TableCell>
+                  <TableCell>{appointment.date}</TableCell>
+                  <TableCell>{appointment.time}</TableCell>
+                  <TableCell>{appointment.status}</TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
           <TablePagination

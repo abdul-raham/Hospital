@@ -6,15 +6,19 @@
 
 .sidebar {
   width: 240px;
-  background-color: #2c3e50;
+  background: #437cf8;
   color: white;
   overflow: auto;
+}
+.sidebar:hover{
+  background-color: #437cf8;
 }
 
 .main-content {
   flex: 1;
   padding: 20px;
   overflow-y: auto;
+  
 }
 
 .dashboard-tiles {

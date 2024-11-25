@@ -15,7 +15,7 @@ const Sidebar = () => {
         "& .MuiDrawer-paper": {
           width: 240,
           boxSizing: "border-box",
-          backgroundColor: "#2c3e50", // Dark blue background
+          backgroundColor: "#2957b9", // Dark blue background
           color: "white",
         },
       }}
@@ -23,20 +23,22 @@ const Sidebar = () => {
       anchor="left"
     >
       <List sx={{ paddingTop: "20px" }}>
+        {/* Dashboard Link */}
         <ListItem
           button
           component={Link}
           to="/nurse"
           sx={{
             padding: "10px 20px",
-            backgroundColor: isActive("/nurse") ? "#2980b9" : "transparent",
-            "&:hover": { backgroundColor: "#2980b9" },
+            backgroundColor: isActive("/nurse") ? "#437cf8" : "transparent",
+            "&:hover": { backgroundColor: "#437cf8" },
           }}
         >
           <ListItemText primary="Dashboard" sx={{ color: "white" }} />
         </ListItem>
         <Divider sx={{ backgroundColor: "rgba(255, 255, 255, 0.2)" }} />
 
+        {/* Appointments Link */}
         <ListItem
           button
           component={Link}
@@ -50,6 +52,7 @@ const Sidebar = () => {
           <ListItemText primary="Appointments" sx={{ color: "white" }} />
         </ListItem>
 
+        {/* Patients Link */}
         <ListItem
           button
           component={Link}
@@ -63,19 +66,19 @@ const Sidebar = () => {
           <ListItemText primary="Patients" sx={{ color: "white" }} />
         </ListItem>
 
+        {/* Tasks Link */}
         <ListItem
-  button
-  component={Link}
-  to="/nurse/tasks"
-  sx={{
-    padding: "10px 20px",
-    backgroundColor: isActive("/nurse/tasks") ? "#2980b9" : "transparent",
-    "&:hover": { backgroundColor: "#2980b9" },
-  }}
->
-  <ListItemText primary="Tasks" sx={{ color: "white" }} />
-</ListItem>
-
+          button
+          component={Link}
+          to="/nurse/tasks"
+          sx={{
+            padding: "10px 20px",
+            backgroundColor: isActive("/nurse/tasks") ? "#2980b9" : "transparent",
+            "&:hover": { backgroundColor: "#2980b9" },
+          }}
+        >
+          <ListItemText primary="Tasks" sx={{ color: "white" }} />
+        </ListItem>
       </List>
     </Drawer>
   );
