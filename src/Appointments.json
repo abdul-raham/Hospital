@@ -1,9 +1,17 @@
-{
+[
+  {
     "patientName": "John Doe",
     "date": "2024-11-21",
     "time": "10:30 AM",
     "status": "Scheduled",
     "assignedTo": "nurse"
+  },
+  {
+    "doctorId": 101,
+    "patientId": 202,
+    "date": "2024-11-25T10:30:00Z",
+    "status": "Confirmed",
+    "reason": "Routine Checkup"
   }
   
-  
+]

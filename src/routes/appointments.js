@@ -1,54 +1,27 @@
 const express = require('express');
-const router = express.Router();
+const mongoose = require('mongoose');
+const appointmentsRouter = require('./routes/appointments');
 
-// Mock database
-let appointments = [];
+const app = express();
 
-// Get all appointments
-router.get('/', (req, res) => {
-  res.json(appointments);
+// Middleware
+app.use(express.json());
+
+// Connect to MongoDB
+mongoose
+  .connect('mongodb://localhost:27017/appointments', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+  })
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.error("Error connecting to MongoDB:", err));
+
+// Routes
+app.use('/api/appointments', appointmentsRouter);
+
+// Start the server
+const PORT = 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });
-
-// Get a specific appointment
-router.get('/:id', (req, res) => {
-  const appointment = appointments.find(a => a.id === parseInt(req.params.id));
-  if (appointment) {
-    res.json(appointment);
-  } else {
-    res.status(404).send("Appointment not found");
-  }
-});
-
-// Create a new appointment
-router.post('/', (req, res) => {
-  const newAppointment = {
-    id: appointments.length + 1,
-    ...req.body,
-  };
-  appointments.push(newAppointment);
-  res.status(201).json(newAppointment);
-});
-
-// Update an appointment
-router.put('/:id', (req, res) => {
-  const index = appointments.findIndex(a => a.id === parseInt(req.params.id));
-  if (index !== -1) {
-    appointments[index] = { id: parseInt(req.params.id), ...req.body };
-    res.json(appointments[index]);
-  } else {
-    res.status(404).send("Appointment not found");
-  }
-});
-
-// Delete an appointment
-router.delete('/:id', (req, res) => {
-  const index = appointments.findIndex(a => a.id === parseInt(req.params.id));
-  if (index !== -1) {
-    appointments.splice(index, 1);
-    res.status(204).send();
-  } else {
-    res.status(404).send("Appointment not found");
-  }
-});
-
-module.exports = router;

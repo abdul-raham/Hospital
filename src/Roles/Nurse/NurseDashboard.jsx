@@ -5,6 +5,7 @@ import { Box, Grid, Typography, Card, CardContent, CardActionArea } from "@mui/m
 import { Routes, Route, Link, useLocation } from "react-router-dom";
 import Appointments from "../doctor/DoctorAppointments.jsx";
 import Patients from "../Patient/PatientDashboard.jsx";
+import Tasks from "./NurseTasks.jsx"
 import CarePlans from "./CarePlans.jsx";
 import "./NurseDashboard.css";
 
@@ -17,8 +18,8 @@ const NurseDashboard = () => {
         return "Appointments";
       case "/nurse/patients":
         return "Patients";
-      case "/nurse/settings":
-        return "Settings";
+      case "/nurse/Tasks":
+        return "Tasks";
       default:
         return "Nurse Dashboard";
     }

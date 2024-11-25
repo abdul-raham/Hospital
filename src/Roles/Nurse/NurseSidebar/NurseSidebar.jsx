@@ -64,17 +64,18 @@ const Sidebar = () => {
         </ListItem>
 
         <ListItem
-          button
-          component={Link}
-          to="/nurse/settings"
-          sx={{
-            padding: "10px 20px",
-            backgroundColor: isActive("/nurse/settings") ? "#2980b9" : "transparent",
-            "&:hover": { backgroundColor: "#2980b9" },
-          }}
-        >
-          <ListItemText primary="Settings" sx={{ color: "white" }} />
-        </ListItem>
+  button
+  component={Link}
+  to="/nurse/tasks"
+  sx={{
+    padding: "10px 20px",
+    backgroundColor: isActive("/nurse/tasks") ? "#2980b9" : "transparent",
+    "&:hover": { backgroundColor: "#2980b9" },
+  }}
+>
+  <ListItemText primary="Tasks" sx={{ color: "white" }} />
+</ListItem>
+
       </List>
     </Drawer>
   );

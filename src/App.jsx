@@ -9,6 +9,7 @@ import AdminDashboard from "./Roles/Admin/AdminDashboard";
 import LabDashboard from "./Roles/Lab/LabDashboard";
 import PatientDashboard from "./Roles/Patient/PatientDashboard";
 import NurseDashboard from "./Roles/Nurse/NurseDashboard";
+import NurseTasks from "./Roles/Nurse/NurseTasks";
 import NurseAppointments from "./Roles/Nurse/NurseAppointment/NurseAppointments";
 import CarePlans from "./Roles/Nurse/CarePlans";
 import Calendar from "./Roles/Admin/Calendar/Calendar";
@@ -36,6 +37,7 @@ const App = () => {
 
             {/* Specific routes for Nurse */}
             <Route path="/nurse/appointments" element={<NurseAppointments />} />
+            <Route path="/nurse/tasks" element ={<NurseTasks />} />
             <Route path="/nurse/careplans" element={<CarePlans />} />
 
             {/* Specific routes for Admin */}
