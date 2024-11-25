@@ -181,8 +181,7 @@ const DoctorDashboard = () => {
             path="/"
             element={
               <Typography variant="h5">Welcome Doctor</Typography>
-            }
-          />
+            }          />
           <Route path="appointments" element={<Appointments />} />
           <Route path="patients" element={<Patients />} />
         </Routes>

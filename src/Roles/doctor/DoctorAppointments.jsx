@@ -1,55 +1,57 @@
-import React, { useEffect, useState } from 'react';
-import { Typography, Box, Table, TableBody, TableCell, TableHead, TableRow, CircularProgress } from '@mui/material';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { Box, Typography, List, ListItem, ListItemText, Divider, Button } from "@mui/material";
+import axios from "axios";
 
-const Appointments = () => {
+const DoctorAppointments = () => {
   const [appointments, setAppointments] = useState([]);
-  const [loading, setLoading] = useState(true);
 
+  // Fetch appointments from the local API
   useEffect(() => {
-    // Fetch appointments from the backend
-    axios.get('http://localhost:5000/api/appointments')
-      .then(response => {
+    const fetchAppointments = async () => {
+      try {
+        const response = await axios.get("/appointments.json"); // Adjust path if necessary
         setAppointments(response.data);
-        setLoading(false);
-      })
-      .catch(error => {
+      } catch (error) {
         console.error("Error fetching appointments:", error);
-        setLoading(false);
-      });
+      }
+    };
+
+    fetchAppointments();
   }, []);
+
+  // Handle removing an appointment
+  const handleRemove = (id) => {
+    const updatedAppointments = appointments.filter((appt) => appt.id !== id);
+    setAppointments(updatedAppointments);
+  };
 
   return (
     <Box>
-      <Typography variant="h4" gutterBottom>Appointments</Typography>
-      {loading ? (
-        <CircularProgress />
-      ) : (
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell><strong>Date</strong></TableCell>
-              <TableCell><strong>Doctor ID</strong></TableCell>
-              <TableCell><strong>Patient ID</strong></TableCell>
-              <TableCell><strong>Status</strong></TableCell>
-              <TableCell><strong>Reason</strong></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {appointments.map(appointment => (
-              <TableRow key={appointment._id}>
-                <TableCell>{new Date(appointment.date).toLocaleString()}</TableCell>
-                <TableCell>{appointment.doctorId}</TableCell>
-                <TableCell>{appointment.patientId}</TableCell>
-                <TableCell>{appointment.status}</TableCell>
-                <TableCell>{appointment.reason}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      )}
+      <Typography variant="h4" gutterBottom>
+        Doctor's Appointments
+      </Typography>
+      <List>
+        {appointments.map((appt) => (
+          <React.Fragment key={appt.id}>
+            <ListItem>
+              <ListItemText
+                primary={`${appt.patientName} - ${appt.date}`}
+                secondary={`Time: ${appt.time} | Reason: ${appt.reason}`}
+              />
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={() => handleRemove(appt.id)}
+              >
+                Remove
+              </Button>
+            </ListItem>
+            <Divider />
+          </React.Fragment>
+        ))}
+      </List>
     </Box>
   );
 };
 
-export default Appointments;
+export default DoctorAppointments;
