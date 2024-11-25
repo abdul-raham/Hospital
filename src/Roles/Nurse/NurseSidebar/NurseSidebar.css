@@ -1,7 +1,7 @@
 /* General Sidebar Styles */
 .sidebar {
   width: 240px;
-  background-color: #2c3e50; /* Dark background for the sidebar */
+  background-color: #437cf8; /* Dark background for the sidebar */
   color: white; /* Text color */
   height: 100vh; /* Full height */
   display: flex;
@@ -15,12 +15,12 @@
 }
 
 .sidebar .MuiListItem-root:hover {
-  background-color: #34495e; /* Lighter shade for hover effect */
+  background-color: #2957b9; /* Lighter shade for hover effect */
   cursor: pointer;
 }
 
 .sidebar .MuiListItem-root.active {
-  background-color: #2980b9; /* Highlight active link */
+  background-color: #2957b9; /* Highlight active link */
   border-left: 5px solid #1abc9c; /* Accent border for active item */
 }
 

@@ -27,7 +27,7 @@ const TopBar = () => {
   };
 
   return (
-    <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, backgroundColor: '#34495e' }}>
+    <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, backgroundColor: '#437cf8' }}>
       <Toolbar>
         {/* Dynamic Logo or Dashboard Title */}
         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>

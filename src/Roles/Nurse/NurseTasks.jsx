@@ -18,7 +18,14 @@ const NurseTasks = () => {
 
   return (
     <Box sx={{ padding: "20px" }}>
-      <Typography variant="h4" sx={{ marginBottom: "20px", textAlign: "center", fontWeight: "bold" }}>
+      <Typography
+        variant="h4"
+        sx={{
+          marginBottom: "20px",
+          textAlign: "center",
+          fontWeight: "bold",
+        }}
+      >
         Nurse Tasks
       </Typography>
 

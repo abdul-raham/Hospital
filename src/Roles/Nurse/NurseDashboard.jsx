@@ -1,12 +1,13 @@
 import React from "react";
-import TopBar from "../../components/Common/Navbar/Toolbar.jsx";
-import Sidebar from "../../Roles/Nurse/NurseSidebar/NurseSidebar.jsx";
 import { Box, Grid, Typography, Card, CardContent, CardActionArea } from "@mui/material";
 import { Routes, Route, Link, useLocation } from "react-router-dom";
-import Appointments from "../doctor/DoctorAppointments.jsx";
+import TopBar from "../../components/Common/Navbar/Toolbar.jsx";
+import Sidebar from "../../Roles/Nurse/NurseSidebar/NurseSidebar.jsx";
+import NurseAppointments from "../Nurse/NurseAppointment/NurseAppointments.jsx"; // Import NurseAppointments
 import Patients from "../Patient/PatientDashboard.jsx";
-import Tasks from "./NurseTasks.jsx"
+import NurseTasks from "./NurseTasks.jsx"; // Import NurseTasks
 import CarePlans from "./CarePlans.jsx";
+import Header from "../Nurse/Header/Header.jsx"
 import "./NurseDashboard.css";
 
 const NurseDashboard = () => {
@@ -18,8 +19,10 @@ const NurseDashboard = () => {
         return "Appointments";
       case "/nurse/patients":
         return "Patients";
-      case "/nurse/Tasks":
+      case "/nurse/tasks":
         return "Tasks";
+      case "/nurse/careplans":
+        return "Care Plans";
       default:
         return "Nurse Dashboard";
     }
@@ -38,7 +41,7 @@ const NurseDashboard = () => {
         <TopBar title={title} className="top-bar" />
 
         {/* Dashboard Overview Tiles */}
-        <Grid container spacing={3} className="dashboard-tiles"  sx={{ marginTop: "5%" }}>
+        <Grid container spacing={3} className="dashboard-tiles" sx={{ marginTop: "5%" }}>
           <Grid item xs={12} sm={6} md={4}>
             <Card className="tile">
               <CardActionArea component={Link} to="/nurse/appointments">
@@ -77,16 +80,16 @@ const NurseDashboard = () => {
 
           <Grid item xs={12} sm={6} md={4}>
             <Card className="tile">
-              <CardActionArea component={Link} to="/nurse/settings">
+              <CardActionArea component={Link} to="/nurse/tasks">
                 <CardContent>
                   <Typography variant="h5" component="div">
-                    Settings
+                    Tasks
                   </Typography>
                   <Typography variant="h6" color="primary">
-                    Manage Preferences
+                    Manage Tasks
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
-                    Update your profile and other settings.
+                    View, manage, and update your assigned tasks efficiently.
                   </Typography>
                 </CardContent>
               </CardActionArea>
@@ -97,8 +100,9 @@ const NurseDashboard = () => {
         {/* Routes */}
         <Routes>
           <Route path="/" element={<Typography variant="h5">Welcome to your dashboard!</Typography>} />
-          <Route path="appointments" element={<Appointments />} />
+          <Route path="appointments" element={<NurseAppointments />} />
           <Route path="patients" element={<Patients />} />
+          <Route path="tasks" element={<NurseTasks />} />
           <Route path="careplans" element={<CarePlans />} />
         </Routes>
       </Box>

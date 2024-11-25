@@ -10,39 +10,26 @@ const Sidebar = () => {
 
   return (
     <Drawer
-      sx={{
-        width: 240,
+      sx={{width: 240,
         flexShrink: 0,
         '& .MuiDrawer-paper': {
           width: 240,
           boxSizing: 'border-box',
-          backgroundColor: '#3f51b5', // Dark background for sidebar
+          backgroundColor: '#437cf8', // Dark background for sidebar
           color: 'white',
           borderRight: '1px solid rgba(255, 255, 255, 0.1)', // Border to give separation from content
           transition: 'background-color 0.3s ease', // Smooth background transition
           '&:hover': {
-            backgroundColor: '#34495e', // Lighter shade of dark gray on hover
+            backgroundColor: '#437cf8', // Lighter shade of dark gray on hover
           },
         },
       }}
       variant="permanent"
       anchor="left"
     >
-      <List sx={{ paddingTop: '20px' }}>
+      <List sx={{ paddingTop: '20px', marginTop:"20%" }}>
         {/* Dashboard Link */}
-        <ListItem
-          button
-          component={Link}
-          to="/doctor"
-          sx={{
-            padding: '10px 20px',
-            backgroundColor: isActive('/doctor') ? '#3f51b5' : 'transparent', // Active link background color
-            '&:hover': { backgroundColor: '#3f51b5' },
-          }}
-        >
-          <ListItemText primary="Dashboard" sx={{ color: 'white' }} />
-        </ListItem>
-        <Divider sx={{ backgroundColor: 'rgba(255, 255, 255, 0.2)' }} />
+       
 
         {/* Appointments Link */}
         <ListItem
