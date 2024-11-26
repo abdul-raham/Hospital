@@ -1,17 +1,16 @@
 [
   {
+    "id": 1,
     "patientName": "John Doe",
     "date": "2024-11-21",
     "time": "10:30 AM",
-    "status": "Scheduled",
-    "assignedTo": "nurse"
+    "reason": "Scheduled Checkup"
   },
   {
-    "doctorId": 101,
-    "patientId": 202,
-    "date": "2024-11-25T10:30:00Z",
-    "status": "Confirmed",
+    "id": 2,
+    "patientName": "Jane Smith",
+    "date": "2024-12-02",
+    "time": "2:00 PM",
     "reason": "Routine Checkup"
   }
-  
 ]
