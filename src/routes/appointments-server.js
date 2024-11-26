@@ -22,6 +22,11 @@ let appointments = [
 app.use(cors());
 app.use(express.json());
 
+// Endpoint for serving appointment data
+app.get("/appointments", (req, res) => {
+  res.json(appointments);
+});
+
 // WebSocket connection handler
 io.on("connection", (socket) => {
   console.log(`User connected: ${socket.id}`);
