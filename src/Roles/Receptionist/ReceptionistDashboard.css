@@ -1,0 +1,138 @@
+/* ReceptionistDashboard.css */
+
+/* Global Styles */
+body {
+  background-color: #ffffff; /* Light background */
+  color: #000000; /* Dark text for contrast */
+  font-family: "Roboto", sans-serif;
+}
+
+.receptionist-dashboard {
+  margin-top: 5%;
+  display: flex;
+  height: 100vh; /* Full viewport height */
+  overflow: hidden; /* Prevent extra scroll */
+}
+
+/* Sidebar */
+.sidebar {
+  background-color: #4caf50; /* Sidebar background - green for reception */
+  color: #fff;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
+  height: 100vh; /* Full height */
+}
+
+.sidebar .MuiListItem-root {
+  color: #e0e0e0; /* Muted text color for items */
+}
+
+.sidebar .MuiListItem-root:hover {
+  background-color: #2e7d32; /* Highlight on hover */
+  color: #fff;
+}
+
+/* TopBar */
+.top-bar {
+  background-color: #388e3c; /* Match sidebar for consistency */
+  color: #fff;
+  padding: 10px 20px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+  position: fixed; /* Fix the bar at the top */
+  top: 0;
+  left: 0;
+  width: 100%; /* Full width */
+  z-index: 1100; /* Above other content */
+}
+
+/* Dashboard Content */
+.main-content {
+  flex-grow: 1;
+  background-color: #ffffff; /* Light content area */
+  padding: 20px;
+  padding-top: 64px; /* Prevent overlap with TopBar */
+  overflow-y: auto; /* Scrollable content if necessary */
+}
+
+/* Dashboard Overview Tiles */
+.dashboard-tiles {
+  margin-top: 20px;
+}
+
+.tile {
+  background-color: #81c784; /* Tile background - light green */
+  color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add depth */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tile:hover {
+  transform: translateY(-5px); /* Subtle lift on hover */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3); /* Deeper shadow */
+}
+
+.tile .MuiCardContent-root {
+  text-align: center;
+}
+
+.tile .MuiTypography-h5 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.tile .MuiTypography-h6 {
+  font-size: 22px;
+  font-weight: bold;
+  color: #2e7d32; /* Darker green highlight for stats */
+}
+
+.tile .MuiTypography-body2 {
+  font-size: 14px;
+  color: #424242; /* Muted text for descriptions */
+}
+
+/* Scrollbar Styling */
+.main-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+  background-color: #666; /* Scrollbar color */
+  border-radius: 4px;
+}
+
+.main-content::-webkit-scrollbar-thumb:hover {
+  background-color: #888; /* Lighter on hover */
+}
+/* Receptionist.css */
+
+/* Reset margins and paddings for a clean layout */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+  background-color: #f5f5f5; /* Light background */
+  color: #333; /* Dark text */
+}
+
+/* Sidebar */
+.sidebar {
+  background-color: #4caf50; /* Green */
+  color: #fff;
+}
+
+.sidebar ul li:hover {
+  background-color: #388e3c; /* Darker green on hover */
+}
+
+/* TopBar */
+.top-bar {
+  background-color: #388e3c;
+  color: #fff;
+}
+
+.top-bar .logout-button {
+  background-color: #d32f2f;
+  color: #fff;
+}
