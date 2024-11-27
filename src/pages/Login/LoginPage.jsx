@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getDoc, doc } from "firebase/firestore";
 import { auth, db } from "../../Firebase"; // Firebase configuration
-import "../Login/LoginPage.css";
+import "../Login/LoginPage.css";           
 import Image from "../../components/Assets/pexels-shvetsa-4167541-removebg-preview.png";
 
 const LoginPage = () => {
