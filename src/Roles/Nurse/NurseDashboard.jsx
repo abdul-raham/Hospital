@@ -15,7 +15,7 @@ import Patients from "../Patient/PatientDashboard.jsx";
 import NurseTasks from "./NurseTasks.jsx";
 import CarePlans from "./CarePlans.jsx";
 import MessageInbox from "../Receptionist/MessageInbox.jsx";
-import socket from "../../services/socket"; // Centralized socket service
+import socket from "../../routes/Socket.js"; // Centralized socket service
 import "./NurseDashboard.css";
 
 const NurseDashboard = () => {

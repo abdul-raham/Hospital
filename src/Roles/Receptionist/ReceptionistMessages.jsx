@@ -12,13 +12,13 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
-import { db } from "../../Firebase"; // Assuming Firebase is initialized here
+import { db } from "../../Firebase";
 import {
   collection,
   addDoc,
+  getDocs,
   query,
   where,
-  getDocs,
   onSnapshot,
 } from "firebase/firestore";
 
@@ -40,6 +40,7 @@ const ReceptionistMessages = () => {
           ...doc.data(),
         }));
         setRecipients(users);
+        console.log("Fetched Recipients:", users); // Check the fetched users data
       } catch (error) {
         console.error("Error fetching recipients: ", error);
       }
@@ -95,6 +96,7 @@ const ReceptionistMessages = () => {
       <Typography variant="h4" gutterBottom>
         Send Message to Doctor or Nurse
       </Typography>
+
       <FormControl fullWidth margin="normal">
         <InputLabel>Recipient Type</InputLabel>
         <Select
@@ -113,7 +115,7 @@ const ReceptionistMessages = () => {
           onChange={(e) => setRecipient(e.target.value)}
         >
           {recipients
-            .filter((user) => user.role === recipientType)
+            .filter((user) => user.role === recipientType) // Filter by selected role
             .map((user) => (
               <MenuItem key={user.id} value={user.id}>
                 {user.name}
@@ -131,6 +133,7 @@ const ReceptionistMessages = () => {
         fullWidth
         margin="normal"
       />
+
       <Button variant="contained" onClick={handleSendMessage}>
         Send Message
       </Button>

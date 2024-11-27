@@ -1,34 +1,36 @@
 import React, { useState, useEffect } from "react";
-import { db } from "../../Firebase";
-import {
-  collection,
-  query,
-  where,
-  onSnapshot,
-  orderBy,
-  limit,
-} from "firebase/firestore";
+import { db } from "../../Firebase"; // Import Firebase db
 import { Box, Typography, List, ListItem, Divider } from "@mui/material";
+import { collection, query, where, onSnapshot } from "firebase/firestore";
 
 const MessageInbox = ({ userId, userType }) => {
   const [messages, setMessages] = useState([]);
 
+  // Fetch messages for the recipient in real-time
   useEffect(() => {
-    const q = query(
-      collection(db, "messages"),
-      where("recipientId", "==", userId),
-      where("recipientType", "==", userType),
-      orderBy("timestamp", "desc"),
-      limit(10) // Load only the most recent 10 messages
-    );
+    const fetchMessages = async () => {
+      const q = query(
+        collection(db, "messages"),
+        where("recipientId", "==", userId),
+        where("recipientType", "==", userType)
+      );
 
-    const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const fetchedMessages = querySnapshot.docs.map((doc) => doc.data());
-      setMessages(fetchedMessages);
-    });
+      const unsubscribe = onSnapshot(q, (querySnapshot) => {
+        const messagesData = [];
+        querySnapshot.forEach((doc) => {
+          messagesData.push(doc.data());
+        });
+        setMessages(messagesData);
+        console.log("Fetched Messages:", messagesData); // Add this line to check data
+      });
 
-    return () => unsubscribe();
-  }, [userId, userType]);
+      return () => unsubscribe();
+    };
+
+    if (userId && userType) {
+      fetchMessages();
+    }
+  }, [userId, userType]); // Re-run when userId or userType changes
 
   return (
     <Box mt={3}>
