@@ -14,15 +14,16 @@ import NurseAppointments from "../Nurse/NurseAppointment/NurseAppointments.jsx";
 import Patients from "../Patient/PatientDashboard.jsx";
 import NurseTasks from "./NurseTasks.jsx";
 import CarePlans from "./CarePlans.jsx";
-import Header from "../Nurse/Header/Header.jsx";
-import { io } from "socket.io-client";
-import "./NurseDashboard.css";
 import MessageInbox from "../Receptionist/MessageInbox.jsx";
+import socket from "../../services/socket"; // Centralized socket service
+import "./NurseDashboard.css";
 
 const NurseDashboard = () => {
   const location = useLocation();
   const [appointments, setAppointments] = useState([]);
+  const [loading, setLoading] = useState(true);
 
+  // Dynamically set the page title based on the route
   const getTitle = (path) => {
     switch (path) {
       case "/nurse/appointments":
@@ -40,48 +41,39 @@ const NurseDashboard = () => {
 
   const title = getTitle(location.pathname);
 
+  // Fetch appointments using socket.io
   useEffect(() => {
-    const socket = io("http://localhost:5173"); // Use backend URL
     socket.on("appointments", (updatedAppointments) => {
       setAppointments(updatedAppointments);
+      setLoading(false);
     });
 
     return () => {
-      socket.disconnect();
+      socket.off("appointments");
     };
   }, []);
-  const NurseDashboard = () => {
-    const userId = "nurseId123"; // Replace with logged-in nurse's ID
-    const userType = "nurse";
 
-    return (
-      <Box>
-        <TopBar title="Nurse Dashboard" />
-        <MessageInbox userId={userId} userType={userType} />
-      </Box>
-    );
-  };
   return (
     <Box className="nurse-dashboard">
-      <Header className="header" />
-      <Sidebar className="sidebar" />
+      <Sidebar />
       <Box className="main-content">
-        <TopBar title={title} className="top-bar" />
+        <TopBar title={title} />
         <Grid
           container
           spacing={3}
           className="dashboard-tiles"
           sx={{ marginTop: "5%" }}
         >
+          {/* Appointment Tile */}
           <Grid item xs={12} sm={6} md={4}>
             <Card className="tile">
               <CardActionArea component={Link} to="/nurse/appointments">
                 <CardContent>
-                  <Typography variant="h5" component="div">
-                    Appointments
-                  </Typography>
+                  <Typography variant="h5">Appointments</Typography>
                   <Typography variant="h6" color="primary">
-                    {appointments.length} Upcoming
+                    {appointments.length > 0
+                      ? `${appointments.length} Upcoming`
+                      : "No Appointments"}
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
                     View and manage your scheduled appointments.
@@ -90,13 +82,13 @@ const NurseDashboard = () => {
               </CardActionArea>
             </Card>
           </Grid>
+
+          {/* Patients Tile */}
           <Grid item xs={12} sm={6} md={4}>
             <Card className="tile">
               <CardActionArea component={Link} to="/nurse/patients">
                 <CardContent>
-                  <Typography variant="h5" component="div">
-                    Patients
-                  </Typography>
+                  <Typography variant="h5">Patients</Typography>
                   <Typography variant="h6" color="primary">
                     120 Active Patients
                   </Typography>
@@ -107,13 +99,13 @@ const NurseDashboard = () => {
               </CardActionArea>
             </Card>
           </Grid>
+
+          {/* Tasks Tile */}
           <Grid item xs={12} sm={6} md={4}>
             <Card className="tile">
               <CardActionArea component={Link} to="/nurse/tasks">
                 <CardContent>
-                  <Typography variant="h5" component="div">
-                    Tasks
-                  </Typography>
+                  <Typography variant="h5">Tasks</Typography>
                   <Typography variant="h6" color="primary">
                     Manage Tasks
                   </Typography>
@@ -125,6 +117,7 @@ const NurseDashboard = () => {
             </Card>
           </Grid>
         </Grid>
+
         <Routes>
           <Route
             path="/"
@@ -140,6 +133,9 @@ const NurseDashboard = () => {
           <Route path="tasks" element={<NurseTasks />} />
           <Route path="careplans" element={<CarePlans />} />
         </Routes>
+
+        {/* Message Inbox */}
+        <MessageInbox userId="nurseId123" userType="nurse" />
       </Box>
     </Box>
   );

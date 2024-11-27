@@ -1,60 +1,74 @@
-import React, { useState, useEffect } from "react";
-import { Box, TextField, Button, List, ListItem, ListItemText, Divider } from "@mui/material";
-import { io } from "socket.io-client";
- // Import socket.io-client
-
-const socket = io("http://localhost:5173");
+import React, { useState } from "react";
+import {
+  Box,
+  TextField,
+  Button,
+  MenuItem,
+  Typography,
+  List,
+  ListItem,
+  Divider,
+} from "@mui/material";
+import { db } from "../../Firebase.js"; // Assuming Firebase is initialized here
+import { collection, addDoc } from "firebase/firestore";
 
 const ReceptionistAppointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [newAppointment, setNewAppointment] = useState({
     patientName: "",
+    role: "Doctor",
     date: "",
     time: "",
     reason: "",
   });
 
-  // Fetch existing appointments
-  useEffect(() => {
-    const fetchAppointments = async () => {
-      try {
-        const response = await axios.get("/appointments.json"); // Adjust path if necessary
-        setAppointments(response.data);
-      } catch (error) {
-        console.error("Error fetching appointments:", error);
-      }
-    };
-
-    fetchAppointments();
-  }, []);
-
-  // Handle adding a new appointment
-  const handleAddAppointment = () => {
-    const updatedAppointments = [
-      ...appointments,
-      { ...newAppointment, id: appointments.length + 1 },
-    ];
-
-    // Emit the new appointment to the server
-    socket.emit("addAppointment", newAppointment);
-
-    setAppointments(updatedAppointments);
-    setNewAppointment({ patientName: "", date: "", time: "", reason: "" });
+  const handleAddAppointment = async () => {
+    try {
+      const docRef = await addDoc(
+        collection(db, "appointments"),
+        newAppointment
+      );
+      console.log("Document written with ID: ", docRef.id);
+      setAppointments([...appointments, { ...newAppointment, id: docRef.id }]);
+      setNewAppointment({
+        patientName: "",
+        role: "Doctor",
+        date: "",
+        time: "",
+        reason: "",
+      });
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
   };
 
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
-        Receptionist: Manage Appointments
+        Manage Appointments
       </Typography>
       <Box component="form" sx={{ mb: 3, display: "flex", gap: 2 }}>
         <TextField
           label="Patient Name"
           value={newAppointment.patientName}
           onChange={(e) =>
-            setNewAppointment({ ...newAppointment, patientName: e.target.value })
+            setNewAppointment({
+              ...newAppointment,
+              patientName: e.target.value,
+            })
           }
         />
+        <TextField
+          label="Role"
+          select
+          value={newAppointment.role}
+          onChange={(e) =>
+            setNewAppointment({ ...newAppointment, role: e.target.value })
+          }
+        >
+          <MenuItem value="Doctor">Doctor</MenuItem>
+          <MenuItem value="Nurse">Nurse</MenuItem>
+        </TextField>
         <TextField
           label="Date"
           type="date"
@@ -79,17 +93,18 @@ const ReceptionistAppointments = () => {
           }
         />
         <Button variant="contained" onClick={handleAddAppointment}>
-          Add
+          Add Appointment
         </Button>
       </Box>
       <List>
         {appointments.map((appt) => (
           <React.Fragment key={appt.id}>
             <ListItem>
-              <ListItemText
-                primary={`${appt.patientName} - ${appt.date}`}
-                secondary={`Time: ${appt.time} | Reason: ${appt.reason}`}
-              />
+              <Typography>
+                {appt.role}: {appt.patientName} - {appt.date} at {appt.time}
+                <br />
+                Reason: {appt.reason}
+              </Typography>
             </ListItem>
             <Divider />
           </React.Fragment>
