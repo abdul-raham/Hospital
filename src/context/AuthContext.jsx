@@ -4,8 +4,8 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore"; // Firestore functions
-import { auth, db } from "../Firebase"; // Ensure `db` (Firestore instance) is correctly imported
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../Firebase";
 
 const AuthContext = createContext();
 
@@ -13,77 +13,79 @@ const AuthContext = createContext();
 export const useAuthContext = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [userRole, setUserRole] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null); // Authenticated user
+  const [userRole, setUserRole] = useState(null); // User role
+  const [loading, setLoading] = useState(true); // Loading state
 
-  // Helper function to fetch the user's role from Firestore
-  const fetchUserRole = async (email) => {
+  // Fetch user details (role and name) from Firestore
+  const fetchUserDetails = async (email) => {
     try {
-      const userDoc = await getDoc(doc(db, "users", email)); // Assumes roles are stored under "users/{email}"
+      const userDoc = await getDoc(doc(db, "users", email)); // Document ID = email
       if (userDoc.exists()) {
-        return userDoc.data().role; // Ensure "role" exists in Firestore document
+        const userData = userDoc.data();
+        return { role: userData.role, name: userData.name }; // Ensure role and name exist
       }
-      console.error("No role found for this user");
-      return null;
+      console.error("No user document found");
+      return { role: null, name: null };
     } catch (error) {
-      console.error("Error fetching user role:", error);
-      return null;
+      console.error("Error fetching user details:", error);
+      return { role: null, name: null };
     }
   };
 
-  // Listening to auth state changes
+  // Listen to auth state changes
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setLoading(true); // Start loading while fetching user data
+      setLoading(true);
       if (currentUser) {
         setUser(currentUser);
-        const role = await fetchUserRole(currentUser.email); // Fetch user role
+        const { role, name } = await fetchUserDetails(currentUser.email); // Fetch user data
         setUserRole(role);
-        localStorage.setItem("userRole", role); // Persist role in local storage
+        setUser((prevUser) => ({ ...prevUser, name })); // Update user with name
+        localStorage.setItem("userRole", role); // Persist role locally
       } else {
         setUser(null);
         setUserRole(null);
-        localStorage.removeItem("userRole"); // Clear role on logout
+        localStorage.removeItem("userRole");
       }
-      setLoading(false); // Loading complete
+      setLoading(false);
     });
 
-    return () => unsubscribe(); // Cleanup the listener
+    return () => unsubscribe(); // Cleanup listener on unmount
   }, []);
 
-  // Login function to authenticate user
-  const login = (email, password) => {
-    setLoading(true); // Set loading true when login attempt starts
-    return signInWithEmailAndPassword(auth, email, password)
-      .then(async (userCredential) => {
-        const user = userCredential.user;
-        setUser(user);
-        const role = await fetchUserRole(user.email); // Fetch role after login
-        setUserRole(role);
-        localStorage.setItem("userRole", role); // Persist role locally
-        setLoading(false); // Set loading to false after successful login
-      })
-      .catch((error) => {
-        setLoading(false); // Set loading to false on error
-        throw error; // Throw error to be caught in the login page
-      });
+  // Login function
+  const login = async (email, password) => {
+    setLoading(true);
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      const { role, name } = await fetchUserDetails(user.email); // Fetch user data
+      setUser(user);
+      setUserRole(role);
+      setUser((prevUser) => ({ ...prevUser, name })); // Add name to user state
+      localStorage.setItem("userRole", role); // Persist role locally
+    } catch (error) {
+      console.error("Login error:", error);
+      throw error; // Rethrow for handling in login component
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Logout function to sign out the user
-  const logout = () => {
+  // Logout function
+  const logout = async () => {
     setLoading(true);
-    return signOut(auth)
-      .then(() => {
-        setUser(null);
-        setUserRole(null);
-        localStorage.removeItem("userRole"); // Clear role on logout
-        setLoading(false); // Set loading to false after logout
-      })
-      .catch((error) => {
-        setLoading(false);
-        throw error;
-      });
+    try {
+      await signOut(auth);
+      setUser(null);
+      setUserRole(null);
+      localStorage.removeItem("userRole");
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
