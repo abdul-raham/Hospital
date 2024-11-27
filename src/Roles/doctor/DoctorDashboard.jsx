@@ -18,6 +18,7 @@ import MessageInbox from "../Receptionist/MessageInbox.jsx";
 const DoctorDashboard = () => {
   const location = useLocation();
 
+  // Function to determine the title dynamically based on the route
   const getTitle = (path) => {
     switch (path) {
       case "/doctor/appointments":
@@ -30,19 +31,12 @@ const DoctorDashboard = () => {
         return "Doctor Dashboard";
     }
   };
-  const DoctorDashboard = () => {
-    const userId = "doctorId123"; // Replace with logged-in doctor's ID
-    const userType = "doctor";
-
-    return (
-      <Box>
-        <TopBar title="Doctor Dashboard" />
-        <MessageInbox userId={userId} userType={userType} />
-      </Box>
-    );
-  };
 
   const title = getTitle(location.pathname);
+
+  // Dynamic doctor ID and user type
+  const userId = "doctorId123"; // Replace with actual logged-in doctor's ID
+  const userType = "doctor";
 
   return (
     <Box
@@ -195,6 +189,9 @@ const DoctorDashboard = () => {
           <Route path="appointments" element={<Appointments />} />
           <Route path="patients" element={<Patients />} />
         </Routes>
+
+        {/* Message Inbox */}
+        <MessageInbox userId={userId} userType={userType} />
       </Box>
     </Box>
   );
