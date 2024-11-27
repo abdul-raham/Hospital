@@ -1,6 +1,7 @@
-import { initializeApp } from 'firebase/app';
-import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';  // Import createUserWithEmailAndPassword
-import { getFirestore } from 'firebase/firestore'; // Import Firestore if you're using it
+import { initializeApp } from "firebase/app";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth"; // Import createUserWithEmailAndPassword
+import { getFirestore, doc, setDoc } from "firebase/firestore"; // Import Firestore and methods
+import { collection, addDoc } from "firebase/firestore";
 
 // Firebase configuration object
 const firebaseConfig = {
@@ -26,18 +27,35 @@ const db = getFirestore(app);
 export const createUser = async (email, password, role) => {
   try {
     // Create the user with email and password
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
     const user = userCredential.user;
 
-    // You can add role or other user data to Firestore if needed
-    // For example, adding role to Firestore (assuming you have a "users" collection)
-    // await db.collection('users').doc(user.uid).set({ role });
+    // Add role or other user data to Firestore (assuming you have a "users" collection)
+    const userRef = doc(db, "users", user.uid);
+    await setDoc(userRef, { role });
 
-    console.log('User created successfully:', user);
-    return user;  // Return the created user if needed
+    console.log("User created successfully:", user);
+    return user; // Return the created user if needed
   } catch (error) {
-    console.error('Error creating user:', error.message);
-    throw new Error(error.message);  // Throw an error if user creation fails
+    console.error("Error creating user:", error.message);
+    throw new Error(error.message); // Throw an error if user creation fails
+  }
+};
+const sendMessage = async (recipientId, recipientType, message) => {
+  try {
+    await addDoc(collection(db, "messages"), {
+      recipientId,
+      recipientType,
+      message,
+      timestamp: new Date(),
+    });
+    console.log("Message sent successfully!");
+  } catch (error) {
+    console.error("Error sending message: ", error);
   }
 };
 

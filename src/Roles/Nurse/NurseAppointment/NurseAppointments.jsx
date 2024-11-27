@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -11,10 +11,9 @@ import {
   Paper,
   CircularProgress,
   TablePagination,
-} from '@mui/material';
-import { getFirestore, collection, getDocs, query, where } from 'firebase/firestore';
-import { app } from '../../../Firebase'; // Import Firebase setup
-import './NurseAppointments.css';
+} from "@mui/material";
+import { io } from "socket.io-client";
+import "./NurseAppointments.css";
 
 const NurseAppointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -22,27 +21,18 @@ const NurseAppointments = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const db = getFirestore(app);
-
   useEffect(() => {
-    const fetchAppointments = async () => {
-      try {
-        const q = query(collection(db, 'appointments'), where('assignedTo', '==', 'nurse'));
-        const querySnapshot = await getDocs(q);
-        const fetchedAppointments = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setAppointments(fetchedAppointments);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching appointments:', error);
-        setLoading(false);
-      }
-    };
+    const socket = io("http://localhost:5173");
 
-    fetchAppointments();
-  }, [db]);
+    socket.on("appointments", (updatedAppointments) => {
+      setAppointments(updatedAppointments);
+      setLoading(false);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -55,15 +45,25 @@ const NurseAppointments = () => {
 
   if (loading) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
         <CircularProgress />
       </Box>
     );
   }
 
   return (
-    <Box sx={{ padding: '20px' }}>
-      <Typography variant="h4" sx={{ textAlign: 'center', marginBottom: '20px', fontWeight: 'bold' }}>
+    <Box sx={{ padding: "20px" }}>
+      <Typography
+        variant="h4"
+        sx={{ textAlign: "center", marginBottom: "20px", fontWeight: "bold" }}
+      >
         Nurse Appointments
       </Typography>
       {appointments.length > 0 ? (
@@ -71,21 +71,23 @@ const NurseAppointments = () => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ fontWeight: 'bold' }}>Patient Name</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Date</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Time</TableCell>
-                <TableCell sx={{ fontWeight: 'bold' }}>Status</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Patient Name</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Date</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Time</TableCell>
+                <TableCell sx={{ fontWeight: "bold" }}>Status</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {appointments.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((appointment) => (
-                <TableRow key={appointment.id}>
-                  <TableCell>{appointment.patientName}</TableCell>
-                  <TableCell>{appointment.date}</TableCell>
-                  <TableCell>{appointment.time}</TableCell>
-                  <TableCell>{appointment.status}</TableCell>
-                </TableRow>
-              ))}
+              {appointments
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((appointment) => (
+                  <TableRow key={appointment.id}>
+                    <TableCell>{appointment.patientName}</TableCell>
+                    <TableCell>{appointment.date}</TableCell>
+                    <TableCell>{appointment.time}</TableCell>
+                    <TableCell>{appointment.status}</TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
           <TablePagination
@@ -99,7 +101,7 @@ const NurseAppointments = () => {
           />
         </TableContainer>
       ) : (
-        <Typography variant="body1" sx={{ textAlign: 'center', color: 'gray' }}>
+        <Typography variant="body1" sx={{ textAlign: "center", color: "gray" }}>
           No appointments assigned yet.
         </Typography>
       )}

@@ -82,6 +82,7 @@ const AdminCreateUser = () => {
           <MenuItem value="doctor">Doctor</MenuItem>
           <MenuItem value="nurse">Nurse</MenuItem>
           <MenuItem value="admin">Admin</MenuItem>
+          <MenuItem value="receptionist">Receptionist</MenuItem>
         </TextField>
 
         {/* Submit Button */}

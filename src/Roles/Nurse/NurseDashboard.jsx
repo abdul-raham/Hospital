@@ -1,17 +1,27 @@
-import React from "react";
-import { Box, Grid, Typography, Card, CardContent, CardActionArea } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import {
+  Box,
+  Grid,
+  Typography,
+  Card,
+  CardContent,
+  CardActionArea,
+} from "@mui/material";
 import { Routes, Route, Link, useLocation } from "react-router-dom";
 import TopBar from "../../components/Common/Navbar/Toolbar.jsx";
 import Sidebar from "../../Roles/Nurse/NurseSidebar/NurseSidebar.jsx";
-import NurseAppointments from "../Nurse/NurseAppointment/NurseAppointments.jsx"; // Import NurseAppointments
+import NurseAppointments from "../Nurse/NurseAppointment/NurseAppointments.jsx";
 import Patients from "../Patient/PatientDashboard.jsx";
-import NurseTasks from "./NurseTasks.jsx"; // Import NurseTasks
+import NurseTasks from "./NurseTasks.jsx";
 import CarePlans from "./CarePlans.jsx";
-import Header from "../Nurse/Header/Header.jsx"
+import Header from "../Nurse/Header/Header.jsx";
+import { io } from "socket.io-client";
 import "./NurseDashboard.css";
+import MessageInbox from "../Receptionist/MessageInbox.jsx";
 
 const NurseDashboard = () => {
   const location = useLocation();
+  const [appointments, setAppointments] = useState([]);
 
   const getTitle = (path) => {
     switch (path) {
@@ -30,18 +40,39 @@ const NurseDashboard = () => {
 
   const title = getTitle(location.pathname);
 
+  useEffect(() => {
+    const socket = io("http://localhost:5173"); // Use backend URL
+    socket.on("appointments", (updatedAppointments) => {
+      setAppointments(updatedAppointments);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+  const NurseDashboard = () => {
+    const userId = "nurseId123"; // Replace with logged-in nurse's ID
+    const userType = "nurse";
+
+    return (
+      <Box>
+        <TopBar title="Nurse Dashboard" />
+        <MessageInbox userId={userId} userType={userType} />
+      </Box>
+    );
+  };
   return (
     <Box className="nurse-dashboard">
-      {/* Sidebar */}
+      <Header className="header" />
       <Sidebar className="sidebar" />
-
-      {/* Main Content */}
       <Box className="main-content">
-        {/* TopBar */}
         <TopBar title={title} className="top-bar" />
-
-        {/* Dashboard Overview Tiles */}
-        <Grid container spacing={3} className="dashboard-tiles" sx={{ marginTop: "5%" }}>
+        <Grid
+          container
+          spacing={3}
+          className="dashboard-tiles"
+          sx={{ marginTop: "5%" }}
+        >
           <Grid item xs={12} sm={6} md={4}>
             <Card className="tile">
               <CardActionArea component={Link} to="/nurse/appointments">
@@ -50,7 +81,7 @@ const NurseDashboard = () => {
                     Appointments
                   </Typography>
                   <Typography variant="h6" color="primary">
-                    35 Upcoming
+                    {appointments.length} Upcoming
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
                     View and manage your scheduled appointments.
@@ -59,7 +90,6 @@ const NurseDashboard = () => {
               </CardActionArea>
             </Card>
           </Grid>
-
           <Grid item xs={12} sm={6} md={4}>
             <Card className="tile">
               <CardActionArea component={Link} to="/nurse/patients">
@@ -77,7 +107,6 @@ const NurseDashboard = () => {
               </CardActionArea>
             </Card>
           </Grid>
-
           <Grid item xs={12} sm={6} md={4}>
             <Card className="tile">
               <CardActionArea component={Link} to="/nurse/tasks">
@@ -96,11 +125,17 @@ const NurseDashboard = () => {
             </Card>
           </Grid>
         </Grid>
-
-        {/* Routes */}
         <Routes>
-          <Route path="/" element={<Typography variant="h5">Welcome to your dashboard!</Typography>} />
-          <Route path="appointments" element={<NurseAppointments />} />
+          <Route
+            path="/"
+            element={
+              <Typography variant="h5">Welcome to your dashboard!</Typography>
+            }
+          />
+          <Route
+            path="appointments"
+            element={<NurseAppointments appointments={appointments} />}
+          />
           <Route path="patients" element={<Patients />} />
           <Route path="tasks" element={<NurseTasks />} />
           <Route path="careplans" element={<CarePlans />} />

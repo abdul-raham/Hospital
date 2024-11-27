@@ -10,9 +10,10 @@ import {
   CardActionArea,
 } from "@mui/material";
 import { Routes, Route, Link, useLocation } from "react-router-dom";
-import "../doctor/DoctorDashboard.css"
+import "../doctor/DoctorDashboard.css";
 import Appointments from "../doctor/DoctorAppointments.jsx";
 import Patients from "../Patient/PatientDashboard.jsx";
+import MessageInbox from "../Receptionist/MessageInbox.jsx";
 
 const DoctorDashboard = () => {
   const location = useLocation();
@@ -28,6 +29,17 @@ const DoctorDashboard = () => {
       default:
         return "Doctor Dashboard";
     }
+  };
+  const DoctorDashboard = () => {
+    const userId = "doctorId123"; // Replace with logged-in doctor's ID
+    const userType = "doctor";
+
+    return (
+      <Box>
+        <TopBar title="Doctor Dashboard" />
+        <MessageInbox userId={userId} userType={userType} />
+      </Box>
+    );
   };
 
   const title = getTitle(location.pathname);
@@ -57,9 +69,8 @@ const DoctorDashboard = () => {
         {/* TopBar */}
         <TopBar title={title} />
 
-
         {/* Dashboard Overview Tiles */}
-        <Grid container spacing={3} sx={{ mb: 3,  marginTop: "5%"  }} >
+        <Grid container spacing={3} sx={{ mb: 3, marginTop: "5%" }}>
           {/* Appointments */}
           <Grid item xs={12} sm={6} md={4}>
             <Card
@@ -179,9 +190,8 @@ const DoctorDashboard = () => {
         <Routes>
           <Route
             path="/"
-            element={
-              <Typography variant="h5">Welcome Doctor</Typography>
-            }          />
+            element={<Typography variant="h5">Welcome Doctor</Typography>}
+          />
           <Route path="appointments" element={<Appointments />} />
           <Route path="patients" element={<Patients />} />
         </Routes>
