@@ -1,7 +1,12 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth"; // Import createUserWithEmailAndPassword
-import { getFirestore, doc, setDoc } from "firebase/firestore"; // Import Firestore and methods
-import { collection, addDoc } from "firebase/firestore";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  getFirestore,
+  doc,
+  setDoc,
+  collection,
+  addDoc,
+} from "firebase/firestore";
 
 // Firebase configuration object
 const firebaseConfig = {
@@ -45,6 +50,8 @@ export const createUser = async (email, password, role) => {
     throw new Error(error.message); // Throw an error if user creation fails
   }
 };
+
+// Function to send a message
 const sendMessage = async (recipientId, recipientType, message) => {
   try {
     await addDoc(collection(db, "messages"), {
@@ -60,4 +67,4 @@ const sendMessage = async (recipientId, recipientType, message) => {
 };
 
 // Export initialized Firebase app, auth, and db
-export { app, auth, db };
+export { app, auth, db, sendMessage };
