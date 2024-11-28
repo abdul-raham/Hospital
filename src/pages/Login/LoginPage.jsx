@@ -1,71 +1,57 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import useAuthContext from "../../context/AuthContext";
 import { toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import "../Login/LoginPage.css";
-import Image from "../../components/Assets/pexels-shvetsa-4167541-removebg-preview.png";
+import useAuth from "../../hooks/useAuth"; // Custom hook for authentication
+import "./LoginPage.css";
 
 const LoginPage = () => {
-  const { login, loading } = useAuthContext();
+  const { login, loading } = useAuth(); // Use login function from custom hook
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
-  const onSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setErrorMessage("");
     try {
-      await login(email, password);
+      await login(email.trim(), password);
       toast.success("Login successful!");
     } catch (error) {
-      const errorMsg =
-        error?.message || "Invalid credentials. Please try again.";
-      toast.error(errorMsg);
+      setErrorMessage(error.message || "Login failed.");
+      toast.error(error.message || "An error occurred during login.");
     }
   };
 
-  const isFormValid = email && password && !loading;
-
   return (
     <div className="login-page">
-      <div className="login-container1">
-        <h2>Welcome Back</h2>
-        <form className="login-form" onSubmit={onSubmit}>
-          <h1>Sign In</h1>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
-            required
-          />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Enter your password"
-            required
-          />
-          <button
-            className="login-button"
-            type="submit"
-            disabled={!isFormValid}
-          >
+      <div className="login-container">
+        <h1>Login</h1>
+        <form onSubmit={handleLogin}>
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
+          <div>
+            <input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <input
+              type="password"
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit" disabled={!email || !password || loading}>
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
       </div>
-      <div
-        className="login-container2"
-        style={{
-          backgroundImage: `url(${Image})`,
-          backgroundSize: "contain",
-          backgroundRepeat: "no-repeat",
-          backgroundPosition: "center",
-          height: "100vh",
-          width: "100%",
-        }}
-      />
     </div>
   );
 };
