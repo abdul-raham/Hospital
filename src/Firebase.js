@@ -7,6 +7,7 @@ import {
   collection,
   addDoc,
 } from "firebase/firestore";
+import { getStorage } from "firebase/storage"; // Import Firebase Storage
 
 // Firebase configuration object
 const firebaseConfig = {
@@ -25,8 +26,11 @@ const app = initializeApp(firebaseConfig);
 // Initialize Firebase Auth
 const auth = getAuth(app);
 
-// Initialize Firestore (if you're using it)
+// Initialize Firestore
 const db = getFirestore(app);
+
+// Initialize Firebase Storage
+const storage = getStorage(app);
 
 // Create User function using Firebase Authentication
 export const createUser = async (email, password, role) => {
@@ -52,7 +56,7 @@ export const createUser = async (email, password, role) => {
 };
 
 // Function to send a message
-const sendMessage = async (recipientId, recipientType, message) => {
+export const sendMessage = async (recipientId, recipientType, message) => {
   try {
     await addDoc(collection(db, "messages"), {
       recipientId,
@@ -66,5 +70,5 @@ const sendMessage = async (recipientId, recipientType, message) => {
   }
 };
 
-// Export initialized Firebase app, auth, and db
-export { app, auth, db, sendMessage };
+// Export initialized Firebase app, auth, db, and storage
+export { app, auth, db, storage };
