@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Typography, Paper } from "@mui/material";
 import ReceptionistSidebar from "./ReceptionistSidebar"; // Ensure this path is correct
 import ReceptionistHeader from "./ReceptionistHeader"; // Ensure this path is correct
 import ReceptionistAppointments from "./ReceptionistAppointments"; // Ensure this path is correct
@@ -9,7 +9,6 @@ import EditProfileReceptionist from "./EditProfileReceptionist"; // Import the e
 const ReceptionistDashboard = () => {
   const [showEditForm, setShowEditForm] = useState(false); // State to toggle the edit profile form
 
-  // Function to toggle the profile form visibility
   const handleToggleEditForm = () => {
     setShowEditForm((prev) => !prev);
   };
@@ -18,57 +17,89 @@ const ReceptionistDashboard = () => {
     <Box
       sx={{
         display: "flex",
-        height: "100vh",
-        backgroundColor: "#ffffff",
-        color: "text.primary",
+        height: "100vh", // Full viewport height
+        overflow: "hidden", // Prevent horizontal/vertical scroll
+        backgroundColor: "#f5f5f5", // Light background color
       }}
     >
       {/* Sidebar */}
-      <ReceptionistSidebar />
+      <Box
+        sx={{
+          width: "250px", // Sidebar width
+          flexShrink: 0,
+          backgroundColor: "#4caf50", // Green background for the sidebar
+          color: "#fff",
+          boxShadow: "2px 0 5px rgba(0, 0, 0, 0.1)",
+        }}
+      >
+        <ReceptionistSidebar />
+      </Box>
 
       {/* Main Content */}
       <Box
         sx={{
           flexGrow: 1,
-          p: 3,
           display: "flex",
           flexDirection: "column",
-          overflowY: "auto",
+          overflowY: "auto", // Allow only vertical scrolling
+          padding: "16px",
         }}
       >
         {/* Header */}
-        <ReceptionistHeader onProfileClick={handleToggleEditForm} />
+        <Box sx={{ marginBottom: "16px" }}>
+          <ReceptionistHeader onProfileClick={handleToggleEditForm} />
+        </Box>
 
         {/* Dashboard Overview */}
-        <Grid container spacing={3} sx={{ mb: 3, marginTop: "5%" }}>
+        <Grid container spacing={2}>
           {/* Appointments */}
-          <Grid item xs={12} sm={6} md={4}>
-            <Typography
-              variant="h5"
+          <Grid item xs={12} md={6}>
+            <Paper
+              elevation={2}
               sx={{
-                fontWeight: "bold",
-                mb: 2,
-                color: "#437cf8",
+                padding: "16px",
+                borderRadius: "8px",
+                height: "100%",
+                overflow: "hidden",
               }}
             >
-              Manage Appointments
-            </Typography>
-            <ReceptionistAppointments />
+              <Typography
+                variant="h5"
+                sx={{
+                  fontWeight: "bold",
+                  marginBottom: "16px",
+                  color: "#437cf8",
+                }}
+              >
+                Manage Appointments
+              </Typography>
+              <ReceptionistAppointments />
+            </Paper>
           </Grid>
 
           {/* Messages */}
-          <Grid item xs={12} sm={6} md={4}>
-            <Typography
-              variant="h5"
+          <Grid item xs={12} md={6}>
+            <Paper
+              elevation={2}
               sx={{
-                fontWeight: "bold",
-                mb: 2,
-                color: "#437cf8",
+                padding: "16px",
+                borderRadius: "8px",
+                height: "100%",
+                overflow: "hidden",
               }}
             >
-              Messages
-            </Typography>
-            <SendMessageForm />
+              <Typography
+                variant="h5"
+                sx={{
+                  fontWeight: "bold",
+                  marginBottom: "16px",
+                  color: "#437cf8",
+                }}
+              >
+                Messages
+              </Typography>
+              <SendMessageForm />
+            </Paper>
           </Grid>
         </Grid>
 
@@ -76,19 +107,19 @@ const ReceptionistDashboard = () => {
         {showEditForm && (
           <Box
             sx={{
-              mt: 3,
-              p: 2,
+              marginTop: "24px",
+              padding: "16px",
               border: "1px solid #437cf8",
-              borderRadius: "5px",
-              boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)",
+              borderRadius: "8px",
               backgroundColor: "#f9f9f9",
+              boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)",
             }}
           >
             <Typography
               variant="h6"
               sx={{
                 fontWeight: "bold",
-                mb: 2,
+                marginBottom: "16px",
                 color: "#437cf8",
               }}
             >

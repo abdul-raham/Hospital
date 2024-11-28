@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, TextField, Button, Typography } from "@mui/material";
-import { storage, db } from "../../Firebase"; // Ensure the correct path to Firebase
+import { storage, db } from "../../Firebase"; // Correct the path
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { updateDoc, doc } from "firebase/firestore";
 import { toast } from "react-toastify"; // Ensure you have react-toastify installed
@@ -21,7 +21,7 @@ const EditProfileReceptionist = ({ userId, onCloseForm }) => {
     if (name === "profilePicture") {
       const file = files[0];
       if (file && file.size > 1024 * 1024) {
-        // 1MB max size
+        // 1MB in bytes
         toast.error("Image must be less than 1MB.");
         return;
       }
