@@ -14,29 +14,29 @@ import {
   TextField,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import { getDatabase, ref, onValue, push, update } from "firebase/database";
+import io from "socket.io-client";
+
+const socket = io("http://localhost:5173"); // Replace with your server URL
 
 const ReceptionistAppointments = () => {
   const [appointments, setAppointments] = useState([]);
   const [openModal, setOpenModal] = useState(false);
-  const [formData, setFormData] = useState({
-    doctor: "",
-    date: "",
-    time: "",
-  });
+  const [formData, setFormData] = useState({ doctor: "", date: "", time: "" });
 
-  // Fetch appointments from Firebase
+  // Fetch appointments and listen for updates
   useEffect(() => {
-    const db = getDatabase();
-    const appointmentsRef = ref(db, "appointments");
-    onValue(appointmentsRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        setAppointments(
-          Object.entries(data).map(([id, details]) => ({ id, ...details }))
-        );
-      }
+    socket.on("appointments", (data) => {
+      const formattedData = Object.entries(data).map(([id, details]) => ({
+        id,
+        ...details,
+      }));
+      setAppointments(formattedData);
     });
+
+    // Clean up listener
+    return () => {
+      socket.off("appointments");
+    };
   }, []);
 
   // Handle form input change
@@ -47,9 +47,7 @@ const ReceptionistAppointments = () => {
 
   // Handle form submission
   const handleSubmit = () => {
-    const db = getDatabase();
-    const newAppointmentRef = push(ref(db, "appointments"));
-    update(newAppointmentRef, formData);
+    socket.emit("addAppointment", formData);
     setOpenModal(false);
     setFormData({ doctor: "", date: "", time: "" });
   };
@@ -58,16 +56,11 @@ const ReceptionistAppointments = () => {
     <Box>
       <Typography
         variant="h6"
-        sx={{
-          mb: 3,
-          fontWeight: "bold",
-          color: "#437cf8",
-        }}
+        sx={{ mb: 3, fontWeight: "bold", color: "#437cf8" }}
       >
         Appointments
       </Typography>
 
-      {/* Add Appointment Button */}
       <Button
         variant="contained"
         startIcon={<AddIcon />}
@@ -77,7 +70,6 @@ const ReceptionistAppointments = () => {
         Add Appointment
       </Button>
 
-      {/* Appointments Table */}
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
@@ -99,7 +91,6 @@ const ReceptionistAppointments = () => {
         </Table>
       </TableContainer>
 
-      {/* Add Appointment Modal */}
       <Modal open={openModal} onClose={() => setOpenModal(false)}>
         <Box
           sx={{

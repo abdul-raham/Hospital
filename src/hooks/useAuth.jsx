@@ -5,13 +5,13 @@ import {
   signOut,
 } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
-import { auth, db } from "../Firebase";
+import { auth, db } from "../Firebase"; // Adjust the path as needed
 
 const useAuth = () => {
   const [user, setUser] = useState(null);
   const [userRole, setUserRole] = useState(null);
   const [userName, setUserName] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   // Fetch user details from Firestore
   const fetchUserDetails = async (email) => {
@@ -22,11 +22,10 @@ const useAuth = () => {
         const userData = userDoc.data();
         return { role: userData.role, name: userData.name };
       }
-      console.warn(`No document found for user: ${normalizedEmail}`);
-      return { role: null, name: null };
+      throw new Error(`No user details found for ${email}`);
     } catch (error) {
       console.error("Error fetching user details:", error);
-      throw error;
+      return { role: null, name: null };
     }
   };
 
@@ -45,7 +44,6 @@ const useAuth = () => {
           console.error("Error handling auth state change:", error);
         }
       } else {
-        // Reset state when user is signed out
         setUser(null);
         setUserRole(null);
         setUserName(null);
@@ -61,7 +59,11 @@ const useAuth = () => {
   const login = async (email, password) => {
     setLoading(true);
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
       const user = userCredential.user;
       const { role, name } = await fetchUserDetails(user.email.toLowerCase());
       setUser(user);
@@ -70,26 +72,15 @@ const useAuth = () => {
       localStorage.setItem("userRole", role);
 
       // Redirect based on role
-      switch (role) {
-        case "doctor":
-          window.location.href = "/Doctor";
-          break;
-        case "nurse":
-          window.location.href = "/Nurse";
-          break;
-        case "admin":
-          window.location.href = "/Admin";
-          break;
-        case "lab":
-          window.location.href = "/Lab";
-          break;
-        case "patient":
-          window.location.href = "/Patient";
-          break;
-        default:
-          console.error("Unknown user role:", role);
-          throw new Error("Invalid role assigned. Contact system admin.");
-      }
+      const rolePaths = {
+        doctor: "/doctor",
+        nurse: "/nurse",
+        admin: "/admin",
+        lab: "/lab",
+        patient: "/patient",
+        receptionist: "/receptionist",
+      };
+      window.location.href = rolePaths[role] || "/";
     } catch (error) {
       console.error("Login error:", error);
       throw error;
@@ -109,7 +100,6 @@ const useAuth = () => {
       localStorage.removeItem("userRole");
     } catch (error) {
       console.error("Logout error:", error);
-      throw error;
     } finally {
       setLoading(false);
     }
