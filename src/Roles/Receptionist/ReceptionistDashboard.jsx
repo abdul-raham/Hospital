@@ -1,13 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Grid, Typography } from "@mui/material";
-import ReceptionistSidebar from "./ReceptionistSidebar";
-import ReceptionistHeader from "./ReceptionistHeader";
-import ReceptionistAppointments from "./ReceptionistAppointments";
-import MessageInbox from "./MessageInbox";
-import SendMessageForm from "./SendMessageForm";
-import { Routes, Route } from "react-router-dom";
+import ReceptionistSidebar from "./ReceptionistSidebar"; // Ensure this path is correct
+import ReceptionistHeader from "./ReceptionistHeader"; // Ensure this path is correct
+import ReceptionistAppointments from "./ReceptionistAppointments"; // Ensure this path is correct
+import SendMessageForm from "./SendMessageForm"; // Ensure this path is correct
+import EditProfileReceptionist from "./EditProfileReceptionist"; // Import the edit profile form
 
 const ReceptionistDashboard = () => {
+  const [showEditForm, setShowEditForm] = useState(false); // State to toggle the edit profile form
+
+  // Function to toggle the profile form visibility
+  const handleToggleEditForm = () => {
+    setShowEditForm((prev) => !prev);
+  };
+
   return (
     <Box
       sx={{
@@ -31,7 +37,7 @@ const ReceptionistDashboard = () => {
         }}
       >
         {/* Header */}
-        <ReceptionistHeader title="Receptionist Dashboard" />
+        <ReceptionistHeader onProfileClick={handleToggleEditForm} />
 
         {/* Dashboard Overview */}
         <Grid container spacing={3} sx={{ mb: 3, marginTop: "5%" }}>
@@ -66,19 +72,34 @@ const ReceptionistDashboard = () => {
           </Grid>
         </Grid>
 
-        {/* Routes for dynamic content */}
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <Typography variant="h6">
-                Welcome to the Receptionist Dashboard
-              </Typography>
-            }
-          />
-          <Route path="appointments" element={<ReceptionistAppointments />} />
-          <Route path="inbox" element={<MessageInbox />} />
-        </Routes>
+        {/* Edit Profile Form */}
+        {showEditForm && (
+          <Box
+            sx={{
+              mt: 3,
+              p: 2,
+              border: "1px solid #437cf8",
+              borderRadius: "5px",
+              boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)",
+              backgroundColor: "#f9f9f9",
+            }}
+          >
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: "bold",
+                mb: 2,
+                color: "#437cf8",
+              }}
+            >
+              Edit Profile
+            </Typography>
+            <EditProfileReceptionist
+              userId="currentUserId"
+              onCloseForm={() => setShowEditForm(false)}
+            />
+          </Box>
+        )}
       </Box>
     </Box>
   );
