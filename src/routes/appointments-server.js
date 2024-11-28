@@ -1,79 +1,45 @@
-const express = require("express");
-const http = require("http");
+const admin = require("firebase-admin");
 const { Server } = require("socket.io");
-const cors = require("cors");
 
-const app = express();
-const server = http.createServer(app);
-const io = new Server(server, {
+// Firebase Admin Initialization
+admin.initializeApp({
+  credential: admin.credential.applicationDefault(),
+  databaseURL: "https://<your-database-name>.firebaseio.com",
+});
+
+const db = admin.database();
+const appointmentsRef = db.ref("appointments");
+
+// Socket.IO Server Initialization
+const io = new Server(3000, {
   cors: {
-    origin: "http://localhost:5173",
-    methods: ["GET", "POST"],
+    origin: "*", // Replace with allowed origins
   },
 });
 
-let appointments = [
-  {
-    id: 1,
-    patientName: "John Doe",
-    date: "2024-12-01",
-    time: "10:00 AM",
-    reason: "Follow-up",
-    assignedTo: "nurse",
-    status: "Pending",
-  },
-  {
-    id: 2,
-    patientName: "Jane Smith",
-    date: "2024-12-02",
-    time: "1:00 PM",
-    reason: "Checkup",
-    assignedTo: "nurse",
-    status: "Pending",
-  },
-];
-
-app.use(cors());
-app.use(express.json());
-
-app.get("/appointments", (req, res) => {
-  res.json(appointments);
+// Listen for Firebase changes and broadcast to clients
+appointmentsRef.on("value", (snapshot) => {
+  const appointments = snapshot.val();
+  io.emit("appointments", appointments); // Send updated appointments to clients
 });
 
+// Handle client connections
 io.on("connection", (socket) => {
-  console.log(`User connected: ${socket.id}`);
+  console.log(`Client connected: ${socket.id}`);
 
-  socket.emit("appointments", appointments);
-
+  // Handle appointment addition
   socket.on("addAppointment", (newAppointment) => {
-    if (
-      newAppointment.patientName &&
-      newAppointment.date &&
-      newAppointment.time &&
-      newAppointment.reason
-    ) {
-      const addedAppointment = {
-        ...newAppointment,
-        id: appointments.length + 1,
-        assignedTo: "nurse",
-        status: "Pending",
-      };
-      appointments.push(addedAppointment);
-      io.emit("appointments", appointments);
-    } else {
-      socket.emit(
-        "error",
-        "Invalid appointment data. All fields are required."
-      );
-    }
+    const newAppointmentRef = appointmentsRef.push();
+    newAppointmentRef.set(newAppointment, (error) => {
+      if (error) {
+        socket.emit("error", "Failed to save appointment.");
+      } else {
+        socket.emit("success", "Appointment added successfully.");
+      }
+    });
   });
 
   socket.on("disconnect", () => {
-    console.log(`User disconnected: ${socket.id}`);
+    console.log(`Client disconnected: ${socket.id}`);
   });
-});
-
-const PORT = 5173;
-server.listen(PORT, () => {
-  console.log(`WebSocket server is running on http://localhost:${PORT}`);
 });

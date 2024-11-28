@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Container } from "@mui/material";
-import { AuthProvider } from "./context/AuthContext";
+import AuthProvider from "./context/AuthContext";
 import LoginPage from "./pages/Login/LoginPage";
 import PrivateRoute from "./components/Auth/PrivateRoute";
 import DoctorDashboard from "./Roles/doctor/DoctorDashboard";
