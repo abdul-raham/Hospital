@@ -9,14 +9,23 @@ import {
   CardContent,
   CardActionArea,
 } from "@mui/material";
-import { Routes, Route, Link, useLocation } from "react-router-dom";
-import "../doctor/DoctorDashboard.css";
+import {
+  Routes,
+  Route,
+  Link,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import Appointments from "../doctor/DoctorAppointments.jsx";
 import Patients from "../Patient/PatientDashboard.jsx";
 import MessageInbox from "../Receptionist/MessageInbox.jsx";
+import useAuth from "../../hooks/useAuth";
+import "../doctor/DoctorDashboard.css";
 
 const DoctorDashboard = () => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, userRole, loading } = useAuth();
 
   // Function to determine the title dynamically based on the route
   const getTitle = (path) => {
@@ -34,9 +43,20 @@ const DoctorDashboard = () => {
 
   const title = getTitle(location.pathname);
 
-  // Dynamic doctor ID and user type
-  const userId = "doctorId123"; // Replace with actual logged-in doctor's ID
-  const userType = "doctor";
+  // Example dynamic data (replace with API calls if necessary)
+  const appointmentsCount = 35; // Replace with fetched appointment data
+  const patientsCount = 120; // Replace with fetched patient data
+
+  // Check authentication and role
+  React.useEffect(() => {
+    if (!loading && (!user || userRole !== "doctor")) {
+      navigate("/login", { replace: true, state: { from: location } });
+    }
+  }, [user, userRole, loading, navigate, location]);
+
+  if (loading) {
+    return <Typography>Loading...</Typography>;
+  }
 
   return (
     <Box
@@ -93,7 +113,7 @@ const DoctorDashboard = () => {
                     color="primary"
                     sx={{ fontWeight: "bold" }}
                   >
-                    35 Upcoming
+                    {appointmentsCount} Upcoming
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     View and manage your scheduled appointments.
@@ -131,7 +151,7 @@ const DoctorDashboard = () => {
                     color="primary"
                     sx={{ fontWeight: "bold" }}
                   >
-                    120 Active Patients
+                    {patientsCount} Active Patients
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     Access detailed patient records and history.
@@ -191,7 +211,7 @@ const DoctorDashboard = () => {
         </Routes>
 
         {/* Message Inbox */}
-        <MessageInbox userId={userId} userType={userType} />
+        <MessageInbox userId={user?.id || "doctorId123"} userType={userRole} />
       </Box>
     </Box>
   );

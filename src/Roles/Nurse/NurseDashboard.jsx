@@ -7,7 +7,13 @@ import {
   CardContent,
   CardActionArea,
 } from "@mui/material";
-import { Routes, Route, Link, useLocation } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  Link,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import TopBar from "../../components/Common/Navbar/Toolbar.jsx";
 import Sidebar from "../../Roles/Nurse/NurseSidebar/NurseSidebar.jsx";
 import NurseAppointments from "../Nurse/NurseAppointment/NurseAppointments.jsx";
@@ -15,13 +21,17 @@ import Patients from "../Patient/PatientDashboard.jsx";
 import NurseTasks from "./NurseTasks.jsx";
 import CarePlans from "./CarePlans.jsx";
 import MessageInbox from "../Receptionist/MessageInbox.jsx";
-import socket from "../../routes/Socket.js"; // Centralized socket service
+import socket from "../../routes/Socket.js";
+import useAuth from "../../hooks/useAuth";
 import "./NurseDashboard.css";
 
 const NurseDashboard = () => {
+  const navigate = useNavigate();
   const location = useLocation();
+  const { user, userRole, loading } = useAuth();
   const [appointments, setAppointments] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [carePlansCount, setCarePlansCount] = useState(0); // Example dynamic data
+  const [tasksCount, setTasksCount] = useState(0); // Example dynamic data
 
   // Dynamically set the page title based on the route
   const getTitle = (path) => {
@@ -41,17 +51,34 @@ const NurseDashboard = () => {
 
   const title = getTitle(location.pathname);
 
+  // Check authentication and role
+  useEffect(() => {
+    if (!loading && (!user || userRole !== "nurse")) {
+      navigate("/login", { replace: true, state: { from: location } });
+    }
+  }, [user, userRole, loading, navigate, location]);
+
   // Fetch appointments using socket.io
   useEffect(() => {
     socket.on("appointments", (updatedAppointments) => {
       setAppointments(updatedAppointments);
-      setLoading(false);
     });
 
+    // Clean up socket listener
     return () => {
       socket.off("appointments");
     };
   }, []);
+
+  // Simulate dynamic data for tasks and care plans
+  useEffect(() => {
+    setTasksCount(10); // Example static count, replace with API call if needed
+    setCarePlansCount(5); // Example static count, replace with API call if needed
+  }, []);
+
+  if (loading) {
+    return <Typography>Loading...</Typography>;
+  }
 
   return (
     <Box className="nurse-dashboard">
@@ -107,10 +134,27 @@ const NurseDashboard = () => {
                 <CardContent>
                   <Typography variant="h5">Tasks</Typography>
                   <Typography variant="h6" color="primary">
-                    Manage Tasks
+                    {tasksCount} Active Tasks
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
-                    View, manage, and update your assigned tasks efficiently.
+                    Manage your assigned tasks efficiently.
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid>
+
+          {/* Care Plans Tile */}
+          <Grid item xs={12} sm={6} md={4}>
+            <Card className="tile">
+              <CardActionArea component={Link} to="/nurse/careplans">
+                <CardContent>
+                  <Typography variant="h5">Care Plans</Typography>
+                  <Typography variant="h6" color="primary">
+                    {carePlansCount} Plans Available
+                  </Typography>
+                  <Typography variant="body2" color="textSecondary">
+                    Access and manage patient care plans.
                   </Typography>
                 </CardContent>
               </CardActionArea>
@@ -118,6 +162,7 @@ const NurseDashboard = () => {
           </Grid>
         </Grid>
 
+        {/* Routes for Nurse Dashboard */}
         <Routes>
           <Route
             path="/"
@@ -135,7 +180,7 @@ const NurseDashboard = () => {
         </Routes>
 
         {/* Message Inbox */}
-        <MessageInbox userId="nurseId123" userType="nurse" />
+        <MessageInbox userId={user.id} userType={userRole} />
       </Box>
     </Box>
   );

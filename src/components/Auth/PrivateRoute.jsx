@@ -1,22 +1,30 @@
 import React from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import { useAuthContext } from "../../context/AuthContext"; // Use your authentication context
+import useAuthContext from "../../context/AuthContext";
 
 const PrivateRoute = () => {
-  const { user, loading } = useAuthContext(); // Use `user` and `loading` from context
+  const { user, loading, userRole } = useAuthContext();
 
-  // If loading, display a spinner or loading message
   if (loading) {
-    return <div>Loading...</div>; // You can replace this with a loader component
+    return <div>Loading...</div>; // Add a loader if needed
   }
 
-  // If no user is authenticated, redirect to the login page
   if (!user) {
     return <Navigate to="/" />;
   }
 
-  // If the user is authenticated, allow access to child routes
-  return <Outlet />;
+  // Redirect to role-specific dashboards if accessing a base route
+  const rolePaths = {
+    doctor: "/doctor",
+    nurse: "/nurse",
+    admin: "/admin",
+    lab: "/lab",
+    patient: "/patient",
+    receptionist: "/receptionist",
+  };
+  const redirectPath = rolePaths[userRole];
+
+  return redirectPath ? <Outlet /> : <Navigate to="/" />;
 };
 
 export default PrivateRoute;
