@@ -1,3 +1,12 @@
+import { useState, useEffect } from "react";
+import {
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut,
+} from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../Firebase"; // Adjust the path as needed
+
 const useAuth = () => {
   const [user, setUser] = useState(null);
   const [userRole, setUserRole] = useState(null);
@@ -83,5 +92,22 @@ const useAuth = () => {
     }
   };
 
+  const logout = async () => {
+    setLoading(true);
+    try {
+      await signOut(auth);
+      setUser(null);
+      setUserRole(null);
+      setUserName(null);
+      localStorage.removeItem("userRole");
+    } catch (error) {
+      console.error("Logout error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return { user, userRole, userName, loading, login, logout, error };
 };
+
+export default useAuth; // Ensure this is a default export
