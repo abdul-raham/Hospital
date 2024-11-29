@@ -4,7 +4,7 @@ import { storage, db } from "../../Firebase"; // Correct the path
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { updateDoc, doc } from "firebase/firestore";
 import { toast } from "react-toastify"; // Ensure you have react-toastify installed
-import "react-toastify/dist/ReactToastify.css";
+import "react-toastify/dist/ReactToastify.css"
 
 const EditProfileReceptionist = ({ userId, onCloseForm }) => {
   const [formData, setFormData] = useState({
