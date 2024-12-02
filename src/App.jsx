@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Container } from "@mui/material";
-import AuthProvider from "./context/AuthContext";
+import { AuthProvider } from "./context/AuthContext.jsx";
 import LoginPage from "./pages/Login/LoginPage";
 import PrivateRoute from "./components/Auth/PrivateRoute";
 import DoctorDashboard from "./Roles/doctor/DoctorDashboard";
@@ -15,8 +15,8 @@ import CarePlans from "./Roles/Nurse/CarePlans";
 import Calendar from "./Roles/Admin/Calendar/Calendar";
 import Tables from "./Roles/Admin/Tables/Table";
 import Cards from "./Roles/Admin/Cards/Cards";
-import ReceptionistDashboard from "./Roles/Receptionist/ReceptionistDashboard"; // Updated import
-import ReceptionistMessages from "./Roles/Receptionist/ReceptionistMessages"; // Import messages page
+import ReceptionistDashboard from "./Roles/Receptionist/ReceptionistDashboard";
+import ReceptionistMessages from "./Roles/Receptionist/ReceptionistMessages";
 import { ToastContainer } from "react-toastify";
 
 const App = () => {
@@ -25,28 +25,28 @@ const App = () => {
       <Router>
         <Container>
           <Routes>
-            {/* Public routes */}
+            {/* Public Routes */}
             <Route path="/" element={<LoginPage />} />
             <Route path="/login" element={<LoginPage />} />
 
-            {/* Private routes */}
+            {/* Private Routes */}
             <Route element={<PrivateRoute />}>
-              {/* Doctor Routes */}
+              {/* Doctor */}
               <Route path="/doctor/*" element={<DoctorDashboard />} />
 
-              {/* Admin Routes */}
+              {/* Admin */}
               <Route path="/admin/*" element={<AdminDashboard />} />
               <Route path="/admin/calendar" element={<Calendar />} />
               <Route path="/admin/tables" element={<Tables />} />
               <Route path="/admin/cards" element={<Cards />} />
 
-              {/* Patient Routes */}
+              {/* Patient */}
               <Route path="/patient/*" element={<PatientDashboard />} />
 
-              {/* Lab Routes */}
+              {/* Lab */}
               <Route path="/lab" element={<LabDashboard />} />
 
-              {/* Nurse Routes */}
+              {/* Nurse */}
               <Route path="/nurse" element={<NurseDashboard />} />
               <Route
                 path="/nurse/appointments"
@@ -55,7 +55,7 @@ const App = () => {
               <Route path="/nurse/tasks" element={<NurseTasks />} />
               <Route path="/nurse/careplans" element={<CarePlans />} />
 
-              {/* Receptionist Routes */}
+              {/* Receptionist */}
               <Route path="/receptionist" element={<ReceptionistDashboard />} />
               <Route
                 path="/receptionist/messages"

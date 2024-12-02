@@ -1,21 +1,19 @@
-// PrivateRoute.jsx
 import React from "react";
-import { Navigate, Outlet } from "react-router-dom";
-// Default import
-import useAuthContext from "../../context/AuthContext";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { useAuthContext } from "../../context/AuthContext.jsx"; // Named import
 
 const PrivateRoute = () => {
   const { user, loading, userRole } = useAuthContext();
+  const location = useLocation(); // Capture the current location for possible redirects
 
   if (loading) {
-    return <div>Loading...</div>; // Add a loader if needed
+    return <div>Loading...</div>; // Replace with a loader if desired
   }
 
   if (!user) {
-    return <Navigate to="/" />;
+    return <Navigate to="/" state={{ from: location }} />;
   }
 
-  // Redirect to role-specific dashboards if accessing a base route
   const rolePaths = {
     doctor: "/doctor",
     nurse: "/nurse",
@@ -24,9 +22,14 @@ const PrivateRoute = () => {
     patient: "/patient",
     receptionist: "/receptionist",
   };
-  const redirectPath = rolePaths[userRole];
 
-  return redirectPath ? <Outlet /> : <Navigate to="/" />;
+  // If accessing a base route, redirect to a role-specific dashboard
+  if (location.pathname === "/") {
+    const redirectPath = rolePaths[userRole];
+    return redirectPath ? <Navigate to={redirectPath} /> : <Navigate to="/" />;
+  }
+
+  return <Outlet />;
 };
 
 export default PrivateRoute;
