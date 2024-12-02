@@ -4,10 +4,10 @@ import { useAuthContext } from "../../context/AuthContext.jsx"; // Named import
 
 const PrivateRoute = () => {
   const { user, loading, userRole } = useAuthContext();
-  const location = useLocation(); // Capture the current location for possible redirects
+  const location = useLocation();
 
   if (loading) {
-    return <div>Loading...</div>; // Replace with a loader if desired
+    return <div>Loading...</div>; // Optional: Add a loader or spinner
   }
 
   if (!user) {
@@ -23,10 +23,15 @@ const PrivateRoute = () => {
     receptionist: "/receptionist",
   };
 
-  // If accessing a base route, redirect to a role-specific dashboard
+  // Redirect user to their role-based dashboard
   if (location.pathname === "/") {
     const redirectPath = rolePaths[userRole];
     return redirectPath ? <Navigate to={redirectPath} /> : <Navigate to="/" />;
+  }
+
+  // Handle invalid role
+  if (!rolePaths[userRole]) {
+    return <Navigate to="/" />; // Redirect to login or default page
   }
 
   return <Outlet />;
