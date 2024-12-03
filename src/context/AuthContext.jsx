@@ -18,19 +18,18 @@ const AuthProvider = ({ children }) => {
 
   const fetchUserDetails = async (email) => {
     try {
-      const normalizedEmail = email.toLowerCase();
+      const normalizedEmail = email.replace(/\./g, "_").toLowerCase(); // Prevent Firestore ID issues
       const userDoc = await getDoc(doc(db, "users", normalizedEmail));
       if (userDoc.exists()) {
         const userData = userDoc.data();
         console.log("Fetched user details:", userData);
         return { role: userData.role, name: userData.name };
       } else {
-        // Corrected the error message formatting
         throw new Error(`No user details found for ${email}`);
       }
     } catch (err) {
       console.error("Error fetching user details:", err);
-      setError(err.message);  // This stores the error message
+      setError(err.message);
       return { role: null, name: null };
     }
   };
@@ -41,11 +40,11 @@ const AuthProvider = ({ children }) => {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       const { role, name } = await fetchUserDetails(user.email.toLowerCase());
-      
+
       if (!role) {
         throw new Error("User role not found, please check user data.");
       }
-  
+
       setUser(user);
       setUserRole(role);
       setUserName(name);
@@ -67,13 +66,37 @@ const AuthProvider = ({ children }) => {
       setUserRole(null);
       setUserName(null);
       localStorage.removeItem("userRole");
-      console.log("User logged out"); // Added log here
+      console.log("User logged out");
     } catch (err) {
       console.error("Logout error:", err);
     } finally {
       setLoading(false);
     }
   };
+
+  // Add onAuthStateChanged and session persistence
+  useEffect(() => {
+    const savedRole = localStorage.getItem("userRole");
+    if (savedRole) {
+      setUserRole(savedRole); // Restore role if saved
+    }
+
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        setUser(firebaseUser);
+        const { role, name } = await fetchUserDetails(firebaseUser.email.toLowerCase());
+        setUserRole(role);
+        setUserName(name);
+      } else {
+        setUser(null);
+        setUserRole(null);
+        setUserName(null);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe(); // Cleanup subscription
+  }, []);
 
   return (
     <AuthContext.Provider
