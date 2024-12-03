@@ -22,55 +22,35 @@ const AuthProvider = ({ children }) => {
       const userDoc = await getDoc(doc(db, "users", normalizedEmail));
       if (userDoc.exists()) {
         const userData = userDoc.data();
+        console.log("Fetched user details:", userData);
         return { role: userData.role, name: userData.name };
+      } else {
+        // Corrected the error message formatting
+        throw new Error(`No user details found for ${email}`);
       }
-      throw new Error(`No user details found for ${email}`);
     } catch (err) {
       console.error("Error fetching user details:", err);
-      setError(err.message);
+      setError(err.message);  // This stores the error message
       return { role: null, name: null };
     }
   };
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-      setLoading(true);
-      if (currentUser) {
-        try {
-          const { role, name } = await fetchUserDetails(currentUser.email);
-          setUser(currentUser);
-          setUserRole(role);
-          setUserName(name);
-          localStorage.setItem("userRole", role);
-        } catch (err) {
-          setError(err.message);
-        }
-      } else {
-        setUser(null);
-        setUserRole(null);
-        setUserName(null);
-        localStorage.removeItem("userRole");
-      }
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
-  }, []);
-
   const login = async (email, password) => {
     setLoading(true);
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       const { role, name } = await fetchUserDetails(user.email.toLowerCase());
+      
+      if (!role) {
+        throw new Error("User role not found, please check user data.");
+      }
+  
       setUser(user);
       setUserRole(role);
       setUserName(name);
       localStorage.setItem("userRole", role);
+      console.log("User logged in with role:", role);
     } catch (err) {
       setError(err.message);
       throw err;
@@ -87,6 +67,7 @@ const AuthProvider = ({ children }) => {
       setUserRole(null);
       setUserName(null);
       localStorage.removeItem("userRole");
+      console.log("User logged out"); // Added log here
     } catch (err) {
       console.error("Logout error:", err);
     } finally {

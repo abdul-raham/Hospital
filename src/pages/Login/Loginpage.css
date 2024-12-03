@@ -1,167 +1,160 @@
-/* Global Reset */
-* {
+/* General Styles */
+body {
   margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+  font-family: "Arial", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #a35dff, #3aa9ff);
 }
 
+/* Main Page Wrapper */
 .login-page {
   display: flex;
-  max-width: 100%;
-  height: 100vh; /* Make sure the login page takes up the full screen height */
-  box-sizing: border-box;
-}
-
-.login-container1 {
-  width: 50%;
-  display: flex;
   justify-content: center;
   align-items: center;
-  padding: 5% 5%;
-}
-
-.login-container2 {
-  width: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.login-form {
-  text-align: center;
-  padding: 30px;
-  background: #87ceeb;
-  border-radius: 12px;
   width: 100%;
-  max-width: 400px; /* Limit the form width */
+  height: 100%;
 }
 
-h1 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
+/* Container with Glassmorphism */
+.login-container {
+  display: flex;
+  flex-direction: row;
+  backdrop-filter: blur(20px); /* Glass effect */
+  background: rgba(255, 255, 255, 0.15); /* Semi-transparent white */
+  border: 1px solid rgba(255, 255, 255, 0.3); /* Border for the glass look */
+  border-radius: 20px; /* Smooth rounded corners */
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  overflow: hidden;
+  width: 900px;
+  height: 500px;
+}
+
+/* Left Section */
+.login-left {
+  background: rgba(
+    255,
+    255,
+    255,
+    0.1
+  ); /* Slightly transparent for glass effect */
+  flex: 1.3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.icon-section {
+  width: 150px;
+  height: 150px;
+  background: rgba(255, 255, 255, 0.2); /* Glassy circle */
+  backdrop-filter: blur(10px);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.icon {
+  width: 80px;
+  height: 80px;
+  background: url("/path/to/icon.svg") center/contain no-repeat;
+}
+
+/* Right Section */
+.login-right {
+  flex: 2;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: white; /* Matches the light/glass look */
+}
+
+h2 {
+  font-size: 28px;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.input-group {
+  margin-bottom: 15px;
 }
 
 input {
-  padding: 15px;
-  font-size: 15px;
-  margin: 10px;
   width: 100%;
-  border-style: solid;
-  border-color: white;
-  border-radius: 12px;
-}
-
-button {
-  padding: 10px 30px;
-  background: rgb(58, 120, 245);
+  padding: 12px;
+  font-size: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.4); /* Transparent border */
+  border-radius: 8px; /* Rounded corners */
+  outline: none;
+  background: rgba(255, 255, 255, 0.15); /* Transparent white background */
   color: white;
-  border-style: none;
-  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  transition: border-color 0.3s;
+}
+
+input::placeholder {
+  color: rgba(255, 255, 255, 0.7); /* Subtle placeholder */
+}
+
+input:focus {
+  border-color: #6a9eff;
+}
+
+.login-btn {
+  background: linear-gradient(90deg, #35c759, #2aa147); /* Vibrant gradient */
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: transform 0.3s ease, background-color 0.3s ease;
+  font-size: 16px;
   width: 100%;
+  margin-top: 10px;
+  transition: transform 0.2s, background 0.3s;
 }
 
-button:hover {
-  transform: scale(1.05); /* Slightly smaller hover effect */
-  background: rgb(45, 90, 180); /* Change background color on hover */
+.login-btn:hover {
+  transform: scale(1.03);
 }
 
-.IMAGE {
-  width: 100%;
-  max-width: 80%; /* Limit max width of image */
-  height: auto;
-  object-fit: cover; /* Ensure the image covers the area without distortion */
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow for a soft effect */
+.footer-links {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
 }
 
-/* Media Queries for Responsiveness */
-@media (max-width: 1024px) {
-  .login-page {
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .login-container1 {
-    width: 80%; /* Increase width for mobile/tablet */
-    padding: 20px;
-  }
-
-  .login-container2 {
-    display: none; /* Hide IMAGE on tablet */
-  }
-
-  .login-form {
-    width: 100%;
-    max-width: none; /* Allow form to be more flexible */
-  }
-
-  input {
-    padding: 12px;
-    font-size: 14px;
-  }
-
-  button {
-    padding: 8px 25px;
-  }
+.footer-links a {
+  color: white;
+  text-decoration: none;
+  transition: color 0.3s;
 }
 
+.footer-links a:hover {
+  color: #0353e9;
+}
+
+/* Add media queries for responsiveness */
 @media (max-width: 768px) {
-  .login-page {
+  .login-container {
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    height: auto;
   }
 
-  .login-container1 {
-    width: 90%;
+  .login-left {
+    flex: 1;
+    height: 200px;
   }
 
-  .login-container2 {
-    display: none; /* Hide IMAGE on smaller screens */
-  }
-
-  .login-form {
-    width: 100%;
-  }
-
-  input {
-    padding: 12px;
-    font-size: 14px;
-  }
-
-  button {
-    padding: 8px 25px;
-  }
-}
-
-@media (max-width: 480px) {
-  .login-page {
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .login-container1 {
-    width: 90%;
-  }
-
-  .login-container2 {
-    display: none; /* Hide IMAGE on smaller screens */
-  }
-
-  .login-form {
-    width: 100%;
-  }
-
-  input {
-    padding: 12px;
-    font-size: 14px;
-  }
-
-  button {
-    padding: 8px 25px;
+  .login-right {
+    flex: 2;
+    padding: 20px;
   }
 }
