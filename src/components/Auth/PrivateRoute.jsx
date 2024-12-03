@@ -1,19 +1,15 @@
 import React from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { useAuthContext } from "../../context/AuthContext.jsx"; // Named import
+import { useAuthContext } from "../../context/AuthContext";
 
 const PrivateRoute = () => {
   const { user, loading, userRole } = useAuthContext();
   const location = useLocation();
 
-  if (loading) {
-    return <div>Loading...</div>; // Optional: Add a loader or spinner
-  }
+  console.log("PrivateRoute - User:", user);
+  console.log("PrivateRoute - UserRole:", userRole);
 
-  if (!user) {
-    return <Navigate to="/" state={{ from: location }} />;
-  }
-
+  // Role-based paths
   const rolePaths = {
     doctor: "/doctor",
     nurse: "/nurse",
@@ -23,15 +19,23 @@ const PrivateRoute = () => {
     receptionist: "/receptionist",
   };
 
-  // Redirect user to their role-based dashboard
-  if (location.pathname === "/") {
-    const redirectPath = rolePaths[userRole];
-    return redirectPath ? <Navigate to={redirectPath} /> : <Navigate to="/" />;
+  if (loading) {
+    return <div>Loading...</div>;
   }
 
-  // Handle invalid role
-  if (!rolePaths[userRole]) {
-    return <Navigate to="/" />; // Redirect to login or default page
+  if (!user) {
+    console.warn("User not logged in. Redirecting to login.");
+    return <Navigate to="/" state={{ from: location }} />;
+  }
+
+  if (!userRole || !rolePaths[userRole]) {
+    console.error(`Invalid user role detected: ${userRole}`);
+    return <Navigate to="/" />;
+  }
+
+  if (location.pathname === "/" && rolePaths[userRole]) {
+    console.log(`Redirecting user with role '${userRole}' to '${rolePaths[userRole]}'`);
+    return <Navigate to={rolePaths[userRole]} />;
   }
 
   return <Outlet />;
