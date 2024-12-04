@@ -1,0 +1,46 @@
+/* Calendar.css */
+
+.custom-toolbar {
+  display: flex;
+  flex-direction: column; /* Stack elements vertically */
+  gap: 10px; /* Space between rows */
+}
+
+.navigation-buttons {
+  display: flex;
+  justify-content: center; /* Center the buttons */
+  gap: 10px; /* Space between Back and Next buttons */
+}
+
+.view-buttons {
+  display: flex;
+  justify-content: center; /* Center the buttons */
+  gap: 10px; /* Space between Day, Week, Month buttons */
+}
+
+button {
+  padding: 8px 16px;
+  border: none;
+  background-color: #1976d2;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #1565c0;
+}
+
+/* Default margin-left for larger screens */
+.calendar-container {
+  margin-left: -100%; /* Default for large screens */
+}
+
+
+
+/* Responsive styling for medium screens (tablet view) */
+@media (min-width: 800px) and (max-width: 1024px) {
+  .calendar-container {
+   margin-left: -85%;/* A little margin-left on tablet view */
+  }
+}

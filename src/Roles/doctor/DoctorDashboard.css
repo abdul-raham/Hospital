@@ -1,0 +1,108 @@
+/* DoctorDashboard.css */
+
+/* Global Styles */
+body {
+  background-color: #ffffff; /* Dark background */
+  color: #ffffff; /* Light text for contrast */
+  font-family: 'Roboto', sans-serif;
+
+}
+
+.doctor-dashboard {
+  margin-top: 5%;
+  display: flex;
+  height: 100vh; /* Full viewport height */
+  overflow: hidden; /* Prevent extra scroll */
+}
+
+/* Sidebar */
+.sidebar {
+  background-color: #ff0000; /* Sidebar background */
+  color: #fff;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3); /* Subtle shadow for depth */
+  height: 100vh; /* Full height */
+}
+
+.sidebar .MuiListItem-root {
+  color: #bdbdbd; /* Muted text color for items */
+}
+
+.sidebar .MuiListItem-root:hover {
+  background-color: #3a3a3a; /* Highlight on hover */
+  color: #fff;
+}
+
+/* TopBar */
+.top-bar {
+  background-color: #242424; /* Match sidebar for consistency */
+  color: #fff;
+  padding: 10px 20px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+  position: fixed; /* Fix the bar at the top */
+  top: 0;
+  left: 0;
+  width: 100%; /* Full width */
+  z-index: 1100; /* Above other content */
+}
+
+/* Dashboard Content */
+.main-content {
+  flex-grow: 1;
+  background-color: #ffffff; /* Darker content area */
+  padding: 20px;
+  padding-top: 64px; /* Prevent overlap with TopBar */
+  overflow-y: auto; /* Scrollable content if necessary */
+}
+
+/* Dashboard Overview Tiles */
+.dashboard-tiles {
+  margin-top: 20px;
+}
+
+.tile {
+  background-color: #2a2a2a; /* Tile background */
+  color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Add depth */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tile:hover {
+  transform: translateY(-5px); /* Subtle lift on hover */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3); /* Deeper shadow */
+}
+
+.tile .MuiCardContent-root {
+  text-align: center;
+}
+
+.tile .MuiTypography-h5 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.tile .MuiTypography-h6 {
+  font-size: 22px;
+  font-weight: bold;
+  color: #4caf50; /* Green highlight for important stats */
+}
+
+.tile .MuiTypography-body2 {
+  font-size: 14px;
+  color: #bdbdbd; /* Muted text for descriptions */
+}
+
+/* Scrollbar Styling */
+.main-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.main-content::-webkit-scrollbar-thumb {
+  background-color: #444; /* Dark scrollbar */
+  border-radius: 4px;
+}
+
+.main-content::-webkit-scrollbar-thumb:hover {
+  background-color: #666; /* Lighter on hover */
+}

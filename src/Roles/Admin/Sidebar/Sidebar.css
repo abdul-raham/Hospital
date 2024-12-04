@@ -1,0 +1,35 @@
+.sidebar {
+    background-color: #000000; /* Black background */
+    color: #ffffff; /* White text */
+    width: 250px;
+    height: 100vh; /* Full height */
+    padding: 20px;
+  }
+  
+  .sidebar-header {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+  
+  .sidebar-menu {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar-menu li {
+    margin-bottom: 15px;
+  }
+  
+  .sidebar-menu li a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1rem;
+    display: block;
+    transition: all 0.3s ease;
+  }
+  
+  .sidebar-menu li a:hover {
+    color: #00c853; /* Green highlight */
+  }
+  

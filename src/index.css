@@ -1,0 +1,20 @@
+/* src/roles/doctor/styles.css */
+.doctor-dashboard {
+  background-color: #ffffff;
+  padding: 20px;
+}
+
+.card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 768px) {
+  .doctor-dashboard {
+    padding: 10px;
+  }
+}

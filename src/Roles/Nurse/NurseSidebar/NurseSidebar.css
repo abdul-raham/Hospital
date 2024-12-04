@@ -1,0 +1,56 @@
+/* General Sidebar Styles */
+.sidebar {
+  width: 240px;
+  background-color: #437cf8; /* Dark background for the sidebar */
+  color: white; /* Text color */
+  height: 100vh; /* Full height */
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.sidebar .MuiListItem-root {
+  padding: 15px 20px; /* Padding for list items */
+  transition: all 0.3s ease; /* Smooth transition for hover effects */
+}
+
+.sidebar .MuiListItem-root:hover {
+  background-color: #2957b9; /* Lighter shade for hover effect */
+  cursor: pointer;
+}
+
+.sidebar .MuiListItem-root.active {
+  background-color: #2957b9; /* Highlight active link */
+  border-left: 5px solid #1abc9c; /* Accent border for active item */
+}
+
+.sidebar .MuiListItemText-primary {
+  font-size: 16px; /* Adjust font size */
+  font-weight: 500; /* Slightly bold text */
+  color: white; /* Text color remains white */
+}
+
+.sidebar .MuiDivider-root {
+  background-color: rgba(255, 255, 255, 0.2); /* Subtle divider color */
+  margin: 10px 0; /* Spacing for dividers */
+}
+
+/* Sidebar Header (Optional) */
+.sidebar-header {
+  padding: 20px;
+  font-size: 20px;
+  font-weight: bold;
+  background-color: #1a252f; /* Darker header background */
+  color: #ecf0f1; /* Softer text color */
+  text-align: center;
+}
+
+/* Responsive Sidebar */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 200px; /* Narrower sidebar for smaller screens */
+  }
+  .sidebar .MuiListItem-root {
+    padding: 10px 15px; /* Adjust padding */
+  }
+}

@@ -1,0 +1,38 @@
+.nurse-dashboard {
+  display: flex;
+  height: 100vh;
+  background-color: #f4f7f9;
+}
+
+.sidebar {
+  width: 240px;
+  background: #437cf8;
+  color: white;
+  overflow: auto;
+}
+.sidebar:hover{
+  background-color: #437cf8;
+}
+
+.main-content {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+  
+}
+
+.dashboard-tiles {
+  margin-bottom: 30px;
+}
+
+.tile {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tile:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}

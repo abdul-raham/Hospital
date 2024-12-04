@@ -1,0 +1,194 @@
+/* styles.css */
+
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(135deg, #87ceeb, #3a78f5); /* Gradient background */
+
+}
+
+/* Login Page Layout */
+.login-page {
+  display: flex;
+  max-width: 1200px;
+  width: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  align-items: center; /* Center items vertically */
+  justify-content: center; /* Center items horizontally */
+  min-height: 100vh; /* Ensure full height on mobile */
+}
+
+.login-container1 {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.login-form {
+  width: 100%;
+  max-width: 400px;
+  padding: 30px;
+  text-align: center;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1); /* Transparent background */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+  backdrop-filter: blur(10px); /* Frosted glass effect */
+}
+
+h1 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  font-size: 14px;
+  color: #333;
+  background: #fff; /* Light background for input fields */
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+input:focus {
+  border-color: #3a78f5;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  background: #3a78f5;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+button:hover {
+  transform: scale(1.05);
+  background: #2d5ab4;
+}
+
+button:active {
+  transform: scale(1);
+}
+
+/* Side Image */
+.login-container2 {
+  width: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.IMAGE {
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* Responsiveness */
+@media (max-width: 1024px) {
+  .login-page {
+    flex-direction: column;
+    justify-content: center; /* Center content vertically */
+    align-items: center; /* Center content horizontally */
+    min-height: 100vh; /* Full height on mobile */
+  }
+
+  .login-container1 {
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: center; /* Center form horizontally */
+    align-items: center; /* Center form vertically */
+  }
+
+  .login-container2 {
+    display: none; /* Hide image section on smaller screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .login-page {
+    flex-direction: column;
+    justify-content: center; /* Center content vertically */
+    align-items: center; /* Center content horizontally */
+    min-height: 100vh; /* Full height on mobile */
+  }
+
+  .login-container1 {
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: center; /* Center form horizontally */
+    align-items: center; /* Center form vertically */
+  }
+
+  .login-form {
+    padding: 20px;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  input {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-page {
+    flex-direction: column;
+    justify-content: center; /* Center content vertically */
+    align-items: center; /* Center content horizontally */
+    min-height: 100vh; /* Full height on mobile */
+  }
+
+  .login-container1 {
+    width: 100%;
+    padding: 15px;
+    display: flex;
+    justify-content: center; /* Center form horizontally */
+    align-items: center; /* Center form vertically */
+  }
+
+  .login-form {
+    padding: 15px;
+    width: 100%;
+    max-width: 350px;
+  }
+
+  input {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 10px;
+  }
+}

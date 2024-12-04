@@ -1,0 +1,51 @@
+/* Global Styles */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Roboto", sans-serif;
+  background-color: #f5f5f5; /* Light background */
+  color: #333; /* Dark text */
+  box-sizing: border-box;
+}
+
+/* Sidebar */
+.sidebar {
+  background-color: #4caf50; /* Green */
+  color: #fff;
+  height: 100vh; /* Full viewport height */
+}
+
+/* Main Content */
+.main-content {
+  overflow-y: auto; /* Vertical scrolling if necessary */
+  padding: 16px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* Paper (Card) Components */
+.paper {
+  padding: 16px;
+  border-radius: 8px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Typography */
+h5 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #437cf8; /* Blue text */
+}
+
+h6 {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+/* Prevent Scrollbars */
+body,
+html {
+  overflow-x: hidden; /* Prevent horizontal scrollbars */
+}
