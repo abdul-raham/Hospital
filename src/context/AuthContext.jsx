@@ -20,18 +20,20 @@ const AuthProvider = ({ children }) => {
   const fetchUserDetails = async (email) => {
     console.log("Fetching user details for:", email); // Debugging log
     try {
-      const normalizedEmail = email.toLowerCase(); // Normalize email
+      const normalizedEmail = email.toLowerCase();
       const userDoc = await getDoc(doc(db, "users", normalizedEmail));
       if (userDoc.exists()) {
         const userData = userDoc.data();
         console.log("Fetched user data:", userData); // Debugging log
         return { role: userData.role, name: userData.name };
       } else {
-        throw new Error(`No user found for email: ${email}`);
+        // Corrected the error message formatting
+        throw new Error(`No user details found for ${email}`);
       }
     } catch (err) {
       console.error("Error fetching user details:", err);
-      throw new Error("Failed to fetch user details.");
+      setError(err.message); // This stores the error message
+      return { role: null, name: null };
     }
   };
 
@@ -47,16 +49,14 @@ const AuthProvider = ({ children }) => {
         email,
         password
       );
-      const loggedInUser = userCredential.user;
+      const user = userCredential.user;
+      const { role, name } = await fetchUserDetails(user.email.toLowerCase());
 
-      // Fetch user role and name
-      const { role, name } = await fetchUserDetails(loggedInUser.email);
-      if (!role || !name) {
-        throw new Error("User role or name not found. Please check user data.");
+      if (!role) {
+        throw new Error("User role not found, please check user data.");
       }
 
-      // Set user data
-      setUser(loggedInUser);
+      setUser(user);
       setUserRole(role);
       setUserName(name);
       localStorage.setItem("userRole", role); // Save role to local storage
@@ -79,8 +79,8 @@ const AuthProvider = ({ children }) => {
       setUser(null);
       setUserRole(null);
       setUserName(null);
-      localStorage.removeItem("userRole"); // Remove stored role
-      console.log("User logged out successfully."); // Debugging log
+      localStorage.removeItem("userRole");
+      console.log("User logged out"); // Added log here
     } catch (err) {
       console.error("Logout error:", err);
       setError("Failed to log out. Please try again.");
@@ -88,33 +88,6 @@ const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   };
-
-  // Automatically set the user on auth state change
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (loggedInUser) => {
-      if (loggedInUser) {
-        console.log("User is authenticated:", loggedInUser.email); // Debugging log
-        try {
-          const { role, name } = await fetchUserDetails(loggedInUser.email);
-          setUser(loggedInUser);
-          setUserRole(role);
-          setUserName(name);
-        } catch (err) {
-          console.error(
-            "Error fetching user data during auth state change:",
-            err
-          );
-        }
-      } else {
-        setUser(null);
-        setUserRole(null);
-        setUserName(null);
-      }
-      setLoading(false);
-    });
-
-    return () => unsubscribe(); // Cleanup subscription on unmount
-  }, []);
 
   return (
     <AuthContext.Provider
