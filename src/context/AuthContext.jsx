@@ -16,64 +16,105 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Fetch user details from Firestore
   const fetchUserDetails = async (email) => {
+    console.log("Fetching user details for:", email); // Debugging log
     try {
-      const normalizedEmail = email.toLowerCase();
+      const normalizedEmail = email.toLowerCase(); // Normalize email
       const userDoc = await getDoc(doc(db, "users", normalizedEmail));
       if (userDoc.exists()) {
         const userData = userDoc.data();
-        console.log("Fetched user details:", userData);
+        console.log("Fetched user data:", userData); // Debugging log
         return { role: userData.role, name: userData.name };
       } else {
-        // Corrected the error message formatting
-        throw new Error(`No user details found for ${email}`);
+        throw new Error(`No user found for email: ${email}`);
       }
     } catch (err) {
       console.error("Error fetching user details:", err);
-      setError(err.message);  // This stores the error message
-      return { role: null, name: null };
+      throw new Error("Failed to fetch user details.");
     }
   };
 
+  // Handle login
   const login = async (email, password) => {
     setLoading(true);
+    setError(null); // Reset previous errors
+    console.log("Attempting login for:", email); // Debugging log
+
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-      const { role, name } = await fetchUserDetails(user.email.toLowerCase());
-      
-      if (!role) {
-        throw new Error("User role not found, please check user data.");
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const loggedInUser = userCredential.user;
+
+      // Fetch user role and name
+      const { role, name } = await fetchUserDetails(loggedInUser.email);
+      if (!role || !name) {
+        throw new Error("User role or name not found. Please check user data.");
       }
-  
-      setUser(user);
+
+      // Set user data
+      setUser(loggedInUser);
       setUserRole(role);
       setUserName(name);
-      localStorage.setItem("userRole", role);
-      console.log("User logged in with role:", role);
+      localStorage.setItem("userRole", role); // Save role to local storage
+      console.log(`User logged in as ${role} with name ${name}.`); // Debugging log
     } catch (err) {
+      console.error("Login error:", err);
       setError(err.message);
-      throw err;
+      throw err; // Re-throw error to handle it in the component
     } finally {
       setLoading(false);
     }
   };
 
+  // Handle logout
   const logout = async () => {
     setLoading(true);
+    setError(null); // Reset previous errors
     try {
       await signOut(auth);
       setUser(null);
       setUserRole(null);
       setUserName(null);
-      localStorage.removeItem("userRole");
-      console.log("User logged out"); // Added log here
+      localStorage.removeItem("userRole"); // Remove stored role
+      console.log("User logged out successfully."); // Debugging log
     } catch (err) {
       console.error("Logout error:", err);
+      setError("Failed to log out. Please try again.");
     } finally {
       setLoading(false);
     }
   };
+
+  // Automatically set the user on auth state change
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (loggedInUser) => {
+      if (loggedInUser) {
+        console.log("User is authenticated:", loggedInUser.email); // Debugging log
+        try {
+          const { role, name } = await fetchUserDetails(loggedInUser.email);
+          setUser(loggedInUser);
+          setUserRole(role);
+          setUserName(name);
+        } catch (err) {
+          console.error(
+            "Error fetching user data during auth state change:",
+            err
+          );
+        }
+      } else {
+        setUser(null);
+        setUserRole(null);
+        setUserName(null);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe(); // Cleanup subscription on unmount
+  }, []);
 
   return (
     <AuthContext.Provider

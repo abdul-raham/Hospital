@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { useAuthContext } from "../../context/AuthContext";
 
 const LoginPage = () => {
-  const { login, loading } = useAuthContext(); // Get loading state from context
+  const { login, loading } = useAuthContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -21,12 +21,21 @@ const LoginPage = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setErrorMessage(""); // Clear any previous error messages
+    setErrorMessage(""); // Reset previous error message
+
+    console.log("Login attempt for:", email); // Log email before login
+
     try {
-      await login(email.trim(), password); // Attempt to login
+      console.log("Before login. Loading:", loading); // Log loading state before the login process
+
+      // Perform login
+      await login(email.trim(), password);
+
+      console.log("After login. Loading:", loading); // Log loading state after the login process
+
       toast.success("Login successful!");
 
-      // Extract role from email and navigate accordingly
+      // Extract role and navigate
       const role = extractRoleFromEmail(email);
       if (!role) {
         throw new Error("Invalid email format. Could not extract role.");
@@ -39,7 +48,7 @@ const LoginPage = () => {
 
       console.log("Role extracted:", role); // Debug log
       console.log("Redirecting to:", redirectPath); // Debug log
-      navigate(redirectPath); // Navigate based on role
+      navigate(redirectPath);
     } catch (error) {
       console.error("Error during login:", error); // Log detailed error
       setErrorMessage(error.message || "Login failed.");
@@ -77,7 +86,7 @@ const LoginPage = () => {
             />
             <button
               type="submit"
-              disabled={loading} // Disable button if loading
+              disabled={loading}
               style={loginPageStyles.button}
             >
               {loading ? "Logging in..." : "LOGIN"}
@@ -89,7 +98,13 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage;
+const extractRoleFromEmail = (email) => {
+  // Example role extraction logic based on email
+  const roleMatch = email.match(
+    /@(doctor|nurse|admin|lab|patient|receptionist)\.com$/
+  );
+  return roleMatch ? roleMatch[1] : null;
+};
 
 const loginPageStyles = {
   container: {
@@ -145,3 +160,5 @@ const loginPageStyles = {
     width: "100%",
   },
 };
+
+export default LoginPage;
