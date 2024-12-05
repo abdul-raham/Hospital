@@ -1,160 +1,194 @@
-/* General Styles */
-body {
+/* styles.css */
+
+/* Global Reset */
+* {
   margin: 0;
-  font-family: "Arial", sans-serif;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background: linear-gradient(135deg, #a35dff, #3aa9ff);
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* Main Page Wrapper */
+body {
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(135deg, #87ceeb, #3a78f5); /* Gradient background */
+
+}
+
+/* Login Page Layout */
 .login-page {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  max-width: 1200px;
   width: 100%;
-  height: 100%;
-}
-
-/* Container with Glassmorphism */
-.login-container {
-  display: flex;
-  flex-direction: row;
-  backdrop-filter: blur(20px); /* Glass effect */
-  background: rgba(255, 255, 255, 0.15); /* Semi-transparent white */
-  border: 1px solid rgba(255, 255, 255, 0.3); /* Border for the glass look */
-  border-radius: 20px; /* Smooth rounded corners */
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  border-radius: 12px;
   overflow: hidden;
-  width: 900px;
-  height: 500px;
+  align-items: center; /* Center items vertically */
+  justify-content: center; /* Center items horizontally */
+  min-height: 100vh; /* Ensure full height on mobile */
 }
 
-/* Left Section */
-.login-left {
-  background: rgba(
-    255,
-    255,
-    255,
-    0.1
-  ); /* Slightly transparent for glass effect */
-  flex: 1.3;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-}
-
-.icon-section {
-  width: 150px;
-  height: 150px;
-  background: rgba(255, 255, 255, 0.2); /* Glassy circle */
-  backdrop-filter: blur(10px);
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.4);
-}
-
-.icon {
-  width: 80px;
-  height: 80px;
-  background: url("/path/to/icon.svg") center/contain no-repeat;
-}
-
-/* Right Section */
-.login-right {
-  flex: 2;
-  padding: 40px;
+.login-container1 {
+  width: 50%;
   display: flex;
   flex-direction: column;
+  align-items: center;
   justify-content: center;
-  color: white; /* Matches the light/glass look */
+  padding: 40px;
 }
 
-h2 {
-  font-size: 28px;
-  font-weight: bold;
-  color: white;
+.login-form {
+  width: 100%;
+  max-width: 400px;
+  padding: 30px;
+  text-align: center;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1); /* Transparent background */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+  backdrop-filter: blur(10px); /* Frosted glass effect */
+}
+
+h1 {
+  text-align: center;
+  font-size: 24px;
   margin-bottom: 20px;
-}
-
-.input-group {
-  margin-bottom: 15px;
+  color: #fff;
 }
 
 input {
   width: 100%;
   padding: 12px;
+  margin: 10px 0;
   font-size: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.4); /* Transparent border */
-  border-radius: 8px; /* Rounded corners */
+  color: #333;
+  background: #fff; /* Light background for input fields */
+  border: 1px solid #ddd;
+  border-radius: 8px;
   outline: none;
-  background: rgba(255, 255, 255, 0.15); /* Transparent white background */
-  color: white;
-  backdrop-filter: blur(10px);
-  transition: border-color 0.3s;
-}
-
-input::placeholder {
-  color: rgba(255, 255, 255, 0.7); /* Subtle placeholder */
+  transition: border-color 0.3s ease;
 }
 
 input:focus {
-  border-color: #6a9eff;
+  border-color: #3a78f5;
 }
 
-.login-btn {
-  background: linear-gradient(90deg, #35c759, #2aa147); /* Vibrant gradient */
-  color: white;
-  border: none;
+button {
+  width: 100%;
   padding: 12px;
+  margin-top: 10px;
+  background: #3a78f5;
+  color: white;
+  font-size: 16px;
+  border: none;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 16px;
-  width: 100%;
-  margin-top: 10px;
-  transition: transform 0.2s, background 0.3s;
+  transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
-.login-btn:hover {
-  transform: scale(1.03);
+button:hover {
+  transform: scale(1.05);
+  background: #2d5ab4;
 }
 
-.footer-links {
-  margin-top: 20px;
+button:active {
+  transform: scale(1);
+}
+
+/* Side Image */
+.login-container2 {
+  width: 50%;
   display: flex;
-  justify-content: space-between;
-  font-size: 14px;
+  align-items: center;
+  justify-content: center;
 }
 
-.footer-links a {
-  color: white;
-  text-decoration: none;
-  transition: color 0.3s;
+.IMAGE {
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
 }
 
-.footer-links a:hover {
-  color: #0353e9;
-}
-
-/* Add media queries for responsiveness */
-@media (max-width: 768px) {
-  .login-container {
+/* Responsiveness */
+@media (max-width: 1024px) {
+  .login-page {
     flex-direction: column;
-    height: auto;
+    justify-content: center; /* Center content vertically */
+    align-items: center; /* Center content horizontally */
+    min-height: 100vh; /* Full height on mobile */
   }
 
-  .login-left {
-    flex: 1;
-    height: 200px;
-  }
-
-  .login-right {
-    flex: 2;
+  .login-container1 {
+    width: 100%;
     padding: 20px;
+    display: flex;
+    justify-content: center; /* Center form horizontally */
+    align-items: center; /* Center form vertically */
+  }
+
+  .login-container2 {
+    display: none; /* Hide image section on smaller screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .login-page {
+    flex-direction: column;
+    justify-content: center; /* Center content vertically */
+    align-items: center; /* Center content horizontally */
+    min-height: 100vh; /* Full height on mobile */
+  }
+
+  .login-container1 {
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    justify-content: center; /* Center form horizontally */
+    align-items: center; /* Center form vertically */
+  }
+
+  .login-form {
+    padding: 20px;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  input {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-page {
+    flex-direction: column;
+    justify-content: center; /* Center content vertically */
+    align-items: center; /* Center content horizontally */
+    min-height: 100vh; /* Full height on mobile */
+  }
+
+  .login-container1 {
+    width: 100%;
+    padding: 15px;
+    display: flex;
+    justify-content: center; /* Center form horizontally */
+    align-items: center; /* Center form vertically */
+  }
+
+  .login-form {
+    padding: 15px;
+    width: 100%;
+    max-width: 350px;
+  }
+
+  input {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 10px;
   }
 }
