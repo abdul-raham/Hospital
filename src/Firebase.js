@@ -43,9 +43,13 @@ export const createUser = async (email, password, role) => {
     );
     const user = userCredential.user;
 
-    // Add role or other user data to Firestore (assuming you have a "users" collection)
+    // Add user data (including role) to Firestore
     const userRef = doc(db, "users", user.uid);
-    await setDoc(userRef, { role });
+    await setDoc(userRef, {
+      email: user.email,
+      role, // Adding role
+      createdAt: new Date().toISOString(), // Optionally add created date for future reference
+    });
 
     console.log("User created successfully:", user);
     return user; // Return the created user if needed
