@@ -19,19 +19,19 @@ const LoginPage = () => {
     receptionist: "/receptionist",
   };
 
+  // Extract role based on email format (name.role@gmail.com)
+  const extractRoleFromEmail = (email) => {
+    const role = email.split("@")[0].split(".")[1]; // Extract role from the email
+    return role || null;
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage(""); // Reset previous error message
 
-    console.log("Login attempt for:", email); // Log email before login
-
     try {
-      console.log("Before login. Loading:", loading); // Log loading state before the login process
-
       // Perform login
       await login(email.trim(), password);
-
-      console.log("After login. Loading:", loading); // Log loading state after the login process
 
       toast.success("Login successful!");
 
@@ -46,11 +46,9 @@ const LoginPage = () => {
         throw new Error(`No path configured for role: ${role}`);
       }
 
-      console.log("Role extracted:", role); // Debug log
-      console.log("Redirecting to:", redirectPath); // Debug log
       navigate(redirectPath);
     } catch (error) {
-      console.error("Error during login:", error); // Log detailed error
+      console.error("Error during login:", error);
       setErrorMessage(error.message || "Login failed.");
       toast.error(error.message || "An error occurred during login.");
     }
@@ -61,49 +59,43 @@ const LoginPage = () => {
       <div style={loginPageStyles.wrapper}>
         <div style={loginPageStyles.imageSection}></div>
         <div style={loginPageStyles.formSection}>
-          <h2 style={loginPageStyles.title}>LOGIN</h2>
-          <form onSubmit={handleLogin}>
-            {errorMessage && (
-              <p style={{ color: "red", marginBottom: "10px" }}>
-                {errorMessage}
-              </p>
-            )}
-            <input
-              type="email"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              style={loginPageStyles.input}
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              style={loginPageStyles.input}
-            />
+          <h2 style={loginPageStyles.title}>Login</h2>
+          <form onSubmit={handleLogin} style={loginPageStyles.form}>
+            <div style={loginPageStyles.inputGroup}>
+              <label style={loginPageStyles.label}>Email</label>
+              <input
+                type="email"
+                style={loginPageStyles.input}
+                placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+            <div style={loginPageStyles.inputGroup}>
+              <label style={loginPageStyles.label}>Password</label>
+              <input
+                type="password"
+                style={loginPageStyles.input}
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+            <div style={loginPageStyles.errorMessage}>
+              {errorMessage && <p>{errorMessage}</p>}
+            </div>
             <button
               type="submit"
-              disabled={loading}
               style={loginPageStyles.button}
+              disabled={loading}
             >
-              {loading ? "Logging in..." : "LOGIN"}
+              {loading ? "Logging in..." : "Login"}
             </button>
           </form>
         </div>
       </div>
     </div>
   );
-};
-
-const extractRoleFromEmail = (email) => {
-  // Example role extraction logic based on email
-  const roleMatch = email.match(
-    /@(doctor|nurse|admin|lab|patient|receptionist)\.com$/
-  );
-  return roleMatch ? roleMatch[1] : null;
 };
 
 const loginPageStyles = {

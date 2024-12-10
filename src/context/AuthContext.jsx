@@ -16,33 +16,30 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch user details from Firestore
+  // Extract role from the email (name.role@gmail.com)
+  const extractRoleFromEmail = (email) => {
+    const emailParts = email.split("@")[0].split("."); // Get part before @ and then split by .
+    const role = emailParts.length > 1 ? emailParts[1] : null;
+    return role;
+  };
+
   const fetchUserDetails = async (email) => {
-    console.log("Fetching user details for:", email); // Debugging log
     try {
       const normalizedEmail = email.toLowerCase();
       const userDoc = await getDoc(doc(db, "users", normalizedEmail));
       if (userDoc.exists()) {
         const userData = userDoc.data();
-        console.log("Fetched user data:", userData); // Debugging log
         return { role: userData.role, name: userData.name };
-      } else {
-        // Corrected the error message formatting
-        throw new Error(`No user details found for ${email}`);
       }
-    } catch (err) {
-      console.error("Error fetching user details:", err);
-      setError(err.message); // This stores the error message
+      throw new Error(`No user details found for ${email}`);
+    } catch (error) {
+      console.error("Error fetching user details:", error);
       return { role: null, name: null };
     }
   };
 
-  // Handle login
   const login = async (email, password) => {
     setLoading(true);
-    setError(null); // Reset previous errors
-    console.log("Attempting login for:", email); // Debugging log
-
     try {
       const userCredential = await signInWithEmailAndPassword(
         auth,
@@ -52,42 +49,65 @@ const AuthProvider = ({ children }) => {
       const user = userCredential.user;
       const { role, name } = await fetchUserDetails(user.email.toLowerCase());
 
-      if (!role) {
-        throw new Error("User role not found, please check user data.");
+      // Extract role from email (e.g., "name.role@gmail.com")
+      const extractedRole = extractRoleFromEmail(user.email);
+
+      if (!extractedRole) {
+        throw new Error("No role extracted from email.");
       }
 
       setUser(user);
-      setUserRole(role);
+      setUserRole(extractedRole); // Use extracted role
       setUserName(name);
-      localStorage.setItem("userRole", role); // Save role to local storage
-      console.log(`User logged in as ${role} with name ${name}.`); // Debugging log
-    } catch (err) {
-      console.error("Login error:", err);
-      setError(err.message);
-      throw err; // Re-throw error to handle it in the component
+      localStorage.setItem("userRole", extractedRole);
+    } catch (error) {
+      setError(error.message);
+      throw error;
     } finally {
       setLoading(false);
     }
   };
 
-  // Handle logout
   const logout = async () => {
     setLoading(true);
-    setError(null); // Reset previous errors
     try {
       await signOut(auth);
       setUser(null);
       setUserRole(null);
       setUserName(null);
       localStorage.removeItem("userRole");
-      console.log("User logged out"); // Added log here
-    } catch (err) {
-      console.error("Logout error:", err);
-      setError("Failed to log out. Please try again.");
+    } catch (error) {
+      console.error("Logout error:", error);
     } finally {
       setLoading(false);
     }
   };
+
+  // Add onAuthStateChanged and session persistence
+  useEffect(() => {
+    const savedRole = localStorage.getItem("userRole");
+    if (savedRole) {
+      setUserRole(savedRole); // Restore role if saved
+    }
+
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        setUser(firebaseUser);
+        const { role, name } = await fetchUserDetails(
+          firebaseUser.email.toLowerCase()
+        );
+        setUserRole(role);
+        setUserName(name);
+      } else {
+        setUser(null);
+        setUserRole(null);
+        setUserName(null);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe(); // Cleanup subscription
+  }, []);
 
   return (
     <AuthContext.Provider
@@ -98,9 +118,8 @@ const AuthProvider = ({ children }) => {
   );
 };
 
-// Use this to access the Auth context
 const useAuthContext = () => {
   return useContext(AuthContext);
 };
 
-export { AuthProvider, useAuthContext }; // Named export
+export { AuthProvider, useAuthContext };
