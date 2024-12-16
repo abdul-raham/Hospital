@@ -1,13 +1,11 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, getIdTokenResult } from "firebase/auth";
 import {
   getFirestore,
   doc,
   setDoc,
-  collection,
-  addDoc,
 } from "firebase/firestore";
-import { getStorage } from "firebase/storage"; // Import Firebase Storage
+import { getStorage } from "firebase/storage";
 
 // Firebase configuration object
 const firebaseConfig = {
@@ -23,56 +21,82 @@ const firebaseConfig = {
 // Initialize Firebase app
 const app = initializeApp(firebaseConfig);
 
+// Log Firebase initialization to ensure it's set up correctly
+console.log("Firebase app initialized:", app.name);
+
 // Initialize Firebase Auth
-const auth = getAuth(app);
+export const auth = getAuth(app);
 
 // Initialize Firestore
-const db = getFirestore(app);
+export const db = getFirestore(app);
 
 // Initialize Firebase Storage
-const storage = getStorage(app);
+export const storage = getStorage(app);
 
-// Create User function using Firebase Authentication
+/**
+ * Set custom claims for role-based authentication.
+ * @param {object} user - Authenticated user.
+ * @param {string} role - User role.
+ */
+export const setCustomClaims = async (user, role) => {
+  try {
+    const tokenResult = await user.getIdTokenResult(true); // Force refresh
+    console.log("Token result obtained:", tokenResult);
+    if (!tokenResult.claims.role) {
+      console.log("No role claims found, attempting to set custom claims.");
+      await user.getIdToken({ forceRefresh: true });
+    }
+  } catch (error) {
+    console.error("Error while fetching custom claims or token refresh:", error);
+  }
+};
+
+/**
+ * Create a new user and save role in Firestore.
+ */
 export const createUser = async (email, password, role) => {
   try {
-    // Create the user with email and password
-    const userCredential = await createUserWithEmailAndPassword(
-      auth,
-      email,
-      password
-    );
-    const user = userCredential.user;
+    console.log("Attempting to create user with email:", email);
 
-    // Add user data (including role) to Firestore
-    const userRef = doc(db, "users", user.uid);
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+
+    console.log("User created successfully:", userCredential.user);
+
+    await setCustomClaims(userCredential.user, role);
+
+    const normalizedEmail = email.toLowerCase().replace('.', '_');
+    const userRef = doc(db, "users", normalizedEmail);
+
     await setDoc(userRef, {
-      email: user.email,
-      role, // Adding role
-      createdAt: new Date().toISOString(), // Optionally add created date for future reference
+      email: userCredential.user.email,
+      role,
+      createdAt: new Date().toISOString(),
     });
 
-    console.log("User created successfully:", user);
-    return user; // Return the created user if needed
+    console.log("User details saved in Firestore.");
+    return userCredential.user;
   } catch (error) {
     console.error("Error creating user:", error.message);
-    throw new Error(error.message); // Throw an error if user creation fails
+    throw new Error(error.message);
   }
 };
 
-// Function to send a message
-export const sendMessage = async (recipientId, recipientType, message) => {
+/**
+ * Test connection to Firebase manually (Debugging Step)
+ */
+export const testFirebaseConnection = async () => {
   try {
-    await addDoc(collection(db, "messages"), {
-      recipientId,
-      recipientType,
-      message,
-      timestamp: new Date(),
-    });
-    console.log("Message sent successfully!");
+    const response = await fetch(
+      'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyCdmHvjKgjmPPqJgmlIk2vYMXjdwcpf7hA',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: 'test@example.com', password: 'password123', returnSecureToken: true }),
+      }
+    );
+    const data = await response.json();
+    console.log("Firebase test connection response:", data);
   } catch (error) {
-    console.error("Error sending message: ", error);
+    console.error("Firebase test connection error:", error);
   }
 };
-
-// Export initialized Firebase app, auth, db, and storage
-export { app, auth, db, storage };

@@ -4,10 +4,15 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
-import { auth, db } from "../Firebase";
+import { auth } from "../Firebase";
 
 const AuthContext = createContext();
+
+// Function to extract role from email (e.g., name.role@gmail.com)
+const extractRoleFromEmail = (email) => {
+  const emailParts = email.split("@")[0].split(".");
+  return emailParts.length > 1 ? emailParts[1] : null;
+};
 
 const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
@@ -16,24 +21,13 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Extract role from the email (name.role@gmail.com)
-  const extractRoleFromEmail = (email) => {
-    const emailParts = email.split("@")[0].split("."); // Get part before @ and then split by .
-    const role = emailParts.length > 1 ? emailParts[1] : null;
-    return role;
-  };
-
   const fetchUserDetails = async (email) => {
     try {
-      const normalizedEmail = email.toLowerCase();
-      const userDoc = await getDoc(doc(db, "users", normalizedEmail));
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        return { role: userData.role, name: userData.name };
-      }
-      throw new Error(`No user details found for ${email}`);
+      const role = extractRoleFromEmail(email);
+      if (!role) throw new Error(`Could not extract role from email: ${email}`);
+      return { role, name: email };
     } catch (error) {
-      console.error("Error fetching user details:", error);
+      console.error("Error extracting role:", error.message);
       return { role: null, name: null };
     }
   };
@@ -41,27 +35,19 @@ const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     setLoading(true);
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const user = userCredential.user;
-      const { role, name } = await fetchUserDetails(user.email.toLowerCase());
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const { role, name } = await fetchUserDetails(userCredential.user.email);
 
-      // Extract role from email (e.g., "name.role@gmail.com")
-      const extractedRole = extractRoleFromEmail(user.email);
+      if (!role) throw new Error("No valid role found.");
 
-      if (!extractedRole) {
-        throw new Error("No role extracted from email.");
-      }
-
-      setUser(user);
-      setUserRole(extractedRole); // Use extracted role
+      setUser(userCredential.user);
+      setUserRole(role);
       setUserName(name);
-      localStorage.setItem("userRole", extractedRole);
+
+      localStorage.setItem("userRole", role);
     } catch (error) {
       setError(error.message);
+      console.error("Login failed:", error.message);
       throw error;
     } finally {
       setLoading(false);
@@ -83,19 +69,16 @@ const AuthProvider = ({ children }) => {
     }
   };
 
-  // Add onAuthStateChanged and session persistence
   useEffect(() => {
     const savedRole = localStorage.getItem("userRole");
     if (savedRole) {
-      setUserRole(savedRole); // Restore role if saved
+      setUserRole(savedRole); 
     }
 
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
+        const { role, name } = await fetchUserDetails(firebaseUser.email);
         setUser(firebaseUser);
-        const { role, name } = await fetchUserDetails(
-          firebaseUser.email.toLowerCase()
-        );
         setUserRole(role);
         setUserName(name);
       } else {
@@ -106,7 +89,7 @@ const AuthProvider = ({ children }) => {
       setLoading(false);
     });
 
-    return () => unsubscribe(); // Cleanup subscription
+    return () => unsubscribe();
   }, []);
 
   return (
