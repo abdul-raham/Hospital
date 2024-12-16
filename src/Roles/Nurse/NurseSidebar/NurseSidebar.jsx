@@ -25,7 +25,7 @@ const Sidebar = () => {
       <List sx={{ paddingTop: "20px" }}>
         {/* Dashboard Link */}
         <ListItem
-          button
+          button={true} // Correctly pass true here
           component={Link}
           to="/nurse"
           sx={{
@@ -40,7 +40,7 @@ const Sidebar = () => {
 
         {/* Appointments Link */}
         <ListItem
-          button
+          button={true} 
           component={Link}
           to="/nurse/appointments"
           sx={{
@@ -54,7 +54,7 @@ const Sidebar = () => {
 
         {/* Patients Link */}
         <ListItem
-          button
+          button={true} 
           component={Link}
           to="/nurse/patients"
           sx={{
@@ -68,7 +68,7 @@ const Sidebar = () => {
 
         {/* Tasks Link */}
         <ListItem
-          button
+          button={true} 
           component={Link}
           to="/nurse/tasks"
           sx={{

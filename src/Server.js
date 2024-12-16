@@ -1,22 +1,26 @@
+// File: backend/server.js
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const http = require("http"); // Required for integrating Socket.IO
+const http = require("http");
 const { Server } = require("socket.io");
 const appointmentRoutes = require("./routes/appointments");
+const userRoutes = require("./routes/userRoutes");
 
+// Initialize Express app
 const app = express();
 app.use(bodyParser.json());
 app.use(cors());
+
+// Routes
 app.use("/api/appointments", appointmentRoutes);
+app.use("/api/users", userRoutes);
 
-const PORT = 5000;
-
-// Create an HTTP server and integrate it with the Socket.IO server
+// Create HTTP server & integrate Socket.IO
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173", // Frontend URL
+    origin: "http://localhost:5173", // Frontend origin URL
     methods: ["GET", "POST"],
   },
 });
@@ -25,30 +29,30 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   console.log("A client connected:", socket.id);
 
-  // Listen for 'fetchAppointments' event
+  // Example: Fetch appointments
   socket.on("fetchAppointments", () => {
     const appointments = [
       { id: 1, name: "John Doe", time: "10:00 AM" },
       { id: 2, name: "Jane Smith", time: "11:00 AM" },
     ];
-    socket.emit("appointments", appointments); // Send data back to the client
+    socket.emit("appointments", appointments);
   });
 
-  // Listen for 'addAppointment' event
+  // Example: When a new appointment is added
   socket.on("addAppointment", (appointment) => {
-    console.log("New appointment received:", appointment);
-    // Example: Broadcast the new appointment to all connected clients
-    io.emit("appointments", [appointment]);
+    console.log("Appointment received:", appointment);
+    io.emit("appointments", [appointment]); // Broadcast to all connected clients
   });
 
-  // Handle client disconnect
+  // Handle disconnection
   socket.on("disconnect", () => {
     console.log("Client disconnected:", socket.id);
   });
 });
 
-// Start both the HTTP server and the WebSocket server
+// Start server
+const PORT = 5000;
 server.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Server running at http://localhost:${PORT}`);
   console.log("WebSocket server is also active.");
 });
