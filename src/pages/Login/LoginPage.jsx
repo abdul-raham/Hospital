@@ -1,66 +1,93 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuthContext } from "../../context/AuthContext";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../Firebase";
 
 const LoginPage = () => {
-  const { login, loading } = useAuthContext();
+  const { login, loading, userRole } = useAuthContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [hospitals, setHospitals] = useState([]); 
+  const [selectedHospital, setSelectedHospital] = useState(""); 
   const navigate = useNavigate();
 
-  const rolePaths = {
-    doctor: "/doctor",
-    nurse: "/nurse",
-    admin: "/admin",
-    lab: "/lab",
-    patient: "/patient",
-    receptionist: "/receptionist",
-  };
+  // Fetch hospitals from Firestore
+  useEffect(() => {
+    const fetchHospitals = async () => {
+      try {
+        const snapshot = await getDocs(collection(db, "hospitals")); // Query all hospitals
+        const hospitalList = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          name: doc.data().name || "Unknown Hospital",
+        }));
+        setHospitals(hospitalList);
+      } catch (error) {
+        console.error("Error fetching hospitals: ", error);
+        toast.error("Failed to load hospitals.");
+      }
+    };
+    fetchHospitals();
+  }, []);
 
-  // Extract role based on email format (name.role@gmail.com)
-  const extractRoleFromEmail = (email) => {
-    const role = email.split("@")[0].split(".")[1]; // Extract role from the email
-    return role || null;
-  };
-
+  // Handle login functionality
   const handleLogin = async (e) => {
     e.preventDefault();
-    setErrorMessage(""); // Reset previous error message
+    setErrorMessage("");
+    
+    if (!selectedHospital) {
+      setErrorMessage("Please select a hospital to log in.");
+      toast.error("Please select a hospital.");
+      return;
+    }
 
     try {
-      // Perform login
-      await login(email.trim(), password);
-
+      await login(email.trim(), password, selectedHospital);
       toast.success("Login successful!");
 
-      // Extract role and navigate
-      const role = extractRoleFromEmail(email);
-      if (!role) {
-        throw new Error("Invalid email format. Could not extract role.");
+      if (userRole) {
+        navigate(`/${userRole}`);
+      } else {
+        throw new Error("User role undefined.");
       }
-
-      const redirectPath = rolePaths[role];
-      if (!redirectPath) {
-        throw new Error(`No path configured for role: ${role}`);
-      }
-
-      navigate(redirectPath);
     } catch (error) {
       console.error("Error during login:", error);
       setErrorMessage(error.message || "Login failed.");
-      toast.error(error.message || "An error occurred during login.");
+      toast.error(error.message || "An unexpected error occurred.");
     }
   };
 
   return (
     <div style={loginPageStyles.container}>
       <div style={loginPageStyles.wrapper}>
-        <div style={loginPageStyles.imageSection}></div>
+        <div style={loginPageStyles.leftSection}></div>
         <div style={loginPageStyles.formSection}>
-          <h2 style={loginPageStyles.title}>Login</h2>
+          <h2 style={loginPageStyles.title}>Hospital Login</h2>
           <form onSubmit={handleLogin} style={loginPageStyles.form}>
+            {/* Dropdown for Hospital Selection */}
+            <div style={loginPageStyles.inputGroup}>
+              <label style={loginPageStyles.label}>Select Hospital</label>
+              <select
+                style={loginPageStyles.input}
+                value={selectedHospital}
+                onChange={(e) => setSelectedHospital(e.target.value)}
+              >
+                <option value="">--Select a hospital--</option>
+                {hospitals.length > 0 ? (
+                  hospitals.map((hospital) => (
+                    <option key={hospital.id} value={hospital.id}>
+                      {hospital.name}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>Loading hospitals...</option>
+                )}
+              </select>
+            </div>
+
+            {/* Email Input */}
             <div style={loginPageStyles.inputGroup}>
               <label style={loginPageStyles.label}>Email</label>
               <input
@@ -71,6 +98,8 @@ const LoginPage = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
+
+            {/* Password Input */}
             <div style={loginPageStyles.inputGroup}>
               <label style={loginPageStyles.label}>Password</label>
               <input
@@ -81,9 +110,15 @@ const LoginPage = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
-            <div style={loginPageStyles.errorMessage}>
-              {errorMessage && <p>{errorMessage}</p>}
-            </div>
+
+            {/* Error Message */}
+            {errorMessage && (
+              <div style={loginPageStyles.errorMessage}>
+                <p>{errorMessage}</p>
+              </div>
+            )}
+
+            {/* Submit Button */}
             <button
               type="submit"
               style={loginPageStyles.button}
@@ -98,58 +133,67 @@ const LoginPage = () => {
   );
 };
 
+// Add styles
 const loginPageStyles = {
   container: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     height: "100vh",
-    background: "linear-gradient(135deg, #a35dff, #3aa9ff)",
+    background: "linear-gradient(135deg, #6a11cb, #2575fc)",
   },
   wrapper: {
     display: "flex",
-    width: "900px",
-    height: "500px",
-    borderRadius: "20px",
+    width: "90%",
+    height: "90%",
+    maxWidth: "1100px",
+    borderRadius: "15px",
+    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
     overflow: "hidden",
-    background: "rgba(255, 255, 255, 0.15)",
-    backdropFilter: "blur(20px)",
-  },
-  imageSection: {
-    flex: 1.3,
-    backgroundImage: "url('/src/components/Assets/pexels-shvetsa-4167541.jpg')",
-    backgroundSize: "cover",
-    backgroundPosition: "center",
+  }, 
+  leftSection: {
+    flex: 1,
+    background: `url('/path-to-your-image.jpg') no-repeat center center / cover`,
   },
   formSection: {
-    flex: 2,
-    padding: "40px",
+    flex: 1,
+    padding: "30px 40px",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    color: "white",
+    background: "#fff",
+    color: "#333",
   },
-  title: { fontSize: "28px", fontWeight: "bold", marginBottom: "20px" },
-  input: {
-    width: "100%",
-    padding: "12px",
-    fontSize: "14px",
-    borderRadius: "8px",
+  title: {
+    fontSize: "24px",
     marginBottom: "15px",
-    outline: "none",
-    background: "rgba(255, 255, 255, 0.15)",
-    color: "white",
-    border: "1px solid rgba(255, 255, 255, 0.4)",
+    color: "#333",
+    textAlign: "center",
+  },
+  inputGroup: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  input: {
+    padding: "10px",
+    fontSize: "16px",
+    borderRadius: "5px",
+    border: "1px solid #ddd",
   },
   button: {
-    padding: "12px",
-    fontSize: "16px",
-    borderRadius: "8px",
+    marginTop: "10px",
+    padding: "10px",
     border: "none",
-    background: "linear-gradient(90deg, #35c759, #2aa147)",
-    color: "white",
+    borderRadius: "5px",
+    color: "#fff",
+    backgroundColor: "#2575fc",
     cursor: "pointer",
-    width: "100%",
+    transition: "background-color 0.3s ease",
+  },
+  errorMessage: {
+    color: "red",
+    fontSize: "14px",
+    textAlign: "center",
   },
 };
 
