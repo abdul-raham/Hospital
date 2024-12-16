@@ -67,7 +67,7 @@ const SeeHospitals = () => {
             Selected Hospital ID: {selectedHospital}
           </Typography>
           <Typography variant="body2">
-            Users:{" "}
+            Users: {" "}
             {hospitals
               .find((hospital) => hospital.id === selectedHospital)
               ?.users.join(", ") || "No users available"}

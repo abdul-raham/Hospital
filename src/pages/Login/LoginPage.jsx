@@ -10,33 +10,39 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [hospitals, setHospitals] = useState([]); 
+  const [hospitals, setHospitals] = useState([]); // State for hospital dropdown
   const [selectedHospital, setSelectedHospital] = useState(""); 
+  const [hospitalLoading, setHospitalLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Fetch hospitals from Firestore
+  /** Fetch hospitals from Firestore */
   useEffect(() => {
     const fetchHospitals = async () => {
       try {
-        const snapshot = await getDocs(collection(db, "hospitals")); // Query all hospitals
+        const snapshot = await getDocs(collection(db, "hospitals"));
+        console.log("Snapshot Data: ", snapshot.docs); // See raw snapshot data
         const hospitalList = snapshot.docs.map((doc) => ({
           id: doc.id,
-          name: doc.data().name || "Unknown Hospital",
+          name: doc.data().name,
         }));
+        console.log("Processed hospitals list: ", hospitalList); // Debug hospitalList
         setHospitals(hospitalList);
       } catch (error) {
         console.error("Error fetching hospitals: ", error);
         toast.error("Failed to load hospitals.");
+      } finally {
+        setHospitalLoading(false);
       }
     };
+  
     fetchHospitals();
   }, []);
-
-  // Handle login functionality
+  
+  /** Handle the login process */
   const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage("");
-    
+
     if (!selectedHospital) {
       setErrorMessage("Please select a hospital to log in.");
       toast.error("Please select a hospital.");
@@ -53,7 +59,7 @@ const LoginPage = () => {
         throw new Error("User role undefined.");
       }
     } catch (error) {
-      console.error("Error during login:", error);
+      console.error("Login failed: ", error);
       setErrorMessage(error.message || "Login failed.");
       toast.error(error.message || "An unexpected error occurred.");
     }
@@ -62,28 +68,30 @@ const LoginPage = () => {
   return (
     <div style={loginPageStyles.container}>
       <div style={loginPageStyles.wrapper}>
+        {/* Left Section */}
         <div style={loginPageStyles.leftSection}></div>
+
+        {/* Right Form Section */}
         <div style={loginPageStyles.formSection}>
           <h2 style={loginPageStyles.title}>Hospital Login</h2>
           <form onSubmit={handleLogin} style={loginPageStyles.form}>
-            {/* Dropdown for Hospital Selection */}
+            {/* Dropdown to select hospital */}
             <div style={loginPageStyles.inputGroup}>
               <label style={loginPageStyles.label}>Select Hospital</label>
               <select
                 style={loginPageStyles.input}
                 value={selectedHospital}
                 onChange={(e) => setSelectedHospital(e.target.value)}
+                disabled={hospitalLoading} // Disable until hospitals load
               >
-                <option value="">--Select a hospital--</option>
-                {hospitals.length > 0 ? (
-                  hospitals.map((hospital) => (
-                    <option key={hospital.id} value={hospital.id}>
-                      {hospital.name}
-                    </option>
-                  ))
-                ) : (
-                  <option disabled>Loading hospitals...</option>
-                )}
+                <option value="">
+                  {hospitalLoading ? "Loading hospitals..." : "--Select a hospital--"}
+                </option>
+                {hospitals.map((hospital) => (
+                  <option key={hospital.id} value={hospital.id}>
+                    {hospital.name}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -96,6 +104,7 @@ const LoginPage = () => {
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
 
@@ -108,10 +117,11 @@ const LoginPage = () => {
                 placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
               />
             </div>
 
-            {/* Error Message */}
+            {/* Display any error messages */}
             {errorMessage && (
               <div style={loginPageStyles.errorMessage}>
                 <p>{errorMessage}</p>
@@ -122,7 +132,7 @@ const LoginPage = () => {
             <button
               type="submit"
               style={loginPageStyles.button}
-              disabled={loading}
+              disabled={loading || hospitalLoading}
             >
               {loading ? "Logging in..." : "Login"}
             </button>
@@ -150,7 +160,7 @@ const loginPageStyles = {
     borderRadius: "15px",
     boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
     overflow: "hidden",
-  }, 
+  },
   leftSection: {
     flex: 1,
     background: `url('/path-to-your-image.jpg') no-repeat center center / cover`,
@@ -173,6 +183,11 @@ const loginPageStyles = {
   inputGroup: {
     display: "flex",
     flexDirection: "column",
+    marginBottom: "10px",
+  },
+  label: {
+    marginBottom: "5px",
+    fontWeight: "bold",
   },
   input: {
     padding: "10px",
@@ -194,6 +209,7 @@ const loginPageStyles = {
     color: "red",
     fontSize: "14px",
     textAlign: "center",
+    marginBottom: "10px",
   },
 };
 

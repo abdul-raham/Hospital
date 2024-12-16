@@ -19,7 +19,9 @@ try {
   console.error("Error initializing Firebase Admin SDK:", error.message);
   process.exit(1);
 }
-
+export const setCustomClaims = () => {
+  console.warn("Custom claims must be set using the Firebase Admin SDK on the server.");
+};
 // Function to set custom user claims
 const setCustomUserClaims = async (uid, role) => {
   try {
