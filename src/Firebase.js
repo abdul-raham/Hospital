@@ -2,8 +2,10 @@ import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, getIdTokenResult } from "firebase/auth";
 import {
   getFirestore,
+  collection,
   doc,
   setDoc,
+  getDocs,
 } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 
@@ -33,70 +35,32 @@ export const db = getFirestore(app);
 // Initialize Firebase Storage
 export const storage = getStorage(app);
 
+// Predefined hospital data
+const hospitalData = [
+  { id: "east_side_clinic", name: "East Side Clinic" },
+  { id: "west_end_medical_center", name: "West End Medical Center" },
+  { id: "st_marys_hospital", name: "St. Mary's Hospital" },
+];
+
 /**
- * Set custom claims for role-based authentication.
- * @param {object} user - Authenticated user.
- * @param {string} role - User role.
+ * Populate hospitals collection with predefined data if it doesn't exist.
  */
-export const setCustomClaims = async (user, role) => {
+export const populateHospitalData = async () => {
   try {
-    const tokenResult = await user.getIdTokenResult(true); // Force refresh
-    console.log("Token result obtained:", tokenResult);
-    if (!tokenResult.claims.role) {
-      console.log("No role claims found, attempting to set custom claims.");
-      await user.getIdToken({ forceRefresh: true });
+    const hospitalsCollection = collection(db, "hospitals");
+    const snapshot = await getDocs(hospitalsCollection);
+
+    if (snapshot.empty) {
+      console.log("No hospital data found. Populating with default data...");
+      for (const hospital of hospitalData) {
+        const hospitalRef = doc(hospitalsCollection, hospital.id);
+        await setDoc(hospitalRef, { name: hospital.name });
+      }
+      console.log("Hospital data populated successfully.");
+    } else {
+      console.log("Hospital data already exists. Skipping population.");
     }
   } catch (error) {
-    console.error("Error while fetching custom claims or token refresh:", error);
-  }
-};
-
-/**
- * Create a new user and save role in Firestore.
- */
-export const createUser = async (email, password, role) => {
-  try {
-    console.log("Attempting to create user with email:", email);
-
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-
-    console.log("User created successfully:", userCredential.user);
-
-    await setCustomClaims(userCredential.user, role);
-
-    const normalizedEmail = email.toLowerCase().replace('.', '_');
-    const userRef = doc(db, "users", normalizedEmail);
-
-    await setDoc(userRef, {
-      email: userCredential.user.email,
-      role,
-      createdAt: new Date().toISOString(),
-    });
-
-    console.log("User details saved in Firestore.");
-    return userCredential.user;
-  } catch (error) {
-    console.error("Error creating user:", error.message);
-    throw new Error(error.message);
-  }
-};
-
-/**
- * Test connection to Firebase manually (Debugging Step)
- */
-export const testFirebaseConnection = async () => {
-  try {
-    const response = await fetch(
-      'https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=AIzaSyCdmHvjKgjmPPqJgmlIk2vYMXjdwcpf7hA',
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: 'test@example.com', password: 'password123', returnSecureToken: true }),
-      }
-    );
-    const data = await response.json();
-    console.log("Firebase test connection response:", data);
-  } catch (error) {
-    console.error("Firebase test connection error:", error);
+    console.error("Error populating hospital data:", error);
   }
 };

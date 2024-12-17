@@ -3,15 +3,16 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useAuthContext } from "../../context/AuthContext";
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../Firebase";
+import { db, populateHospitalData } from "../../Firebase";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 const LoginPage = () => {
-  const { login, loading, userRole } = useAuthContext();
+  const { loading, userRole } = useAuthContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [hospitals, setHospitals] = useState([]); // State for hospital dropdown
-  const [selectedHospital, setSelectedHospital] = useState(""); 
+  const [selectedHospital, setSelectedHospital] = useState("");
   const [hospitalLoading, setHospitalLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -19,13 +20,14 @@ const LoginPage = () => {
   useEffect(() => {
     const fetchHospitals = async () => {
       try {
+        // Populate hospital data if not already present
+        await populateHospitalData();
+
         const snapshot = await getDocs(collection(db, "hospitals"));
-        console.log("Snapshot Data: ", snapshot.docs); // See raw snapshot data
         const hospitalList = snapshot.docs.map((doc) => ({
           id: doc.id,
           name: doc.data().name,
         }));
-        console.log("Processed hospitals list: ", hospitalList); // Debug hospitalList
         setHospitals(hospitalList);
       } catch (error) {
         console.error("Error fetching hospitals: ", error);
@@ -34,10 +36,10 @@ const LoginPage = () => {
         setHospitalLoading(false);
       }
     };
-  
+
     fetchHospitals();
   }, []);
-  
+
   /** Handle the login process */
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -49,17 +51,27 @@ const LoginPage = () => {
       return;
     }
 
-    try {
-      await login(email.trim(), password, selectedHospital);
-      toast.success("Login successful!");
+    const auth = getAuth();
 
-      if (userRole) {
-        navigate(`/${userRole}`);
-      } else {
-        throw new Error("User role undefined.");
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email.trim(),
+        password
+      );
+
+      const tokenResult = await userCredential.user.getIdTokenResult();
+      const hospitalId = tokenResult.claims.hospitalId; // Custom claim for user's hospital
+
+      // Check if the user's hospital matches the selected one
+      if (hospitalId !== selectedHospital) {
+        throw new Error("You do not have access to this hospital.");
       }
+
+      toast.success("Login successful!");
+      navigate(`/${userRole}`); // Redirect based on role
     } catch (error) {
-      console.error("Login failed: ", error);
+      console.error("Login failed: ", error.message);
       setErrorMessage(error.message || "Login failed.");
       toast.error(error.message || "An unexpected error occurred.");
     }
@@ -85,7 +97,9 @@ const LoginPage = () => {
                 disabled={hospitalLoading} // Disable until hospitals load
               >
                 <option value="">
-                  {hospitalLoading ? "Loading hospitals..." : "--Select a hospital--"}
+                  {hospitalLoading
+                    ? "Loading hospitals..."
+                    : "--Select a hospital--"}
                 </option>
                 {hospitals.map((hospital) => (
                   <option key={hospital.id} value={hospital.id}>

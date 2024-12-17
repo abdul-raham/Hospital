@@ -11,7 +11,7 @@ const SeeHospitals = () => {
   // Fetch hospitals from Firestore
   const fetchHospitals = async () => {
     try {
-      const hospitalsCollection = collection(db, "Hospitals"); // Points to the "Hospitals" collection
+      const hospitalsCollection = collection(db, "hospitals"); // Points to the "Hospitals" collection
       const querySnapshot = await getDocs(hospitalsCollection);
 
       // Map through documents to extract hospital names and users
