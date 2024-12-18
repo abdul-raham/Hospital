@@ -7,9 +7,11 @@ import { auth, db } from "../Firebase";
 const checkUserAuthorization = async (email) => {
   try {
     const hospitalsSnapshot = await getDocs(collection(db, "hospitals"));
+    console.log("Snapshot:", hospitalsSnapshot.docs);
     for (const hospitalDoc of hospitalsSnapshot.docs) {
       const hospitalData = hospitalDoc.data();
-      if (hospitalData.users.includes(email)) {
+      if (hospitalData.users?.includes(email)) {
+        console.log("Authorized hospital found: ", hospitalData);
         return { authorized: true, hospital: hospitalData.name };
       }
     }
