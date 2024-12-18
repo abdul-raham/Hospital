@@ -1,14 +1,39 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import {
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  signOut,
-} from "firebase/auth";
 import { auth } from "../Firebase";
+
+// Service logic fetch-based login
+export const loginService = async (email, password) => {
+  try {
+    const response = await fetch("http://localhost:5000/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!response.ok) throw new Error("Unable to log in");
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const logoutService = async () => {
+  try {
+    const response = await fetch("http://localhost:5000/api/auth/logout", {
+      method: "POST",
+    });
+
+    if (!response.ok) throw new Error("Logout failed");
+    return response.json();
+  } catch (error) {
+    throw error;
+  }
+};
 
 const AuthContext = createContext();
 
-// Function to extract role from email (e.g., name.role@gmail.com)
+// Function to extract role from email
 const extractRoleFromEmail = (email) => {
   const emailParts = email.split("@")[0].split(".");
   return emailParts.length > 1 ? emailParts[1] : null;
@@ -21,34 +46,21 @@ const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchUserDetails = async (email) => {
-    try {
-      const role = extractRoleFromEmail(email);
-      if (!role) throw new Error(`Could not extract role from email: ${email}`);
-      return { role, name: email };
-    } catch (error) {
-      console.error("Error extracting role:", error.message);
-      return { role: null, name: null };
-    }
-  };
-
   const login = async (email, password) => {
     setLoading(true);
     try {
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const { role, name } = await fetchUserDetails(userCredential.user.email);
+      const data = await loginService(email, password);
+      const role = extractRoleFromEmail(data.email);
 
       if (!role) throw new Error("No valid role found.");
 
-      setUser(userCredential.user);
+      setUser(data);
       setUserRole(role);
-      setUserName(name);
+      setUserName(data.email);
 
       localStorage.setItem("userRole", role);
     } catch (error) {
       setError(error.message);
-      console.error("Login failed:", error.message);
-      throw error;
     } finally {
       setLoading(false);
     }
@@ -57,13 +69,16 @@ const AuthProvider = ({ children }) => {
   const logout = async () => {
     setLoading(true);
     try {
-      await signOut(auth);
+      const result = await logoutService();
+      console.log("Logged out", result);
+
       setUser(null);
       setUserRole(null);
       setUserName(null);
+
       localStorage.removeItem("userRole");
     } catch (error) {
-      console.error("Logout error:", error);
+      console.error("Logout failed", error.message);
     } finally {
       setLoading(false);
     }
@@ -72,15 +87,15 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const savedRole = localStorage.getItem("userRole");
     if (savedRole) {
-      setUserRole(savedRole); 
+      setUserRole(savedRole);
     }
 
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+    const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
       if (firebaseUser) {
-        const { role, name } = await fetchUserDetails(firebaseUser.email);
+        const role = extractRoleFromEmail(firebaseUser.email);
         setUser(firebaseUser);
         setUserRole(role);
-        setUserName(name);
+        setUserName(firebaseUser.email);
       } else {
         setUser(null);
         setUserRole(null);

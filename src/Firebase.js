@@ -35,16 +35,7 @@ export const db = getFirestore(app);
 // Initialize Firebase Storage
 export const storage = getStorage(app);
 
-// Predefined hospital data
-const hospitalData = [
-  { id: "east_side_clinic", name: "East Side Clinic" },
-  { id: "west_end_medical_center", name: "West End Medical Center" },
-  { id: "st_marys_hospital", name: "St. Mary's Hospital" },
-];
 
-/**
- * Populate hospitals collection with predefined data if it doesn't exist.
- */
 export const populateHospitalData = async () => {
   try {
     const hospitalsCollection = collection(db, "hospitals");

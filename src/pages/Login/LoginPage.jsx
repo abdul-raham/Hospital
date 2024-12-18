@@ -11,18 +11,15 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [hospitals, setHospitals] = useState([]); // State for hospital dropdown
+  const [hospitals, setHospitals] = useState([]);
   const [selectedHospital, setSelectedHospital] = useState("");
   const [hospitalLoading, setHospitalLoading] = useState(true);
   const navigate = useNavigate();
 
-  /** Fetch hospitals from Firestore */
   useEffect(() => {
     const fetchHospitals = async () => {
       try {
-        // Populate hospital data if not already present
         await populateHospitalData();
-
         const snapshot = await getDocs(collection(db, "hospitals"));
         const hospitalList = snapshot.docs.map((doc) => ({
           id: doc.id,
@@ -40,7 +37,6 @@ const LoginPage = () => {
     fetchHospitals();
   }, []);
 
-  /** Handle the login process */
   const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage("");
@@ -51,55 +47,51 @@ const LoginPage = () => {
       return;
     }
 
-    const auth = getAuth();
-
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email.trim(),
-        password
-      );
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: email.trim(),
+          password,
+          hospitalId: selectedHospital,
+        }),
+      });
 
-      const tokenResult = await userCredential.user.getIdTokenResult();
-      const hospitalId = tokenResult.claims.hospitalId; // Custom claim for user's hospital
+      const result = await response.json();
 
-      // Check if the user's hospital matches the selected one
-      if (hospitalId !== selectedHospital) {
-        throw new Error("You do not have access to this hospital.");
+      if (response.ok) {
+        toast.success("Login successful!");
+        navigate(`/${result.role}`);
+      } else {
+        // Handle server response error
+        toast.error(result.message || "Login failed.");
+        setErrorMessage(result.message);
       }
-
-      toast.success("Login successful!");
-      navigate(`/${userRole}`); // Redirect based on role
     } catch (error) {
-      console.error("Login failed: ", error.message);
-      setErrorMessage(error.message || "Login failed.");
-      toast.error(error.message || "An unexpected error occurred.");
+      console.error("Unexpected login error:", error);
+      setErrorMessage("Unexpected error occurred.");
+      toast.error("Unexpected error occurred.");
     }
   };
 
   return (
     <div style={loginPageStyles.container}>
       <div style={loginPageStyles.wrapper}>
-        {/* Left Section */}
         <div style={loginPageStyles.leftSection}></div>
-
-        {/* Right Form Section */}
         <div style={loginPageStyles.formSection}>
           <h2 style={loginPageStyles.title}>Hospital Login</h2>
           <form onSubmit={handleLogin} style={loginPageStyles.form}>
-            {/* Dropdown to select hospital */}
             <div style={loginPageStyles.inputGroup}>
               <label style={loginPageStyles.label}>Select Hospital</label>
               <select
                 style={loginPageStyles.input}
                 value={selectedHospital}
                 onChange={(e) => setSelectedHospital(e.target.value)}
-                disabled={hospitalLoading} // Disable until hospitals load
+                disabled={hospitalLoading}
               >
                 <option value="">
-                  {hospitalLoading
-                    ? "Loading hospitals..."
-                    : "--Select a hospital--"}
+                  {hospitalLoading ? "Loading hospitals..." : "--Select a hospital--"}
                 </option>
                 {hospitals.map((hospital) => (
                   <option key={hospital.id} value={hospital.id}>
@@ -108,8 +100,6 @@ const LoginPage = () => {
                 ))}
               </select>
             </div>
-
-            {/* Email Input */}
             <div style={loginPageStyles.inputGroup}>
               <label style={loginPageStyles.label}>Email</label>
               <input
@@ -121,8 +111,6 @@ const LoginPage = () => {
                 required
               />
             </div>
-
-            {/* Password Input */}
             <div style={loginPageStyles.inputGroup}>
               <label style={loginPageStyles.label}>Password</label>
               <input
@@ -134,21 +122,17 @@ const LoginPage = () => {
                 required
               />
             </div>
-
-            {/* Display any error messages */}
             {errorMessage && (
               <div style={loginPageStyles.errorMessage}>
                 <p>{errorMessage}</p>
               </div>
             )}
-
-            {/* Submit Button */}
             <button
               type="submit"
               style={loginPageStyles.button}
               disabled={loading || hospitalLoading}
             >
-              {loading ? "Logging in..." : "Login"}
+              {loading || hospitalLoading ? "Logging in..." : "Login"}
             </button>
           </form>
         </div>
@@ -228,3 +212,4 @@ const loginPageStyles = {
 };
 
 export default LoginPage;
+  
