@@ -1,37 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { TextField, MenuItem, Box, Typography } from "@mui/material";
-import { db } from "./Firebase"; // Ensure Firebase is imported correctly
-import { collection, getDocs } from "firebase/firestore";
+import { fetchHospitals } from "./Firebase";
 
 const SeeHospitals = () => {
   const [hospitals, setHospitals] = useState([]); // State to hold hospital data
   const [selectedHospital, setSelectedHospital] = useState(""); // Selected hospital state
   const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
 
   // Fetch hospitals from Firestore
-  const fetchHospitals = async () => {
+  const loadHospitals = async () => {
     try {
-      const hospitalsCollection = collection(db, "Hospitals"); // Points to the "Hospitals" collection
-      const querySnapshot = await getDocs(hospitalsCollection);
-
-      // Map through documents to extract hospital names and users
-      const hospitalList = querySnapshot.docs.map((doc) => ({
-        id: doc.id, // Document ID
-        name: doc.data().name, // Hospital name
-        users: doc.data().users || [], // Optional users array
-      }));
-
-      console.log("Fetched Hospitals: ", hospitalList); // Debugging: Log fetched hospitals
-      setHospitals(hospitalList); // Update the state
-      setLoading(false); // Stop loading
-    } catch (error) {
-      console.error("Error fetching hospitals: ", error);
+      const hospitalData = await fetchHospitals();
+      setHospitals(hospitalData);
+    } catch (err) {
+      console.error("Error loading hospitals:", err);
+      setError("Failed to load hospitals. Please try again.");
+    } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchHospitals(); // Trigger fetch on component mount
+    loadHospitals(); // Fetch hospitals on component mount
   }, []);
 
   return (
@@ -42,6 +33,8 @@ const SeeHospitals = () => {
 
       {loading ? (
         <Typography>Loading hospitals...</Typography>
+      ) : error ? (
+        <Typography color="error">{error}</Typography>
       ) : (
         <TextField
           label="Hospitals"
@@ -52,7 +45,6 @@ const SeeHospitals = () => {
           onChange={(e) => setSelectedHospital(e.target.value)}
           margin="normal"
         >
-          {/* Map the hospitals to the dropdown */}
           {hospitals.map((hospital) => (
             <MenuItem key={hospital.id} value={hospital.id}>
               {hospital.name}
@@ -64,10 +56,10 @@ const SeeHospitals = () => {
       {selectedHospital && (
         <Box mt={2}>
           <Typography variant="body1">
-            Selected Hospital ID: {selectedHospital}
+            <strong>Selected Hospital ID:</strong> {selectedHospital}
           </Typography>
           <Typography variant="body2">
-            Users:{" "}
+            <strong>Users:</strong>{" "}
             {hospitals
               .find((hospital) => hospital.id === selectedHospital)
               ?.users.join(", ") || "No users available"}
