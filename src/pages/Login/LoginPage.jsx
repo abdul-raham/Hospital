@@ -7,16 +7,17 @@ import { db, populateHospitalData } from "../../Firebase";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 const LoginPage = () => {
-  const { loading, userRole } = useAuthContext();
+  const { loading, userRole } = useAuthContext(); // Get loading status and user role from context
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [hospitals, setHospitals] = useState([]); // State for hospital dropdown
+  const [hospitals, setHospitals] = useState([]); // State for storing hospital list
   const [selectedHospital, setSelectedHospital] = useState("");
-  const [hospitalLoading, setHospitalLoading] = useState(true);
+  const [hospitalLoading, setHospitalLoading] = useState(true); // Loading state for hospital dropdown
+  const [loginLoading, setLoginLoading] = useState(false); // Loading state for login process
   const navigate = useNavigate();
 
-  /** Fetch hospitals from Firestore */
+  /** Fetch hospitals from Firestore on component mount */
   useEffect(() => {
     const fetchHospitals = async () => {
       try {
@@ -24,13 +25,17 @@ const LoginPage = () => {
         await populateHospitalData();
 
         const snapshot = await getDocs(collection(db, "hospitals"));
+        if (snapshot.empty) {
+          throw new Error("No hospitals found in the database.");
+        }
+
         const hospitalList = snapshot.docs.map((doc) => ({
           id: doc.id,
           name: doc.data().name,
         }));
         setHospitals(hospitalList);
       } catch (error) {
-        console.error("Error fetching hospitals: ", error);
+        console.error("Error fetching hospitals: ", error.message);
         toast.error("Failed to load hospitals.");
       } finally {
         setHospitalLoading(false);
@@ -44,10 +49,12 @@ const LoginPage = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage("");
+    setLoginLoading(true);
 
     if (!selectedHospital) {
       setErrorMessage("Please select a hospital to log in.");
       toast.error("Please select a hospital.");
+      setLoginLoading(false);
       return;
     }
 
@@ -60,11 +67,11 @@ const LoginPage = () => {
         password
       );
 
+      // Get the custom claims from the user's token
       const tokenResult = await userCredential.user.getIdTokenResult();
-      const hospitalId = tokenResult.claims.hospitalId; // Custom claim for user's hospital
+      const hospitalId = tokenResult.claims?.hospitalId;
 
-      // Check if the user's hospital matches the selected one
-      if (hospitalId !== selectedHospital) {
+      if (!hospitalId || hospitalId !== selectedHospital) {
         throw new Error("You do not have access to this hospital.");
       }
 
@@ -72,8 +79,19 @@ const LoginPage = () => {
       navigate(`/${userRole}`); // Redirect based on role
     } catch (error) {
       console.error("Login failed: ", error.message);
-      setErrorMessage(error.message || "Login failed.");
-      toast.error(error.message || "An unexpected error occurred.");
+
+      if (error.code === "auth/wrong-password" || error.code === "auth/user-not-found") {
+        setErrorMessage("Invalid email or password.");
+        toast.error("Invalid email or password.");
+      } else if (error.message.includes("access to this hospital")) {
+        setErrorMessage("You do not have access to this hospital.");
+        toast.error("You do not have access to this hospital.");
+      } else {
+        setErrorMessage("An unexpected error occurred. Please try again.");
+        toast.error("An unexpected error occurred.");
+      }
+    } finally {
+      setLoginLoading(false);
     }
   };
 
@@ -81,7 +99,14 @@ const LoginPage = () => {
     <div style={loginPageStyles.container}>
       <div style={loginPageStyles.wrapper}>
         {/* Left Section */}
-        <div style={loginPageStyles.leftSection}></div>
+        <div style={loginPageStyles.leftSection}>
+          {/* Add background image with alt text */}
+          <img
+            src="/path-to-your-image.jpg"
+            alt="Hospital illustration"
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        </div>
 
         {/* Right Form Section */}
         <div style={loginPageStyles.formSection}>
@@ -146,9 +171,9 @@ const LoginPage = () => {
             <button
               type="submit"
               style={loginPageStyles.button}
-              disabled={loading || hospitalLoading}
+              disabled={loginLoading || hospitalLoading}
             >
-              {loading ? "Logging in..." : "Login"}
+              {loginLoading ? "Logging in..." : "Login"}
             </button>
           </form>
         </div>
@@ -177,7 +202,6 @@ const loginPageStyles = {
   },
   leftSection: {
     flex: 1,
-    background: `url('/path-to-your-image.jpg') no-repeat center center / cover`,
   },
   formSection: {
     flex: 1,
