@@ -4,10 +4,9 @@ import { toast } from "react-toastify";
 import { useAuthContext } from "../../context/AuthContext";
 import { collection, getDocs } from "firebase/firestore";
 import { db, populateHospitalData } from "../../Firebase";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 const LoginPage = () => {
-  const { loading, userRole } = useAuthContext();
+  const { loading } = useAuthContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -48,7 +47,7 @@ const LoginPage = () => {
     }
 
     try {
-      const response = await fetch("/api/auth/login", {
+      const response = await fetch("http://localhost:5000/api/auth/login", { // Replace 5000 with your backend server port
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -58,20 +57,23 @@ const LoginPage = () => {
         }),
       });
 
-      const result = await response.json();
-
-      if (response.ok) {
-        toast.success("Login successful!");
-        navigate(`/${result.role}`);
-      } else {
-        // Handle server response error
-        toast.error(result.message || "Login failed.");
-        setErrorMessage(result.message);
+      if (!response.ok) {
+        // Check for 404 or other server errors
+        const errorText = await response.text();
+        const errorMessage =
+          response.status === 404
+            ? "API endpoint not found (404)."
+            : errorText || "Login failed.";
+        throw new Error(errorMessage);
       }
+
+      const result = await response.json();
+      toast.success("Login successful!");
+      navigate(`/${result.role}`);
     } catch (error) {
-      console.error("Unexpected login error:", error);
-      setErrorMessage("Unexpected error occurred.");
-      toast.error("Unexpected error occurred.");
+      console.error("Unexpected login error:", error.message);
+      setErrorMessage(error.message || "Unexpected error occurred.");
+      toast.error(error.message || "Unexpected error occurred.");
     }
   };
 
@@ -91,7 +93,9 @@ const LoginPage = () => {
                 disabled={hospitalLoading}
               >
                 <option value="">
-                  {hospitalLoading ? "Loading hospitals..." : "--Select a hospital--"}
+                  {hospitalLoading
+                    ? "Loading hospitals..."
+                    : "--Select a hospital--"}
                 </option>
                 {hospitals.map((hospital) => (
                   <option key={hospital.id} value={hospital.id}>
@@ -212,4 +216,3 @@ const loginPageStyles = {
 };
 
 export default LoginPage;
-  

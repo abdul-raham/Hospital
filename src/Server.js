@@ -1,11 +1,10 @@
-// File: backend/server.js
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const http = require("http");
-const { Server } = require("socket.io");
-const appointmentRoutes = require("./routes/appointments");
-const userRoutes = require("./routes/userRoutes");
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
+import http from "http";
+import { Server } from "socket.io";
+import appointmentRoutes from "./routes/appointments.js";
+import userRoutes from "./routes/userRoutes.js";
 
 // Initialize Express app
 const app = express();
@@ -16,11 +15,23 @@ app.use(cors());
 app.use("/api/appointments", appointmentRoutes);
 app.use("/api/users", userRoutes);
 
+// Login route (for authentication)
+app.post("/api/auth/login", (req, res) => {
+  const { username, password } = req.body;
+
+  // Example login logic (you should replace this with actual validation)
+  if (username === "admin" && password === "password123") {
+    return res.status(200).json({ message: "Login successful" });
+  } else {
+    return res.status(401).json({ message: "Invalid username or password" });
+  }
+});
+
 // Create HTTP server & integrate Socket.IO
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173", // Frontend origin URL
+    origin: "http://localhost:5173", // Frontend origin URL (adjust if needed)
     methods: ["GET", "POST"],
   },
 });
