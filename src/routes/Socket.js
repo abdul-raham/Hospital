@@ -1,13 +1,15 @@
 import { io } from "socket.io-client";
 
-const socket = io("http://localhost:5173"); // Replace with your backend URL
+const socket = io("http://localhost:5000");
 
-export const fetchAppointments = (callback) => {
-  socket.on("appointments", callback);
+const fetchAppointments = (callback) => {
+  socket.on("appointments", (data) => {
+    callback(data);
+  });
 };
 
-export const addAppointment = (appointment) => {
-  socket.emit("addAppointment", appointment);
+const addAppointment = (data) => {
+  socket.emit("new-appointment", data);
 };
 
-export default socket;
+export { fetchAppointments, addAppointment };

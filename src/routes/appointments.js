@@ -1,5 +1,5 @@
-// File: backend/routes/appointments.js
-const express = require("express");
+import express from "express";
+
 const router = express.Router();
 
 // Simulated database (replace this with real database logic)
@@ -22,4 +22,4 @@ router.post("/", (req, res) => {
   res.status(201).json({ success: true, data: newAppointment });
 });
 
-module.exports = router;
+export default router;

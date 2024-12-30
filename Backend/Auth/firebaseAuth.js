@@ -1,5 +1,5 @@
 import express from "express";
-import { initializeApp } from "firebase/app"; // Add this import
+import { initializeApp } from "firebase/app";
 import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "firebase/auth";
 
 // Firebase configuration
@@ -13,8 +13,8 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase App
-const firebaseApp = initializeApp(firebaseConfig); // Firebase app initialization
-const auth = getAuth(firebaseApp); // Get Firebase authentication
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
 
 // Initialize Express Router
 const router = express.Router();
@@ -27,7 +27,6 @@ router.post("/login", async (req, res) => {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
-    // Simulate fetching claims or hospital information (replace with actual database logic)
     const idTokenResult = await user.getIdTokenResult();
 
     if (!idTokenResult.claims.hospitalId || idTokenResult.claims.hospitalId !== hospitalId) {
@@ -54,7 +53,6 @@ router.post("/signup", async (req, res) => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
-    // Simulate assigning hospital ID to the user in the custom claims (this would require admin privileges)
     console.log("User signed up successfully:", user.email, hospitalId);
 
     res.status(200).json({
@@ -78,5 +76,4 @@ router.post("/logout", async (req, res) => {
   }
 });
 
-// Export router with ES module syntax
 export default router;
