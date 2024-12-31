@@ -57,6 +57,7 @@ const LoginPage = () => {
         }),
       });
 
+      // Check if the response is OK (status 200-299)
       if (!response.ok) {
         const errorText = await response.text();
         const errorMessage =
@@ -67,6 +68,8 @@ const LoginPage = () => {
       }
 
       const result = await response.json();
+      console.log("Login Result: ", result);  // Debugging line to inspect the response
+
       toast.success("Login successful!");
       navigate(`/${result.role}`);
     } catch (error) {

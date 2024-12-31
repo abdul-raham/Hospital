@@ -1,4 +1,20 @@
-import { setCustomUserClaims } from "../src/Firebase-admin/admin";
+import admin from "firebase-admin";
+
+// Initialize Firebase Admin SDK
+admin.initializeApp();
+
+// Define the setCustomUserClaims function
+const setCustomUserClaims = async (uid, role, hospitalId) => {
+  try {
+    await admin.auth().setCustomUserClaims(uid, {
+      role: role,
+      hospitalId: hospitalId,
+    });
+    console.log(`Custom claims set for UID: ${uid}`);
+  } catch (error) {
+    console.error(`Error setting custom claims for UID: ${uid}`, error.message);
+  }
+};
 
 // Define user roles and hospital data
 const userRoles = [
@@ -21,4 +37,5 @@ const assignRoles = async () => {
   }
 };
 
+// Assign roles to all users
 assignRoles();

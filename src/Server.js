@@ -33,25 +33,19 @@ const io = new Server(server, {
   },
 });
 
-// Example Socket.IO logic
+// Listen for socket connections and handle events
 io.on("connection", (socket) => {
-  console.log("A client connected:", socket.id);
+  console.log("A user connected");
 
-  socket.on("fetchAppointments", () => {
-    const appointments = [
-      { id: 1, name: "John Doe", time: "10:00 AM" },
-      { id: 2, name: "Jane Smith", time: "11:00 AM" },
-    ];
-    socket.emit("appointments", appointments); // Send to the specific client
-  });
-
-  socket.on("addAppointment", (appointment) => {
-    console.log("Appointment received:", appointment);
-    io.emit("appointments", [appointment]); // Broadcast to all connected clients
+  // Handle appointment-related events here
+  socket.on("create-appointment", (appointmentData) => {
+    // Emit event to notify other clients (e.g., for new appointment)
+    io.emit("new-appointment", appointmentData);
+    console.log("New appointment received", appointmentData);
   });
 
   socket.on("disconnect", () => {
-    console.log("Client disconnected:", socket.id);
+    console.log("User disconnected");
   });
 });
 

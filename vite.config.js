@@ -5,10 +5,10 @@ import react from "@vitejs/plugin-react-swc";
 export default defineConfig({
   plugins: [react()],
   server: {
-    hmr: false, // Disable Hot Module Replacement if needed
+    hmr: true, // Enable Hot Module Replacement for a better development experience
     proxy: {
       "/api": {
-        target: "http://localhost:5173", // Replace with your backend server URL
+        target: "http://localhost:5000", // Correct backend server URL
         changeOrigin: true, // Ensures the host header matches the target URL
         rewrite: (path) => path.replace(/^\/api/, ""), // Removes '/api' prefix when forwarding to the backend
       },
