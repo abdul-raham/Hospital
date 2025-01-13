@@ -1,30 +1,46 @@
-const admin = require("firebase-admin");
-const serviceAccount = require("./serviceAccountKey.json")
+import admin from "firebase-admin";
+import { readFileSync } from "fs";
+import path from "path";
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-});
-const serviceAccount = JSON.parse(
-  readFileSync("./serviceAccountKey.json", "utf8")
-);
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-})
-console.log("Firebase Admin Initialized.");
+// Debug the current working directory
+console.log("Current working directory:", process.cwd());
+
+// Load the service account key from the config folder
+try {
+  const serviceAccountPath = path.resolve(__dirname, "../../config/serviceAccountKey.json");
+  const serviceAccount = JSON.parse(readFileSync(serviceAccountPath, "utf8"));
+
+  // Initialize Firebase Admin SDK
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+
+  console.log("Firebase Admin initialized successfully.");
+} catch (error) {
+  console.error("Error initializing Firebase Admin SDK:", error.message);
+  process.exit(1);
+}
 
 /**
- * Assign custom claims to a user
+ * Function to set custom user claims
  * @param {string} uid - The Firebase UID of the user
- * @param {string} role - The role to assign to this user
+ * @param {string} role - The user's role (e.g., nurse, patient, etc.)
+ * @param {string} hospitalId - The ID of the hospital associated with the user
  */
-const setCustomClaims = async (uid, role) => {
+export const setCustomUserClaims = async (uid, role, hospitalId) => {
   try {
-    await admin.auth().setCustomUserClaims(uid, { role });
-    console.log(`Custom claims set: ${role} for ${uid}`);
+    console.log(
+      `Setting custom claims for UID: ${uid}, Role: ${role}, HospitalId: ${hospitalId}`
+    );
+    await admin.auth().setCustomUserClaims(uid, { role, hospitalId });
+    console.log(
+      `Custom claims set for user ${uid} with role: ${role} and hospitalId: ${hospitalId}`
+    );
   } catch (error) {
-    console.error("Error setting custom claims:", error);
-    throw new Error(error.message);
+    console.error("Error setting custom claims:", error.message);
+    throw error;
   }
 };
 
-module.exports = { setCustomClaims };
+// Exporting admin for additional use if needed
+export default admin;

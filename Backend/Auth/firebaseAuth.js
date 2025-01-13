@@ -1,6 +1,6 @@
-import express from 'express';
-import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
+import express from "express";
+import { initializeApp } from "firebase/app";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "firebase/auth";
 
 // Firebase configuration
 const firebaseConfig = {
@@ -12,26 +12,27 @@ const firebaseConfig = {
   appId: "1:420255599423:web:a476f91fcaa0f49121218a",
 };
 
-// Initialize Firebase
+// Initialize Firebase App
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 
 // Initialize Express Router
 const router = express.Router();
 
-// Login route with hospital ID validation
+// Login Endpoint with Hospital ID validation
 router.post("/login", async (req, res) => {
   const { email, password, hospitalId } = req.body;
 
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
-    
-    // Get the ID token and check the custom claim for hospitalId
+
     const idTokenResult = await user.getIdTokenResult();
 
     if (!idTokenResult.claims.hospitalId || idTokenResult.claims.hospitalId !== hospitalId) {
-      return res.status(403).json({ message: "Unauthorized access to this hospital." });
+      return res.status(403).json({
+        message: "You are not authorized to access this hospital.",
+      });
     }
 
     res.status(200).json({
@@ -44,7 +45,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Sign-up route
+// Sign-up Endpoint
 router.post("/signup", async (req, res) => {
   const { email, password, hospitalId } = req.body;
 
@@ -52,7 +53,6 @@ router.post("/signup", async (req, res) => {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
-    // Optionally set custom claims for hospitalId and role (requires Firebase Admin SDK)
     console.log("User signed up successfully:", user.email, hospitalId);
 
     res.status(200).json({
@@ -65,7 +65,7 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-// Logout route
+// Logout Endpoint
 router.post("/logout", async (req, res) => {
   try {
     await signOut(auth);

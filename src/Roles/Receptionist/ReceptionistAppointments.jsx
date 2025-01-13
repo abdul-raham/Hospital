@@ -14,9 +14,10 @@ import {
   TextField,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
-import io from "socket.io-client";
+import { io } from "socket.io-client";
+import { fetchAppointments, addAppointment } from "../../routes/Socket";  // Import socket functions
 
-const socket = io("http://localhost:5173"); // Replace with your server URL
+const socket = io("http://localhost:5000"); // Replace with your server URL
 
 const ReceptionistAppointments = () => {
   const [appointments, setAppointments] = useState([]);
@@ -25,7 +26,7 @@ const ReceptionistAppointments = () => {
 
   // Fetch appointments and listen for updates
   useEffect(() => {
-    socket.on("appointments", (data) => {
+    fetchAppointments((data) => {
       const formattedData = Object.entries(data).map(([id, details]) => ({
         id,
         ...details,
@@ -47,7 +48,7 @@ const ReceptionistAppointments = () => {
 
   // Handle form submission
   const handleSubmit = () => {
-    socket.emit("addAppointment", formData);
+    addAppointment(formData);
     setOpenModal(false);
     setFormData({ doctor: "", date: "", time: "" });
   };
@@ -91,63 +92,58 @@ const ReceptionistAppointments = () => {
         </Table>
       </TableContainer>
 
+      {/* Modal to add appointment */}
       <Modal open={openModal} onClose={() => setOpenModal(false)}>
-        <Box
-          sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: 400,
-            bgcolor: "background.paper",
-            p: 4,
-            boxShadow: 24,
-            borderRadius: 2,
-          }}
-        >
+        <Box sx={modalStyle}>
           <Typography variant="h6" sx={{ mb: 2 }}>
-            Add Appointment
+            Add New Appointment
           </Typography>
           <TextField
-            fullWidth
             label="Doctor"
-            name="doctor"
+            variant="outlined"
+            fullWidth
             value={formData.doctor}
             onChange={handleChange}
+            name="doctor"
             sx={{ mb: 2 }}
           />
           <TextField
-            fullWidth
             label="Date"
-            type="date"
-            name="date"
+            variant="outlined"
+            fullWidth
             value={formData.date}
             onChange={handleChange}
-            InputLabelProps={{ shrink: true }}
+            name="date"
             sx={{ mb: 2 }}
           />
           <TextField
-            fullWidth
             label="Time"
-            type="time"
-            name="time"
+            variant="outlined"
+            fullWidth
             value={formData.time}
             onChange={handleChange}
-            InputLabelProps={{ shrink: true }}
+            name="time"
             sx={{ mb: 2 }}
           />
-          <Button
-            fullWidth
-            variant="contained"
-            sx={{ backgroundColor: "#437cf8" }}
-            onClick={handleSubmit}
-          >
-            Save
+          <Button variant="contained" onClick={handleSubmit}>
+            Submit
           </Button>
         </Box>
       </Modal>
     </Box>
   );
+};
+
+// Modal Style
+const modalStyle = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  backgroundColor: "white",
+  padding: "20px",
+  borderRadius: "8px",
+  width: "300px",
 };
 
 export default ReceptionistAppointments;

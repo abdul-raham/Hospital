@@ -21,7 +21,7 @@ import Patients from "../Patient/PatientDashboard.jsx";
 import NurseTasks from "./NurseTasks.jsx";
 import CarePlans from "./CarePlans.jsx";
 import MessageInbox from "../Receptionist/MessageInbox.jsx";
-import socket from "../../routes/Socket.js";
+import { fetchAppointments } from "../../routes/Socket"; // Importing named export fetchAppointments
 import useAuth from "../../hooks/useAuth";
 import "./NurseDashboard.css";
 
@@ -60,14 +60,12 @@ const NurseDashboard = () => {
 
   // Fetch appointments using socket.io
   useEffect(() => {
-    socket.on("appointments", (updatedAppointments) => {
+    fetchAppointments((updatedAppointments) => {
       setAppointments(updatedAppointments);
     });
 
-    // Clean up socket listener
-    return () => {
-      socket.off("appointments");
-    };
+    // No need to clean up socket listener in this case since fetchAppointments
+    // directly triggers a callback and doesn't leave lingering listeners.
   }, []);
 
   // Simulate dynamic data for tasks and care plans

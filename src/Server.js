@@ -1,52 +1,51 @@
-// File: backend/server.js
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
-const http = require("http");
-const { Server } = require("socket.io");
-const appointmentRoutes = require("./routes/appointments");
-const userRoutes = require("./routes/userRoutes");
+import express from "express";
+import bodyParser from "body-parser";
+import cors from "cors";
+import http from "http";
+import { Server } from "socket.io";
+import appointmentRoutes from "./routes/appointments.js";
+import userRoutes from "./routes/userRoutes.js";
+import authRoutes from "../Backend/Auth/firebaseAuth.js"; // Import the auth routes
 
 // Initialize Express app
 const app = express();
 app.use(bodyParser.json());
-app.use(cors());
 
-// Routes
+// CORS setup to allow frontend access from a specific origin
+app.use(cors({
+  origin: "http://localhost:5173", // Frontend URL
+  methods: ["GET", "POST"]
+}));
+
+// Routes for API
 app.use("/api/appointments", appointmentRoutes);
 app.use("/api/users", userRoutes);
+
+// Authentication routes
+app.use("/api/auth", authRoutes); // Use the auth routes here
 
 // Create HTTP server & integrate Socket.IO
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:5173", // Frontend origin URL
+    origin: "http://localhost:5173", // Frontend origin URL (adjust if needed)
     methods: ["GET", "POST"],
   },
 });
 
-// Example Socket.IO logic
+// Listen for socket connections and handle events
 io.on("connection", (socket) => {
-  console.log("A client connected:", socket.id);
+  console.log("A user connected");
 
-  // Example: Fetch appointments
-  socket.on("fetchAppointments", () => {
-    const appointments = [
-      { id: 1, name: "John Doe", time: "10:00 AM" },
-      { id: 2, name: "Jane Smith", time: "11:00 AM" },
-    ];
-    socket.emit("appointments", appointments);
+  // Handle appointment-related events here
+  socket.on("create-appointment", (appointmentData) => {
+    // Emit event to notify other clients (e.g., for new appointment)
+    io.emit("new-appointment", appointmentData);
+    console.log("New appointment received", appointmentData);
   });
 
-  // Example: When a new appointment is added
-  socket.on("addAppointment", (appointment) => {
-    console.log("Appointment received:", appointment);
-    io.emit("appointments", [appointment]); // Broadcast to all connected clients
-  });
-
-  // Handle disconnection
   socket.on("disconnect", () => {
-    console.log("Client disconnected:", socket.id);
+    console.log("User disconnected");
   });
 });
 

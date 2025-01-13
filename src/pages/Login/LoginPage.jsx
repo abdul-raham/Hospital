@@ -4,26 +4,23 @@ import { toast } from "react-toastify";
 import { useAuthContext } from "../../context/AuthContext";
 import { collection, getDocs } from "firebase/firestore";
 import { db, populateHospitalData } from "../../Firebase";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 const LoginPage = () => {
-  const { loading, userRole } = useAuthContext(); // Get loading status and user role from context
+  const { loading, userRole } = useAuthContext();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [hospitals, setHospitals] = useState([]); // State for storing hospital list
+  const [hospitals, setHospitals] = useState([]); // State for hospital dropdown
   const [selectedHospital, setSelectedHospital] = useState("");
   const [hospitalLoading, setHospitalLoading] = useState(true); // Loading state for hospital dropdown
   const [loginLoading, setLoginLoading] = useState(false); // Loading state for login process
   const navigate = useNavigate();
 
-  /** Fetch hospitals from Firestore on component mount */
+  /** Fetch hospitals from Firestore */
   useEffect(() => {
     const fetchHospitals = async () => {
       try {
-        // Populate hospital data if not already present
         await populateHospitalData();
-
         const snapshot = await getDocs(collection(db, "hospitals"));
         if (snapshot.empty) {
           throw new Error("No hospitals found in the database.");
@@ -45,7 +42,6 @@ const LoginPage = () => {
     fetchHospitals();
   }, []);
 
-  /** Handle the login process */
   const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage("");
@@ -67,31 +63,20 @@ const LoginPage = () => {
         password
       );
 
-      // Get the custom claims from the user's token
       const tokenResult = await userCredential.user.getIdTokenResult();
-      const hospitalId = tokenResult.claims?.hospitalId;
+      const hospitalId = tokenResult.claims.hospitalId; // Custom claim for user's hospital
 
-      if (!hospitalId || hospitalId !== selectedHospital) {
+      // Check if the user's hospital matches the selected one
+      if (hospitalId !== selectedHospital) {
         throw new Error("You do not have access to this hospital.");
       }
 
       toast.success("Login successful!");
-      navigate(`/${userRole}`); // Redirect based on role
+      navigate(`/${result.role}`);
     } catch (error) {
       console.error("Login failed: ", error.message);
-
-      if (error.code === "auth/wrong-password" || error.code === "auth/user-not-found") {
-        setErrorMessage("Invalid email or password.");
-        toast.error("Invalid email or password.");
-      } else if (error.message.includes("access to this hospital")) {
-        setErrorMessage("You do not have access to this hospital.");
-        toast.error("You do not have access to this hospital.");
-      } else {
-        setErrorMessage("An unexpected error occurred. Please try again.");
-        toast.error("An unexpected error occurred.");
-      }
-    } finally {
-      setLoginLoading(false);
+      setErrorMessage(error.message || "Login failed.");
+      toast.error(error.message || "An unexpected error occurred.");
     }
   };
 
@@ -99,27 +84,19 @@ const LoginPage = () => {
     <div style={loginPageStyles.container}>
       <div style={loginPageStyles.wrapper}>
         {/* Left Section */}
-        <div style={loginPageStyles.leftSection}>
-          {/* Add background image with alt text */}
-          <img
-            src="../src/components/Assets/doctor-dash.png"
-            alt="Hospital illustration"
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
-        </div>
+        <div style={loginPageStyles.leftSection}></div>
 
         {/* Right Form Section */}
         <div style={loginPageStyles.formSection}>
           <h2 style={loginPageStyles.title}>Hospital Login</h2>
           <form onSubmit={handleLogin} style={loginPageStyles.form}>
-            {/* Dropdown to select hospital */}
             <div style={loginPageStyles.inputGroup}>
               <label style={loginPageStyles.label}>Select Hospital</label>
               <select
                 style={loginPageStyles.input}
                 value={selectedHospital}
                 onChange={(e) => setSelectedHospital(e.target.value)}
-                disabled={hospitalLoading} // Disable until hospitals load
+                disabled={hospitalLoading}
               >
                 <option value="">
                   {hospitalLoading
@@ -133,8 +110,6 @@ const LoginPage = () => {
                 ))}
               </select>
             </div>
-
-            {/* Email Input */}
             <div style={loginPageStyles.inputGroup}>
               <label style={loginPageStyles.label}>Email</label>
               <input
@@ -146,8 +121,6 @@ const LoginPage = () => {
                 required
               />
             </div>
-
-            {/* Password Input */}
             <div style={loginPageStyles.inputGroup}>
               <label style={loginPageStyles.label}>Password</label>
               <input
@@ -159,21 +132,17 @@ const LoginPage = () => {
                 required
               />
             </div>
-
-            {/* Display any error messages */}
             {errorMessage && (
               <div style={loginPageStyles.errorMessage}>
                 <p>{errorMessage}</p>
               </div>
             )}
-
-            {/* Submit Button */}
             <button
               type="submit"
               style={loginPageStyles.button}
               disabled={loginLoading || hospitalLoading}
             >
-              {loginLoading ? "Logging in..." : "Login"}
+              {loading ? "Logging in..." : "Login"}
             </button>
           </form>
         </div>

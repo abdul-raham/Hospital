@@ -17,34 +17,19 @@ import { getStorage } from "firebase/storage";
 // Debug the current working directory
 console.log("Current working directory:", process.cwd());
 
-// Initialize Firebase Admin SDK with error handling
-try {
-  const serviceAccount = JSON.parse(
-    readFileSync("./serviceAccountKey.json", "utf8")
-  );
+// Initialize Firebase Admin SDK
+admin.initializeApp();
 
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-  });
-
-  console.log("Firebase Admin initialized successfully.");
-} catch (error) {
-  console.error("Error initializing Firebase Admin SDK:", error.message);
-  process.exit(1);
-}
-
-// Function to set custom user claims
+// Define the setCustomUserClaims function
 const setCustomUserClaims = async (uid, role, hospitalId) => {
   try {
-    console.log(
-      `Setting custom claims for UID: ${uid}, Role: ${role}, HospitalId: ${hospitalId}`
-    );
-    await admin.auth().setCustomUserClaims(uid, { role, hospitalId });
-    console.log(
-      `Custom claims set for user ${uid} with role: ${role} and hospitalId: ${hospitalId}`
-    );
+    await admin.auth().setCustomUserClaims(uid, {
+      role: role,
+      hospitalId: hospitalId,
+    });
+    console.log(`Custom claims set for UID: ${uid}`);
   } catch (error) {
-    console.error("Error setting custom claims:", error.message);
+    console.error(`Error setting custom claims for UID: ${uid}`, error.message);
   }
 };
 
@@ -168,7 +153,7 @@ export const populateHospitalData = async () => {
   }
 };
 
-// Call the function to set roles and hospital IDs
+// Define user roles and hospital data
 const userRoles = [
   { uid: "ZRJ5Q01jyeTfTqQUlNul4D5cTr", role: "nurse", hospitalId: "st_marys_hospital" },
   { uid: "KXcsHaRuyZhoi1chFkcfGlFbZ", role: "patient", hospitalId: "east_side_clinic" },
@@ -177,6 +162,20 @@ const userRoles = [
   { uid: "Ez6DO11iBKX3VNQl70a9GMB", role: "doctor", hospitalId: "east_side_clinic" },
   { uid: "kZN5iFqQGzg72gP4SmhV6sl9", role: "nurse", hospitalId: "west_end_medical_center" },
 ];
+
+// Execute the function for each user
+const assignRoles = async () => {
+  for (const user of userRoles) {
+    try {
+      await setCustomUserClaims(user.uid, user.role, user.hospitalId);
+    } catch (error) {
+      console.error(`Failed to set claims for user ${user.uid}:`, error.message);
+    }
+  }
+};
+
+// Assign roles to all users
+assignRoles();
 
 userRoles.forEach((user) => {
   setCustomUserClaims(user.uid, user.role, user.hospitalId);

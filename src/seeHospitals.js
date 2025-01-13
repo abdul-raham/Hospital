@@ -1,6 +1,9 @@
+// SeeHospitals Component
+
 import React, { useState, useEffect } from "react";
 import { TextField, MenuItem, Box, Typography } from "@mui/material";
-import { fetchHospitals } from "./Firebase";
+import { db } from "./Firebase";  // Ensure that db is correctly exported from Firebase config
+import { collection, getDocs } from "firebase/firestore";  // Ensure correct Firebase imports
 
 const SeeHospitals = () => {
   const [hospitals, setHospitals] = useState([]); // State to hold hospital data
@@ -13,6 +16,13 @@ const SeeHospitals = () => {
     try {
       const hospitalsCollection = collection(db, "hospitals"); // Points to the "Hospitals" collection
       const querySnapshot = await getDocs(hospitalsCollection);
+
+      // Check if the querySnapshot is empty
+      if (querySnapshot.empty) {
+        setError("No hospitals found.");
+        setLoading(false);
+        return;
+      }
 
       // Map through documents to extract hospital names and users
       const hospitalList = querySnapshot.docs.map((doc) => ({
@@ -27,6 +37,7 @@ const SeeHospitals = () => {
     } catch (error) {
       console.error("Error fetching hospitals: ", error);
       setLoading(false);
+      setError("Failed to fetch hospitals. Please try again later.");
     }
   };
 
