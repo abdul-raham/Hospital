@@ -1,5 +1,18 @@
 import admin from "firebase-admin";
 import { readFileSync } from "fs";
+import { initializeApp } from "firebase/app";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import {
+  getFirestore,
+  collection,
+  doc,
+  setDoc,
+  getDoc,
+  getDocs,
+  updateDoc,
+  arrayUnion,
+} from "firebase/firestore";
+import { getStorage } from "firebase/storage";
 
 // Debug the current working directory
 console.log("Current working directory:", process.cwd());
@@ -35,35 +48,7 @@ const setCustomUserClaims = async (uid, role, hospitalId) => {
   }
 };
 
-// Call the function to set roles and hospital IDs
-const userRoles = [
-  { uid: "ZRJ5Q01jyeTfTqQUlNul4D5cTr", role: "nurse", hospitalId: "st_marys_hospital" },
-  { uid: "KXcsHaRuyZhoi1chFkcfGlFbZ", role: "patient", hospitalId: "east_side_clinic" },
-  { uid: "m3FkzQwgwiNQMDlo1HOIAnu", role: "admin", hospitalId: "st_marys_hospital" },
-  { uid: "itpidkzjYDG4afvqCj0mWfFwn", role: "doctor", hospitalId: "west_end_medical_center" },
-  { uid: "Ez6DO11iBKX3VNQl70a9GMB", role: "doctor", hospitalId: "east_side_clinic" },
-  { uid: "kZN5iFqQGzg72gP4SmhV6sl9", role: "nurse", hospitalId: "west_end_medical_center" },
-];
-
-userRoles.forEach((user) => {
-  setCustomUserClaims(user.uid, user.role, user.hospitalId);
-});
-
 // Firebase client-side configurations
-import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-import {
-  getFirestore,
-  collection,
-  doc,
-  setDoc,
-  getDoc,
-  getDocs,
-  updateDoc,
-  arrayUnion,
-} from "firebase/firestore";
-import { getStorage } from "firebase/storage";
-
 const firebaseConfig = {
   apiKey: "AIzaSyCdmHvjKgjmPPqJgmlIk2vYMXjdwcpf7hA",
   authDomain: "hosp-429ad.firebaseapp.com",
@@ -145,6 +130,11 @@ export const createUser = async (email, password, role, hospitalId) => {
     await addUserToHospital(hospitalId, email);
 
     console.log("User details saved in Firestore and added to hospital.");
+
+    // Set custom claims
+    await setCustomUserClaims(user.uid, role, hospitalId);
+    console.log("Custom claims set successfully.");
+
     return user;
   } catch (error) {
     console.error("Error creating user:", error.message);
@@ -177,3 +167,17 @@ export const populateHospitalData = async () => {
     throw error;
   }
 };
+
+// Call the function to set roles and hospital IDs
+const userRoles = [
+  { uid: "ZRJ5Q01jyeTfTqQUlNul4D5cTr", role: "nurse", hospitalId: "st_marys_hospital" },
+  { uid: "KXcsHaRuyZhoi1chFkcfGlFbZ", role: "patient", hospitalId: "east_side_clinic" },
+  { uid: "m3FkzQwgwiNQMDlo1HOIAnu", role: "admin", hospitalId: "st_marys_hospital" },
+  { uid: "itpidkzjYDG4afvqCj0mWfFwn", role: "doctor", hospitalId: "west_end_medical_center" },
+  { uid: "Ez6DO11iBKX3VNQl70a9GMB", role: "doctor", hospitalId: "east_side_clinic" },
+  { uid: "kZN5iFqQGzg72gP4SmhV6sl9", role: "nurse", hospitalId: "west_end_medical_center" },
+];
+
+userRoles.forEach((user) => {
+  setCustomUserClaims(user.uid, user.role, user.hospitalId);
+});

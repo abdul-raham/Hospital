@@ -102,7 +102,7 @@ const LoginPage = () => {
         <div style={loginPageStyles.leftSection}>
           {/* Add background image with alt text */}
           <img
-            src="/path-to-your-image.jpg"
+            src="../src/components/Assets/doctor-dash.png"
             alt="Hospital illustration"
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
