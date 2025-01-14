@@ -3,9 +3,9 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import http from "http";
 import { Server } from "socket.io";
-import appointmentRoutes from "./routes/appointments.js";
-import userRoutes from "./routes/userRoutes.js";
-import authRoutes from "../Backend/Auth/firebaseAuth.js"; // Import the auth routes
+import appointmentRoutes from "../src/routes/appointments.js";
+import userRoutes from "../src/routes/userRoutes.js";
+import authRoutes from "./Auth/firebaseAuth.js"; // Import the auth routes
 
 // Initialize Express app
 const app = express();
