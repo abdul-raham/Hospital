@@ -12,16 +12,21 @@ const app = express();
 app.use(bodyParser.json());
 
 // CORS setup to allow frontend access from a specific origin
-app.use(cors({
-  origin: "http://localhost:5173", // Frontend URL
-  methods: ["GET", "POST"]
-}));
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Frontend URL
+    methods: ["GET", "POST"],
+  })
+);
+
+// Default route to confirm server is running
+app.get("/", (req, res) => {
+  res.send("Server is running! Use the API endpoints.");
+});
 
 // Routes for API
 app.use("/api/appointments", appointmentRoutes);
 app.use("/api/users", userRoutes);
-
-// Authentication routes
 app.use("/api/auth", authRoutes); // Use the auth routes here
 
 // Create HTTP server & integrate Socket.IO
@@ -47,6 +52,17 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("User disconnected");
   });
+});
+
+// 404 Error Middleware
+app.use((req, res) => {
+  res.status(404).json({ message: "Endpoint not found" });
+});
+
+// General Error Middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: "Internal Server Error" });
 });
 
 // Start server

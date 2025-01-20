@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { useAuthContext } from "../../context/AuthContext";
 import { collection, getDocs } from "firebase/firestore";
 import { db, populateHospitalData } from "../../Firebase";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 const LoginPage = () => {
   const { loading, userRole } = useAuthContext();
@@ -46,40 +47,45 @@ const LoginPage = () => {
     e.preventDefault();
     setErrorMessage("");
     setLoginLoading(true);
-
+  
     if (!selectedHospital) {
       setErrorMessage("Please select a hospital to log in.");
       toast.error("Please select a hospital.");
       setLoginLoading(false);
       return;
     }
-
+  
     const auth = getAuth();
-
+  
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email.trim(),
-        password
-      );
-
+      const userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
+      console.log("User logged in:", userCredential);
+  
       const tokenResult = await userCredential.user.getIdTokenResult();
-      const hospitalId = tokenResult.claims.hospitalId; // Custom claim for user's hospital
-
-      // Check if the user's hospital matches the selected one
+      console.log("Token claims:", tokenResult.claims);
+  
+      const hospitalId = tokenResult.claims.hospitalId;
       if (hospitalId !== selectedHospital) {
         throw new Error("You do not have access to this hospital.");
       }
-
+  
+      const role = tokenResult.claims.role;
+      if (!role) {
+        throw new Error("Role information is missing in the token.");
+      }
+  
+      console.log("Navigation path:", `/${role}`);
       toast.success("Login successful!");
-      navigate(`/${result.role}`);
+      navigate(`/${role}`);
     } catch (error) {
-      console.error("Login failed: ", error.message);
+      console.error("Login failed:", error.message);
       setErrorMessage(error.message || "Login failed.");
       toast.error(error.message || "An unexpected error occurred.");
+    } finally {
+      setLoginLoading(false);
     }
-  };
-
+  };  
+  
   return (
     <div style={loginPageStyles.container}>
       <div style={loginPageStyles.wrapper}>
@@ -88,7 +94,7 @@ const LoginPage = () => {
 
         {/* Right Form Section */}
         <div style={loginPageStyles.formSection}>
-          <h2 style={loginPageStyles.title}>Hospital Login</h2>
+          <h2 style={loginPageStyles.title}>Care Giver</h2>
           <form onSubmit={handleLogin} style={loginPageStyles.form}>
             <div style={loginPageStyles.inputGroup}>
               <label style={loginPageStyles.label}>Select Hospital</label>

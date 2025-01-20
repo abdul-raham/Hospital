@@ -1,10 +1,9 @@
 const admin = require("firebase-admin");
 const { Server } = require("socket.io");
 
-// Firebase Admin Initialization
+
 admin.initializeApp({
-  credential: admin.credential.applicationDefault(),
-  databaseURL: "https://<your-database-name>.firebaseio.com",
+  credential: admin.credential.applicationDefault(), // Or use a service account key if needed
 });
 
 const db = admin.database();

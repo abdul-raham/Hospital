@@ -1,5 +1,3 @@
-// SeeHospitals Component
-
 import React, { useState, useEffect } from "react";
 import { TextField, MenuItem, Box, Typography } from "@mui/material";
 import { db } from "./Firebase";  // Ensure that db is correctly exported from Firebase config

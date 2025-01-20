@@ -1,37 +1,56 @@
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
-import { initializeApp } from 'firebase/app';
+import axios from "axios";
 
-// Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyCdmHvjKgjmPPqJgmlIk2vYMXjdwcpf7hA",
-  authDomain: "hosp-429ad.firebaseapp.com",
-  projectId: "hosp-429ad",
-  storageBucket: "hosp-429ad.appspot.com", 
-  messagingSenderId: "420255599423",
-  appId: "1:420255599423:web:a476f91fcaa0f49121218a",
-  measurementId: "G-6Y7Q7W5MWR"
-};
-
-// Initialize Firebase app
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app); // Initialize Firebase Auth instance
+// API base URL
+const API_BASE_URL = "http://localhost:5000/api/auth"; // Replace with your backend's API URL
 
 // Login function
-export const login = async (email, password) => {
-  const userCredential = await signInWithEmailAndPassword(auth, email, password);
-  return userCredential.user; // Return the user object
+export const login = async (email, password, hospitalId) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/login`, {
+      email,
+      password,
+      hospitalId,
+    });
+    // Store token or user details locally if needed
+    const { data } = response;
+    localStorage.setItem("authToken", data.token); // Example: Save token for authenticated requests
+    return data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Login failed");
+  }
 };
 
 // Sign-up function
-export const signUp = async (email, password) => {
-  const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-  return userCredential.user; // Return the user object
+export const signUp = async (email, password, hospitalId, role) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/signup`, {
+      email,
+      password,
+      hospitalId,
+      role,
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Sign-up failed");
+  }
 };
 
 // Logout function
 export const logout = async () => {
-  await signOut(auth); // Log out the user
+  try {
+    const token = localStorage.getItem("authToken");
+    await axios.post(
+      `${API_BASE_URL}/logout`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Include token if required for logout
+        },
+      }
+    );
+    localStorage.removeItem("authToken"); // Clear token after logout
+    return { message: "Logout successful" };
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Logout failed");
+  }
 };
-
-// Exporting auth and functions together for use in other parts of the app
-export { auth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut };

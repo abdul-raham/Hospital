@@ -33,10 +33,10 @@ export const logoutService = async () => {
 
 const AuthContext = createContext();
 
-// Function to extract role from email
 const extractRoleFromEmail = (email) => {
-  const emailParts = email.split("@")[0].split(".");
-  return emailParts.length > 1 ? emailParts[1] : null;
+  if (!email) return null;
+  const emailParts = email.split("@")[0]?.split(".");
+  return emailParts?.length > 1 ? emailParts[1] : null;
 };
 
 const AuthProvider = ({ children }) => {
