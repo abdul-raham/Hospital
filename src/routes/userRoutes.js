@@ -1,5 +1,5 @@
 import express from 'express';
-import admin from '../Firebase-admin/admin'; // Ensure Firebase Admin is imported properly
+import admin from '../Firebase-admin/admin.js'; // Ensure Firebase Admin is imported properly
 import { initializeApp } from 'firebase/app';
 import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 

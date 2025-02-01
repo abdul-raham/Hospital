@@ -1,9 +1,15 @@
 import admin from "firebase-admin";
 import { readFileSync } from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 
-// Debug the current working directory
+// Fix __dirname in ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Debugging output
 console.log("Current working directory:", process.cwd());
+console.log("Resolved path:", path.resolve(__dirname, "../config/serviceAccountKey.json"));
 
 // Load the service account key from the config folder
 try {
@@ -15,9 +21,9 @@ try {
     credential: admin.credential.cert(serviceAccount),
   });
 
-  console.log("Firebase Admin initialized successfully.");
+  console.log("✅ Firebase Admin initialized successfully.");
 } catch (error) {
-  console.error("Error initializing Firebase Admin SDK:", error.message);
+  console.error("❌ Error initializing Firebase Admin SDK:", error.message);
   process.exit(1);
 }
 
@@ -34,10 +40,10 @@ export const setCustomUserClaims = async (uid, role, hospitalId) => {
     );
     await admin.auth().setCustomUserClaims(uid, { role, hospitalId });
     console.log(
-      `Custom claims set for user ${uid} with role: ${role} and hospitalId: ${hospitalId}`
+      `✅ Custom claims set for user ${uid} with role: ${role} and hospitalId: ${hospitalId}`
     );
   } catch (error) {
-    console.error("Error setting custom claims:", error.message);
+    console.error("❌ Error setting custom claims:", error.message);
     throw error;
   }
 };
