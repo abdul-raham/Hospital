@@ -7,7 +7,7 @@ console.log("Current working directory:", process.cwd());
 
 // Load the service account key from the config folder
 try {
-  const serviceAccountPath = path.resolve(__dirname, "../../config/serviceAccountKey.json");
+  const serviceAccountPath = path.resolve(__dirname, "../config/serviceAccountKey.json");
   const serviceAccount = JSON.parse(readFileSync(serviceAccountPath, "utf8"));
 
   // Initialize Firebase Admin SDK

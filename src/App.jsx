@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { Container } from "@mui/material";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import LoginPage from "./pages/Login/LoginPage";
+import RegisterPage from "./pages/Register/Registerpage.jsx"; 
 import PrivateRoute from "./components/Auth/PrivateRoute";
 import DoctorDashboard from "./Roles/doctor/DoctorDashboard";
 import AdminDashboard from "./Roles/Admin/AdminDashboard";
@@ -28,39 +29,23 @@ const App = () => {
             {/* Public Routes */}
             <Route path="/" element={<LoginPage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} /> {/* Add Register Page */}
 
             {/* Private Routes */}
             <Route element={<PrivateRoute />}>
-              {/* Doctor */}
               <Route path="/doctor/*" element={<DoctorDashboard />} />
-
-              {/* Admin */}
               <Route path="/admin/*" element={<AdminDashboard />} />
               <Route path="/admin/calendar" element={<Calendar />} />
               <Route path="/admin/tables" element={<Tables />} />
               <Route path="/admin/cards" element={<Cards />} />
-
-              {/* Patient */}
               <Route path="/patient/*" element={<PatientDashboard />} />
-
-              {/* Lab */}
               <Route path="/lab" element={<LabDashboard />} />
-
-              {/* Nurse */}
               <Route path="/nurse" element={<NurseDashboard />} />
-              <Route
-                path="/nurse/appointments"
-                element={<NurseAppointments />}
-              />
+              <Route path="/nurse/appointments" element={<NurseAppointments />} />
               <Route path="/nurse/tasks" element={<NurseTasks />} />
               <Route path="/nurse/careplans" element={<CarePlans />} />
-
-              {/* Receptionist */}
               <Route path="/receptionist" element={<ReceptionistDashboard />} />
-              <Route
-                path="/receptionist/messages"
-                element={<ReceptionistMessages />}
-              />
+              <Route path="/receptionist/messages" element={<ReceptionistMessages />} />
             </Route>
           </Routes>
         </Container>

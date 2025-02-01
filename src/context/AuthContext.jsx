@@ -1,105 +1,42 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
-import { auth } from "../Firebase";
-
-// Service logic fetch-based login
-export const loginService = async (email, password) => {
-  try {
-    const response = await fetch("http://localhost:5000/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (!response.ok) throw new Error("Unable to log in");
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    throw error;
-  }
-};
-
-export const logoutService = async () => {
-  try {
-    const response = await fetch("http://localhost:5000/api/auth/logout", {
-      method: "POST",
-    });
-
-    if (!response.ok) throw new Error("Logout failed");
-    return response.json();
-  } catch (error) {
-    throw error;
-  }
-};
+import { createContext, useContext, useEffect, useState } from "react";
+import { auth, db } from "../Firebase"; // Import Firestore database
+import { onAuthStateChanged, getIdTokenResult } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
 
 const AuthContext = createContext();
 
-const extractRoleFromEmail = (email) => {
-  if (!email) return null;
-  const emailParts = email.split("@")[0]?.split(".");
-  return emailParts?.length > 1 ? emailParts[1] : null;
-};
-
-const AuthProvider = ({ children }) => {
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [userRole, setUserRole] = useState(null);
-  const [userName, setUserName] = useState(null);
+  const [role, setRole] = useState(null);
+  const [hospitalId, setHospitalId] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const login = async (email, password) => {
-    setLoading(true);
-    try {
-      const data = await loginService(email, password);
-      const role = extractRoleFromEmail(data.email);
-
-      if (!role) throw new Error("No valid role found.");
-
-      setUser(data);
-      setUserRole(role);
-      setUserName(data.email);
-
-      localStorage.setItem("userRole", role);
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const logout = async () => {
-    setLoading(true);
-    try {
-      const result = await logoutService();
-      console.log("Logged out", result);
-
-      setUser(null);
-      setUserRole(null);
-      setUserName(null);
-
-      localStorage.removeItem("userRole");
-    } catch (error) {
-      console.error("Logout failed", error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
-    const savedRole = localStorage.getItem("userRole");
-    if (savedRole) {
-      setUserRole(savedRole);
-    }
-
-    const unsubscribe = auth.onAuthStateChanged((firebaseUser) => {
-      if (firebaseUser) {
-        const role = extractRoleFromEmail(firebaseUser.email);
-        setUser(firebaseUser);
-        setUserRole(role);
-        setUserName(firebaseUser.email);
+    const unsubscribe = onAuthStateChanged(auth, async (authUser) => {
+      if (authUser) {
+        try {
+          // Fetch user data from Firestore
+          const userDoc = await getDoc(doc(db, "users", authUser.uid));
+          
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            setUser(authUser);
+            setRole(userData.role);
+            setHospitalId(userData.hospitalId);
+          } else {
+            console.error("User data not found in Firestore");
+            setUser(null);
+            auth.signOut(); // Logout if no Firestore data found
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+          setUser(null);
+          auth.signOut();
+        }
       } else {
         setUser(null);
-        setUserRole(null);
-        setUserName(null);
+        setRole(null);
+        setHospitalId(null);
       }
       setLoading(false);
     });
@@ -108,16 +45,10 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider
-      value={{ user, userRole, userName, loading, login, logout, error }}
-    >
+    <AuthContext.Provider value={{ user, role, hospitalId, loading }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-const useAuthContext = () => {
-  return useContext(AuthContext);
-};
-
-export { AuthProvider, useAuthContext };
+export const useAuth = () => useContext(AuthContext);

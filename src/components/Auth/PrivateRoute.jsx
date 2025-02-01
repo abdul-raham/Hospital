@@ -1,44 +1,23 @@
-import React from "react";
-import { Navigate, Outlet, useLocation } from "react-router-dom";
-import { useAuthContext } from "../../context/AuthContext";
+import { Navigate, Outlet } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext"; // 🔹 Ensure correct import path
 
-const PrivateRoute = () => {
-  const { user, userRole, loading } = useAuthContext();
-  const location = useLocation();
+const PrivateRoute = ({ allowedRoles }) => {
+  const { user, role, loading } = useAuth();
 
-  console.log("User:", user);
-  console.log("UserRole:", userRole);
-
-  const rolePaths = {
-    doctor: "/doctor",
-    nurse: "/nurse",
-    admin: "/admin",
-    lab: "/lab",
-    patient: "/patient",
-    receptionist: "/receptionist",
-  };
+  console.log("User:", user); // Debugging user
+  console.log("User Role:", role); // Debugging role
+  console.log("Allowed Roles:", allowedRoles); // Debugging allowed roles
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>; // Show loading while checking role
   }
 
-  if (!user) {
-    console.warn("User not logged in. Redirecting to login.");
-    return <Navigate to="/login" state={{ from: location }} />;
-  }
-
-  if (!userRole || !rolePaths[userRole]) {
-    console.error(`Invalid user role detected: ${userRole}`);
-    return <Navigate to="/login" />;
-  }
-
-  // Handle redirection only if at root and user has a valid role
-  if (location.pathname === "/" && rolePaths[userRole]) {
-    console.log(`Redirecting user with role '${userRole}' to '${rolePaths[userRole]}'`);
-    return <Navigate to={rolePaths[userRole]} />;
+  if (!user || !role || !allowedRoles.includes(role)) {
+    return <Navigate to="/login" replace />;
   }
 
   return <Outlet />;
 };
 
 export default PrivateRoute;
+ 

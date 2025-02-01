@@ -1,8 +1,9 @@
 import express from 'express';
+import admin from '../Firebase-admin/admin'; // Ensure Firebase Admin is imported properly
 import { initializeApp } from 'firebase/app';
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, signOut } from 'firebase/auth';
 
-// Firebase configuration
+// Firebase Client SDK (Only for login/logout)
 const firebaseConfig = {
   apiKey: "AIzaSyCdmHvjKgjmPPqJgmlIk2vYMXjdwcpf7hA",
   authDomain: "hosp-429ad.firebaseapp.com",
@@ -12,31 +13,41 @@ const firebaseConfig = {
   appId: "1:420255599423:web:a476f91fcaa0f49121218a",
 };
 
-// Initialize Firebase
+// Initialize Firebase Client SDK
 const firebaseApp = initializeApp(firebaseConfig);
 const auth = getAuth(firebaseApp);
 
 // Initialize Express Router
 const router = express.Router();
 
-// Login route with hospital ID validation
+/**
+ * 🛠 LOGIN ROUTE - Ensures only approved users can log in
+ */
 router.post("/login", async (req, res) => {
   const { email, password, hospitalId } = req.body;
 
   try {
+    // Sign in the user
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
-    
-    // Get the ID token and check the custom claim for hospitalId
-    const idTokenResult = await user.getIdTokenResult();
 
-    if (!idTokenResult.claims.hospitalId || idTokenResult.claims.hospitalId !== hospitalId) {
+    // Get Firebase Admin claims to check hospitalId & role
+    const idTokenResult = await user.getIdTokenResult();
+    const claims = idTokenResult.claims;
+
+    // ✅ Ensure the hospitalId matches
+    if (!claims.hospitalId || claims.hospitalId !== hospitalId) {
       return res.status(403).json({ message: "Unauthorized access to this hospital." });
+    }
+
+    // ✅ Ensure user is approved (admin must approve manually)
+    if (!claims.approved) {
+      return res.status(403).json({ message: "Account not yet approved by admin." });
     }
 
     res.status(200).json({
       message: "Login successful",
-      role: idTokenResult.claims.role || "user",
+      role: claims.role || "user",
     });
   } catch (error) {
     console.error("Login failed:", error);
@@ -44,20 +55,33 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Sign-up route
+/**
+ * 🛠 SIGN-UP ROUTE - Creates a new user, but requires admin approval
+ */
 router.post("/signup", async (req, res) => {
-  const { email, password, hospitalId } = req.body;
+  const { email, password, role, hospitalId } = req.body;
 
   try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
+    // ✅ Step 1: Create User in Firebase Auth
+    const userRecord = await admin.auth().createUser({
+      email,
+      password,
+      emailVerified: false,
+      disabled: false,
+    });
 
-    // Optionally set custom claims for hospitalId and role (requires Firebase Admin SDK)
-    console.log("User signed up successfully:", user.email, hospitalId);
+    // ✅ Step 2: Assign Custom Claims (Role & Hospital)
+    await admin.auth().setCustomUserClaims(userRecord.uid, {
+      role,
+      hospitalId,
+      approved: false, // 🚨 Not approved yet! Admin must approve manually.
+    });
+
+    console.log(`✅ New user created: ${email} (Hospital: ${hospitalId}, Role: ${role})`);
 
     res.status(200).json({
-      message: "Account created successfully",
-      user: { uid: user.uid, email: user.email, hospitalId },
+      message: "Account created successfully, pending admin approval.",
+      user: { uid: userRecord.uid, email, role, hospitalId },
     });
   } catch (error) {
     console.error("Sign-up failed:", error);
@@ -65,7 +89,38 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-// Logout route
+/**
+ * 🛠 ADMIN APPROVAL ROUTE - Admin approves users before they can log in
+ */
+router.post("/approve-user", async (req, res) => {
+  const { uid } = req.body;
+
+  try {
+    // ✅ Step 1: Get User Details
+    const user = await admin.auth().getUser(uid);
+    
+    // ✅ Step 2: Ensure user exists
+    if (!user.customClaims || !user.customClaims.role || !user.customClaims.hospitalId) {
+      return res.status(400).json({ message: "User does not have valid custom claims." });
+    }
+
+    // ✅ Step 3: Approve the user
+    await admin.auth().setCustomUserClaims(uid, {
+      ...user.customClaims,
+      approved: true, // ✅ Now the user can log in
+    });
+
+    console.log(`✅ User approved: ${user.email}`);
+    res.status(200).json({ message: "User approved successfully." });
+  } catch (error) {
+    console.error("Approval failed:", error);
+    res.status(500).json({ message: "Failed to approve user", error: error.message });
+  }
+});
+
+/**
+ * 🛠 LOGOUT ROUTE
+ */
 router.post("/logout", async (req, res) => {
   try {
     await signOut(auth);

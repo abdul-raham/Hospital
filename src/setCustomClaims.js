@@ -159,7 +159,7 @@ const userRoles = [
   { uid: "KXcsHaRuyZhoi1chFkcfGlFbZ", role: "patient", hospitalId: "east_side_clinic" },
   { uid: "m3FkzQwgwiNQMDlo1HOIAnu", role: "admin", hospitalId: "st_marys_hospital" },
   { uid: "itpidkzjYDG4afvqCj0mWfFwn", role: "doctor", hospitalId: "west_end_medical_center" },
-  { uid: "Ez6DO11iBKX3VNQl70a9GMB", role: "doctor", hospitalId: "east_side_clinic" },
+  { uid: "Ez6DO11iBKX3VNQl70a9GMB", role: "doctor", hospitalId: "llllllllllllllllllllllllllllllll" },
   { uid: "kZN5iFqQGzg72gP4SmhV6sl9", role: "nurse", hospitalId: "west_end_medical_center" },
 ];
 
@@ -176,7 +176,3 @@ const assignRoles = async () => {
 
 // Assign roles to all users
 assignRoles();
-
-userRoles.forEach((user) => {
-  setCustomUserClaims(user.uid, user.role, user.hospitalId);
-});

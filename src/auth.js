@@ -1,7 +1,7 @@
 import axios from "axios";
 
-// API base URL
-const API_BASE_URL = "http://localhost:5000/api/auth"; // Replace with your backend's API URL
+// Use environment variable for API base URL
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000/api/auth";
 
 // Login function
 export const login = async (email, password, hospitalId) => {
@@ -11,11 +11,12 @@ export const login = async (email, password, hospitalId) => {
       password,
       hospitalId,
     });
-    // Store token or user details locally if needed
     const { data } = response;
-    localStorage.setItem("authToken", data.token); // Example: Save token for authenticated requests
+    // Store token securely
+    localStorage.setItem("authToken", data.token);
     return data;
   } catch (error) {
+    console.error("Login error:", error.response);
     throw new Error(error.response?.data?.message || "Login failed");
   }
 };
@@ -31,6 +32,7 @@ export const signUp = async (email, password, hospitalId, role) => {
     });
     return response.data;
   } catch (error) {
+    console.error("Sign-up error:", error.response);
     throw new Error(error.response?.data?.message || "Sign-up failed");
   }
 };
@@ -39,18 +41,22 @@ export const signUp = async (email, password, hospitalId, role) => {
 export const logout = async () => {
   try {
     const token = localStorage.getItem("authToken");
+    if (!token) {
+      return { message: "No active session found" };
+    }
     await axios.post(
       `${API_BASE_URL}/logout`,
       {},
       {
         headers: {
-          Authorization: `Bearer ${token}`, // Include token if required for logout
+          Authorization: `Bearer ${token}`,
         },
       }
     );
-    localStorage.removeItem("authToken"); // Clear token after logout
+    localStorage.removeItem("authToken");
     return { message: "Logout successful" };
   } catch (error) {
+    console.error("Logout error:", error.response);
     throw new Error(error.response?.data?.message || "Logout failed");
   }
 };

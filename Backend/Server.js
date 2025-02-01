@@ -29,6 +29,7 @@ app.use("/api/appointments", appointmentRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/auth", authRoutes); // Use the auth routes here
 
+
 // Create HTTP server & integrate Socket.IO
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -53,10 +54,8 @@ io.on("connection", (socket) => {
     console.log("User disconnected");
   });
 });
-
-// 404 Error Middleware
-app.use((req, res) => {
-  res.status(404).json({ message: "Endpoint not found" });
+app.use((req, res, next) => {
+  res.status(404).json({ message: `Endpoint not found: ${req.originalUrl}` });
 });
 
 // General Error Middleware
