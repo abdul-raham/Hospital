@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { db } from "../../Firebase";
-import { collection, getDocs, addDoc } from "firebase/firestore";
+import { collection, getDocs, setDoc, doc } from "firebase/firestore";
 
 const registerPageStyles = {
   container: { display: "flex", justifyContent: "center", alignItems: "center", height: "100vh", background: "linear-gradient(135deg, #6a11cb, #2575fc)" },
@@ -37,7 +37,6 @@ const RegisterPage = () => {
     };
     fetchHospitals();
   }, []);
-
   const handleRegister = async (e) => {
     e.preventDefault();
     if (!selectedHospital || !selectedRole) {
@@ -45,7 +44,7 @@ const RegisterPage = () => {
       return;
     }
     try {
-      await addDoc(collection(db, "users"), {
+      await setDoc(doc(db, "hospitals", selectedHospital, "users", email), {
         email,
         password,
         hospitalId: selectedHospital,
@@ -57,6 +56,7 @@ const RegisterPage = () => {
       setError("Registration failed.");
     }
   };
+  
 
   return (
     <div style={registerPageStyles.container}>
